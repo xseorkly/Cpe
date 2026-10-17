@@ -98,30 +98,72 @@
   /* ---------- Bilan formateur (diaporama) ---------- */
   var dlg = $("dialog.bilan");
   if (dlg) {
-    var slides = $$(".slide", dlg), pos = 0, counter = $(".slidecount", dlg);
+    var slides = [], pos = 0, counter = $(".slidecount", dlg), box = $(".slides", dlg), form = $("[data-unlock]", dlg);
+    var err = $(".lock-err", dlg), pwdIn = $("input[type=password]", dlg), raw = $(".bilan-data", dlg);
+    var ctrls = ["[data-prev]", "[data-next-slide]", "[data-full]", "[data-lock]"].map(function (q) { return $(q, dlg); });
+    var b64 = function (x) { return Uint8Array.from(atob(x), function (c) { return c.charCodeAt(0); }); };
+    var norm = function (p) { return String(p || "").replace(/\s+/g, ""); };
+    var decrypt = function (pwd) {
+      if (!window.crypto || !crypto.subtle) return Promise.reject(new Error("crypto"));
+      var d = JSON.parse(raw.textContent), enc = new TextEncoder();
+      return crypto.subtle.importKey("raw", enc.encode(pwd), "PBKDF2", false, ["deriveKey"]).then(function (k) {
+        return crypto.subtle.deriveKey({ name: "PBKDF2", salt: b64(d.s), iterations: 200000, hash: "SHA-256" }, k, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+      }).then(function (key) {
+        return crypto.subtle.decrypt({ name: "AES-GCM", iv: b64(d.iv) }, key, b64(d.ct));
+      }).then(function (buf) { return new TextDecoder().decode(buf); });
+    };
     var show = function (i) {
+      if (!slides.length) return;
       pos = Math.max(0, Math.min(slides.length - 1, i));
       slides.forEach(function (s, k) { s.classList.toggle("active", k === pos); });
       counter.textContent = (pos + 1) + " / " + slides.length;
-      $("[data-prev]", dlg).disabled = pos === 0; $("[data-next-slide]", dlg).disabled = pos === slides.length - 1;
+      ctrls[0].disabled = pos === 0; ctrls[1].disabled = pos === slides.length - 1;
       var bar = $(".bilan-progress span", dlg); if (bar) bar.style.width = ((pos + 1) / slides.length * 100) + "%";
-      var box = $(".slides", dlg); if (box) box.scrollTop = 0;
+      box.scrollTop = 0;
     };
-    $$("[data-open-bilan]").forEach(function (b) { b.addEventListener("click", function () { dlg.showModal(); show(0); }); });
-    $("[data-prev]", dlg).addEventListener("click", function () { show(pos - 1); });
-    $("[data-next-slide]", dlg).addEventListener("click", function () { show(pos + 1); });
+    var opened = function (html) {
+      box.innerHTML = html; slides = $$(".slide", box);
+      form.hidden = true; box.hidden = false; ctrls.forEach(function (c) { c.hidden = false; }); show(0);
+    };
+    var locked = function () {
+      box.innerHTML = ""; slides = []; box.hidden = true; form.hidden = false; err.hidden = true;
+      ctrls.forEach(function (c) { c.hidden = true; }); counter.textContent = "";
+      var bar = $(".bilan-progress span", dlg); if (bar) bar.style.width = "0";
+      setTimeout(function () { pwdIn.focus(); }, 50);
+    };
+    var tryOpen = function (pwd, remember) {
+      return decrypt(norm(pwd)).then(function (html) { if (remember) set("formateur", norm(pwd)); opened(html); return true; });
+    };
+    $$("[data-open-bilan]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        dlg.showModal();
+        if (slides.length) { show(0); return; }
+        locked();
+        var saved = get("formateur");
+        if (saved) tryOpen(saved, false).catch(function () { del("formateur"); });
+      });
+    });
+    form.addEventListener("submit", function (e) {
+      e.preventDefault(); err.hidden = true;
+      tryOpen(pwdIn.value, true).then(function () { pwdIn.value = ""; }).catch(function (x) {
+        err.textContent = x && x.message === "crypto" ? "Votre navigateur ne permet pas d'ouvrir le bilan ici. Ouvrez le site en ligne (https)." : "Mot de passe incorrect.";
+        err.hidden = false; pwdIn.select();
+      });
+    });
+    ctrls[3].addEventListener("click", function () { del("formateur"); locked(); });
+    ctrls[0].addEventListener("click", function () { show(pos - 1); });
+    ctrls[1].addEventListener("click", function () { show(pos + 1); });
     $("[data-close]", dlg).addEventListener("click", function () { dlg.close(); });
-    $("[data-full]", dlg).addEventListener("click", function (e) {
+    ctrls[2].addEventListener("click", function (e) {
       dlg.classList.toggle("full"); e.currentTarget.textContent = dlg.classList.contains("full") ? "Réduire" : "Plein écran";
     });
-    dlg.addEventListener("close", function () { dlg.classList.remove("full"); });
+    dlg.addEventListener("close", function () { dlg.classList.remove("full"); ctrls[2].textContent = "Plein écran"; });
     document.addEventListener("keydown", function (e) {
-      if (!dlg.open) return;
-      if (e.key === "ArrowRight" || e.key === " ") { show(pos + 1); e.preventDefault(); }
-      if (e.key === "ArrowLeft") { show(pos - 1); e.preventDefault(); }
+      if (!dlg.open || !slides.length) return;
+      if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") { show(pos + 1); e.preventDefault(); }
+      if (e.key === "ArrowLeft" || e.key === "PageUp") { show(pos - 1); e.preventDefault(); }
     });
   }
-
 
   /* ---------- Dossier documentaire : filtres, recherche, liens ---------- */
   $$("[data-dossier]").forEach(function (dz) {

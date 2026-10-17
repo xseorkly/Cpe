@@ -66,12 +66,38 @@ def slides_html(a):
     return "".join(out)
 
 
+MOT_DE_PASSE = "ZESE2027"  # saisi « ZESE2027 » ou « ZESE 2027 » (les espaces sont ignorés)
+
+
+def chiffrer(texte, mot_de_passe=MOT_DE_PASSE):
+    """AES-GCM 256, clé dérivée par PBKDF2-SHA256 (200 000 itérations)."""
+    import base64, json, os
+    from cryptography.hazmat.primitives import hashes
+    from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+    from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+    sel, iv = os.urandom(16), os.urandom(12)
+    cle = PBKDF2HMAC(algorithm=hashes.SHA256(), length=32, salt=sel, iterations=200000).derive(mot_de_passe.encode())
+    ct = AESGCM(cle).encrypt(iv, texte.encode("utf-8"), None)
+    b = lambda x: base64.b64encode(x).decode()
+    return json.dumps({"s": b(sel), "iv": b(iv), "ct": b(ct)})
+
+
 def bilan_dialog(a):
+    data = chiffrer(slides_html(a))
     return f"""<dialog class="bilan" aria-label="Bilan de l'atelier {a['n']}">
   <div class="bilan-bar"><strong>Bilan · Atelier {a['n']}</strong><span class="slidecount" aria-live="polite"></span>
-    <div class="bilan-btns"><button class="btn small ghost" data-prev type="button" aria-label="Diapositive précédente">←</button><button class="btn small ghost" data-next-slide type="button" aria-label="Diapositive suivante">→</button><button class="btn small ghost" data-full type="button">Plein écran</button><button class="btn small" data-close type="button">Fermer</button></div></div>
-  <div class="slides">{slides_html(a)}</div>
+    <div class="bilan-btns"><button class="btn small ghost" data-prev type="button" aria-label="Diapositive précédente" hidden>←</button><button class="btn small ghost" data-next-slide type="button" aria-label="Diapositive suivante" hidden>→</button><button class="btn small ghost" data-full type="button" hidden>Plein écran</button><button class="btn small ghost" data-lock type="button" hidden>Verrouiller</button><button class="btn small" data-close type="button">Fermer</button></div></div>
+  <form class="bilan-lock" data-unlock>
+    <p class="slide-kicker">Espace formateur</p>
+    <h3>Ce bilan est réservé au formateur</h3>
+    <p class="muted">Saisissez le mot de passe de la formation pour projeter le diaporama. Il reste mémorisé sur cet appareil jusqu'à ce que vous cliquiez sur « Verrouiller ».</p>
+    <label for="pwd-{a['n']}" class="sr">Mot de passe</label>
+    <div class="lock-row"><input id="pwd-{a['n']}" type="password" autocomplete="current-password" placeholder="Mot de passe" required><button class="btn" type="submit">Déverrouiller</button></div>
+    <p class="lock-err" role="alert" hidden>Mot de passe incorrect.</p>
+  </form>
+  <div class="slides" hidden></div>
   <div class="bilan-progress" aria-hidden="true"><span></span></div>
+  <script type="application/json" class="bilan-data">{data}</script>
 </dialog>"""
 
 
@@ -168,7 +194,7 @@ def atelier_page(C, a, MALLETTE_BY_ATELIER):
 
   <section class="howto">
     <p><strong>Comment avancer ?</strong> Vous écrivez d'abord votre réaction spontanée. Puis vous enquêtez en groupe dans un dossier où tout n'est pas fiable. Une information nouvelle viendra bousculer vos conclusions. Chaque étape ne s'ouvre que lorsque la précédente est terminée.</p>
-    <div class="howto-actions"><button class="btn ghost small" type="button" data-reset>Recommencer l'atelier</button><button class="btn ghost small" type="button" data-print-revealed>Imprimer les documents ouverts</button></div>
+    <div class="howto-actions"><button class="btn ghost small" type="button" data-reset>Recommencer l'atelier</button><button class="btn ghost small" type="button" data-print-revealed>Imprimer les documents ouverts</button><button class="btn ghost small" type="button" data-open-bilan>Bilan formateur 🔒</button></div>
   </section>
 
   <ol class="stepper" aria-label="Étapes de l'atelier">{steps}</ol>
@@ -177,7 +203,7 @@ def atelier_page(C, a, MALLETTE_BY_ATELIER):
   <section class="temps cloture" id="a{n}-fin" data-temps="fin" hidden>
     <header class="temps-head"><span class="temps-no">Bilan</span><h2>Mise en commun et apports</h2><span class="mod">Collectif · 15 min</span></header>
     <div class="bilan-launch">
-      <div><p class="label">Diaporama du formateur</p><p>Le formateur projette la synthèse : ce que vous avez dû trancher, les apports théoriques, les repères à emporter.</p></div>
+      <div><p class="label">Diaporama du formateur · protégé</p><p>Le formateur projette la synthèse : ce que vous avez dû trancher, les apports théoriques, les repères à emporter.</p></div>
       <button class="btn big" type="button" data-open-bilan>Ouvrir le bilan ▸</button>
     </div>
     <h3 class="label">Pour conclure, chacun pour soi</h3>
