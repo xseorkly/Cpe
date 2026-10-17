@@ -30,6 +30,8 @@ def typo(doc):
             continue
         p = re.sub(r" ([:;?!»])", " \\1", p)
         p = re.sub(r"« ", "« ", p)
+        p = re.sub(r"(\d) h (\d)", "\\1\u00a0h\u00a0\\2", p)
+        p = re.sub(r"(\d) (min|h|%)\b", "\\1\u00a0\\2", p)
         out.append(p)
     return "".join(out)
 
@@ -117,243 +119,35 @@ def page(rel, title, body, desc="", current="", formateur=False, extra_head=""):
 
 
 # --------------------------------------------------------------------------
-# Numérotation des documents
+# Ateliers (stagiaire et formateur) : voir atelier_pages.py
 # --------------------------------------------------------------------------
-def numbered_docs(a):
-    n = 0
-    for ti, t in enumerate(a["temps"], 1):
-        for d in t["docs"]:
-            n += 1
-            yield ti, n, d
+import ateliers as A  # noqa: E402
+import atelier_pages as AP  # noqa: E402
+
+BUT = {
+    1: "Situer ce qui relève de mes missions, de la coopération et de la décision d'une autre autorité.",
+    2: "Poser un diagnostic de vie scolaire à partir de données fiables et organiser le service sous contraintes.",
+    3: "Animer une équipe d'AED, réguler un écart et conduire une réunion qui décide.",
+    4: "Analyser un comportement sans diagnostiquer et tenir le cadre sans humilier.",
+    5: "Repérer des signaux faibles et construire une alliance avec les deux parents.",
+    6: "Traiter un incident dans le respect du droit disciplinaire et protéger tous les élèves concernés.",
+    7: "Accompagner les élus vers une participation réelle, sans la confisquer.",
+    8: "Prioriser sous pression, refuser ce qui excède mon rôle et rendre compte de mes choix.",
+}
+for _a in A.ATELIERS:
+    _a["but"] = BUT[_a["n"]]
+    _a["temps"] = _a["phases"]
+C.ATELIERS = A.ATELIERS
 
 
-def doc_card(a, n, d, printable=True):
-    btn = (f'<button class="btn ghost small" type="button" data-print-doc aria-label="Imprimer le document {n}">Imprimer</button>'
-           if printable else "")
-    return f"""<article class="doc" id="a{a['n']}-doc-{n}">
-  <header class="doc-head"><div><span class="doc-no">Document {n}</span><h4>{esc(d['titre'])}</h4></div>{btn}</header>
-  <div class="doc-body">{d['html'].strip()}</div>
-</article>"""
-
-
-def chips_competences(a):
-    c = "".join(f'<li><abbr title="{esc(C.C2013[k])}">{k}</abbr><span>{esc(C.C2013[k])}</span></li>' for k in a["competences"])
-    return f'<ul class="comp-list">{c}</ul>'
-
-
-def reperes_html(n):
-    return REPERES.get(n, "")
-
-
-# --------------------------------------------------------------------------
-# Repères : chapitres extraits de l'ancien cours.html
-# --------------------------------------------------------------------------
-def load_reperes():
-    src = open(os.path.join(HERE, "legacy", "cours.html"), encoding="utf-8").read()
-    out = {}
-    for i in range(1, 9):
-        m = re.search(rf'<section class="panel read" id="c{i}">(.*?)</section>', src, re.S)
-        if not m:
-            continue
-        sec = m.group(1)
-        blocks = re.findall(r"<h3>(.*?)</h3>\s*<p>(.*?)</p>", sec, re.S)
-        corpus = re.search(r'<p class="small"><strong>Corpus :</strong>(.*?)</p>', sec, re.S)
-        inner = "".join(f"<h4>{h}</h4><p>{p}</p>" for h, p in blocks)
-        if corpus:
-            inner += f'<p class="small muted"><strong>Corpus :</strong>{corpus.group(1)}</p>'
-        out[i] = inner
-    return out
-
-
-REPERES = load_reperes()
-
-
-# --------------------------------------------------------------------------
-# Atelier : vue stagiaire
-# --------------------------------------------------------------------------
 def atelier_page(a):
-    n = a["n"]
-    total = sum(t["duree"] for t in a["temps"]) + 5
-    nums = {}
-    docs_by_t = {}
-    for ti, num, d in numbered_docs(a):
-        docs_by_t.setdefault(ti, []).append((num, d))
-        nums[num] = d
-    steps = "".join(f'<li><a href="#a{n}-t{i}" data-step="{i}">Temps {i}</a></li>' for i in range(1, len(a["temps"]) + 1))
-    steps += f'<li><a href="#a{n}-fin" data-step="fin">Clôture</a></li>'
-
-    temps_html = []
-    for i, t in enumerate(a["temps"], 1):
-        docs = "".join(doc_card(a, num, d) for num, d in docs_by_t.get(i, []))
-        if docs:
-            docs = f'<div class="docs"><h3 class="label">Nouveau{"x" if len(docs_by_t[i]) > 1 else ""} document{"s" if len(docs_by_t[i]) > 1 else ""}</h3>{docs}</div>'
-        voir = ""
-        if t.get("voir"):
-            links = "".join(f'<a class="chip-link" href="#a{n}-doc-{v}">Document {v} · {esc(nums[v]["titre"])}</a>' for v in t["voir"])
-            voir = f'<div class="voir"><span class="label">À garder sous les yeux</span>{links}</div>'
-        seq = ""
-        if t.get("sequence"):
-            items = "".join(
-                f'<li class="event" data-event hidden><span class="event-time">{h}</span><p>{esc(txt)}</p></li>'
-                for h, txt in t["sequence"])
-            seq = f"""<div class="sequence" data-sequence>
-  <ol class="events">{items}</ol>
-  <button class="btn" type="button" data-next-event>Révéler l'événement suivant</button>
-  <p class="small muted" data-seq-done hidden>Les cinq événements sont révélés. Terminez votre journal avant de passer au temps suivant.</p>
-</div>"""
-        rep = ""
-        if t.get("reperes"):
-            ap = ""
-            if a.get("approfondir"):
-                ap = f'<p><a class="btn ghost small" href="approfondir/{a["approfondir"]}.html">Approfondir : {esc(C.APPROFONDIR[a["approfondir"]])} →</a></p>'
-            rep = f"""<details class="reperes" open>
-  <summary><span class="label">Repères pour agir</span> Ce que disent les textes et la pratique professionnelle</summary>
-  <div class="reperes-body">{reperes_html(n)}{ap}</div>
-</details>"""
-        last = i == len(a["temps"])
-        nxt = (f'<button class="btn" type="button" data-next="fin">J\'ai terminé : passer à la clôture</button>' if last
-               else f'<button class="btn" type="button" data-next="{i + 1}">J\'ai terminé : passer au temps {i + 1}</button>')
-        temps_html.append(f"""<section class="temps" id="a{n}-t{i}" data-temps="{i}"{" hidden" if i > 1 else ""}>
-  <header class="temps-head">
-    <span class="temps-no">Temps {i}</span>
-    <h2>{esc(t['titre'])}</h2>
-    <span class="mod">{esc(t['modalite'])}</span>
-  </header>
-  <div class="consigne"><p>{esc(t['consigne'])}</p></div>
-  {seq}
-  {docs}
-  {voir}
-  {rep}
-  <div class="note-zone">
-    <label for="note-a{n}-t{i}">Mes notes · temps {i}</label>
-    <textarea id="note-a{n}-t{i}" data-note="a{n}:t{i}" data-label="Atelier {n} · Temps {i} · {esc(t['titre'])}" rows="4" placeholder="Votre réponse, vos hypothèses, ce que vous retenez. Aucune donnée réelle."></textarea>
-  </div>
-  <div class="temps-foot">{nxt}</div>
-</section>""")
-
-    clot = "".join(f"<li>{esc(q)}</li>" for q in a["cloture"])
-    refs = "".join(f"<li>{ref_link(k)}</li>" for k in a["refs"])
-    ap = ""
-    if a.get("approfondir"):
-        ap = f'<a class="btn ghost" href="approfondir/{a["approfondir"]}.html">Approfondir : {esc(C.APPROFONDIR[a["approfondir"]])}</a>'
-    prev_l = f'<a class="btn ghost" href="atelier-{n - 1}.html">← Atelier {n - 1}</a>' if n > 1 else '<a class="btn ghost" href="index.html">← Le parcours</a>'
-    next_l = f'<a class="btn" href="atelier-{n + 1}.html">Atelier {n + 1} →</a>' if n < 8 else '<a class="btn" href="positionnement.html#fin">Mon positionnement final →</a>'
-    pager = "".join(f'<a href="atelier-{k}.html"{ARIA if k == n else ""}>{k}</a>' for k in range(1, 9))
-
-    body = f"""
-<div class="atelier" data-atelier="{n}" data-steps="{len(a['temps'])}">
-<section class="hero hero-atelier">
-  <div class="wrap">
-    <nav class="pager" aria-label="Ateliers">{pager}</nav>
-    <p class="eyebrow">Atelier {n} sur 8</p>
-    <h1>{esc(a['titre'])}</h1>
-    <p class="lead">{esc(a['but'])}</p>
-  </div>
-</section>
-<div class="wrap">
-  <section class="brief">
-    <div class="brief-col">
-      <h2 class="label">À la fin de l'atelier, je sais</h2>
-      <ul class="checks">{"".join(f"<li>{esc(o)}</li>" for o in a['objectifs'])}</ul>
-    </div>
-    <div class="brief-col">
-      <h2 class="label">Compétences du CPE travaillées</h2>
-      {chips_competences(a)}
-      <p class="small muted">Référentiel de formation 2026 : {esc(a['blocs_detail'])}.</p>
-      <h2 class="label">Production attendue</h2>
-      <p class="production">{esc(a['production'])}</p>
-    </div>
-  </section>
-
-  <section class="howto">
-    <p><strong>Comment avancer ?</strong> Les documents apparaissent au fil des temps, comme dans une situation réelle où l'information arrive progressivement. Répondez d'abord, puis passez au temps suivant. Votre progression et vos notes restent sur cet appareil.</p>
-    <div class="howto-actions"><button class="btn ghost small" type="button" data-reset>Recommencer l'atelier</button><button class="btn ghost small" type="button" data-print-revealed>Imprimer les documents révélés</button></div>
-  </section>
-
-  <ol class="stepper" aria-label="Étapes de l'atelier">{steps}</ol>
-
-  {"".join(temps_html)}
-
-  <section class="temps cloture" id="a{n}-fin" data-temps="fin" hidden>
-    <header class="temps-head"><span class="temps-no">Clôture</span><h2>Ce que je retiens</h2><span class="mod">Collectif, puis individuel</span></header>
-    <div class="consigne"><p>Le formateur conduit le bilan collectif. Répondez ensuite pour vous-même.</p></div>
-    <ol class="questions">{clot}</ol>
-    <div class="note-zone">
-      <label for="note-a{n}-fin">Mon bilan de l'atelier {n}</label>
-      <textarea id="note-a{n}-fin" data-note="a{n}:fin" data-label="Atelier {n} · Bilan personnel" rows="5" placeholder="Le geste professionnel que je retiens, ce que je vais vérifier dans mon établissement."></textarea>
-    </div>
-    <div class="refs"><h3 class="label">Textes de référence</h3><ul>{refs}</ul></div>
-    <div class="actions">{ap}<a class="btn ghost" href="mallette.html#fiche-{MALLETTE_BY_ATELIER.get(n, 1)}">Compléter ma fiche de mallette</a></div>
-  </section>
-
-  <nav class="next-prev" aria-label="Atelier précédent et suivant">{prev_l}{next_l}</nav>
-</div>
-</div>
-<noscript><style>.temps[hidden]{{display:block!important}}.event[hidden]{{display:block!important}}</style></noscript>
-"""
-    write(f"atelier-{n}.html", page(f"atelier-{n}.html", f"Atelier {n} · {a['titre']} · CPE", body, desc=a["but"]))
-    return total
+    body = AP.atelier_page(C, a, MALLETTE_BY_ATELIER)
+    write(f"atelier-{a['n']}.html", page(f"atelier-{a['n']}.html", f"Atelier {a['n']} · {a['titre']} · CPE", body, desc=a["problematique"]))
 
 
-# --------------------------------------------------------------------------
-# Atelier : fiche formateur
-# --------------------------------------------------------------------------
 def formateur_page(a):
-    n = a["n"]
-    f = a["formateur"]
-    total = sum(t["duree"] for t in a["temps"]) + 5
-    rows = []
-    for i, t in enumerate(a["temps"], 1):
-        rows.append(f"<tr><td><strong>Temps {i}</strong><br>{esc(t['titre'])}</td><td>{t['duree']} min</td><td>{esc(t['modalite'])}</td><td>{esc(f['deroule'][i - 1])}</td></tr>")
-    rows.append(f"<tr><td><strong>Clôture</strong></td><td>5 min</td><td>Collectif</td><td>Bilan projeté, puis écrit individuel dans le carnet.</td></tr>")
-    docs = "".join(doc_card(a, num, d) for _, num, d in numbered_docs(a))
-    seq = ""
-    for t in a["temps"]:
-        if t.get("sequence"):
-            seq = "<h3>Événements à révéler</h3><ol class=\"events plain\">" + "".join(
-                f'<li class="event"><span class="event-time">{h}</span><p>{esc(x)}</p></li>' for h, x in t["sequence"]) + "</ol>"
-    slides = []
-    for k, s in enumerate(f["slides"]):
-        pts = "".join(f"<li>{esc(p)}</li>" for p in s["points"])
-        slides.append(f'<section class="slide{" active" if k == 0 else ""}" aria-label="Diapositive {k + 1}"><p class="eyebrow">Atelier {n} · Bilan</p><h3>{esc(s["titre"])}</h3><ul>{pts}</ul><p class="slide-ref">Référence : {esc(C.REF[s["ref"]][0])}</p></section>')
-    clot = "".join(f"<li>{esc(q)}</li>" for q in a["cloture"])
-    slides.append(f'<section class="slide" aria-label="Diapositive {len(f["slides"]) + 1}"><p class="eyebrow">Atelier {n} · Pour conclure</p><h3>Questions au groupe</h3><ol>{clot}</ol></section>')
-    comp = "".join(f'<li><abbr title="{esc(C.C2013[k])}">{k}</abbr><span>{esc(C.C2013[k])}</span></li>' for k in a["competences"])
-    pager = "".join(f'<a href="atelier-{k}.html"{ARIA if k == n else ""}>{k}</a>' for k in range(1, 9))
-    body = f"""
-<section class="hero hero-formateur">
-  <div class="wrap">
-    <nav class="pager" aria-label="Fiches formateur">{pager}</nav>
-    <p class="eyebrow">Fiche formateur · Atelier {n} · {fmt_min(total)}</p>
-    <h1>{esc(a['titre'])}</h1>
-    <p class="lead">{esc(a['but'])}</p>
-    <div class="hero-actions"><button class="btn light" type="button" data-open-bilan>Projeter le bilan</button><a class="btn light ghost" href="../atelier-{n}.html">Voir la page stagiaire</a><button class="btn light ghost" type="button" data-print-page>Imprimer la fiche</button></div>
-  </div>
-</section>
-<div class="wrap">
-  <section class="brief">
-    <div class="brief-col"><h2 class="label">Objectifs</h2><ul class="checks">{"".join(f"<li>{esc(o)}</li>" for o in a['objectifs'])}</ul></div>
-    <div class="brief-col"><h2 class="label">Compétences (arrêté 2013)</h2><ul class="comp-list">{comp}</ul>
-      <p class="small muted">Référentiel de formation 2026 : {esc(a['blocs_detail'])}.</p>
-      <h2 class="label">Matériel</h2><ul>{"".join(f"<li>{esc(m)}</li>" for m in f['materiel'])}</ul></div>
-  </section>
-  <section class="block"><h2>Déroulé</h2>
-    <div class="tablewrap"><table class="deroule"><thead><tr><th>Temps</th><th>Durée</th><th>Modalité</th><th>Conduite du formateur</th></tr></thead><tbody>{"".join(rows)}</tbody>
-    <tfoot><tr><td>Total</td><td>{fmt_min(total)}</td><td colspan="2"></td></tr></tfoot></table></div>
-  </section>
-  <section class="block corrige"><h2>Éléments de correction</h2>{f['corrige']}{seq}</section>
-  <section class="block vigilance"><h2>Points de vigilance</h2><ul>{"".join(f"<li>{esc(v)}</li>" for v in f['vigilance'])}</ul></section>
-  <section class="block"><h2>Textes de référence</h2><ul>{"".join(f"<li>{ref_link(k)}</li>" for k in a['refs'])}</ul></section>
-  <section class="block"><h2>Documents de l'atelier (version imprimable)</h2><p class="small muted">Sur la page stagiaire, ces documents n'apparaissent qu'au temps prévu.</p><div class="docs all">{docs}</div></section>
-</div>
-<dialog class="bilan" id="bilan" aria-label="Bilan de l'atelier {n}">
-  <div class="bilan-bar"><strong>Bilan · Atelier {n}</strong><span class="slidecount" aria-live="polite"></span>
-    <div class="bilan-btns"><button class="btn small ghost" data-prev type="button" aria-label="Diapositive précédente">←</button><button class="btn small ghost" data-next-slide type="button" aria-label="Diapositive suivante">→</button><button class="btn small ghost" data-full type="button">Plein écran</button><button class="btn small" data-close type="button">Fermer</button></div></div>
-  <div class="slides">{"".join(slides)}</div>
-  <p class="bilan-help small">Flèches du clavier pour avancer · Échap pour fermer</p>
-</dialog>
-"""
-    write(f"formateur/atelier-{n}.html", page(f"formateur/atelier-{n}.html", f"Formateur · Atelier {n} · {a['titre']}", body, formateur=True))
+    body = AP.formateur_page(C, a)
+    write(f"formateur/atelier-{a['n']}.html", page(f"formateur/atelier-{a['n']}.html", f"Formateur · Atelier {a['n']} · {a['titre']}", body, formateur=True))
 
 
 # --------------------------------------------------------------------------
@@ -377,8 +171,8 @@ def index_page():
   <div class="wrap hero-grid">
     <div>
       <p class="eyebrow">Parcours de formation · {esc(C.DUREE_TOTALE)}</p>
-      <h1>Huit ateliers pour prendre ses fonctions de CPE en sécurité.</h1>
-      <p class="lead">Vous arrivez au lycée français Horizon, un établissement fictif du réseau AEFE. À chaque atelier, une situation professionnelle se dévoile pas à pas : vous analysez, vous décidez, vous justifiez, puis vous confrontez votre réponse aux textes et au groupe.</p>
+      <h1>Huit situations-problèmes pour entrer dans le métier de CPE.</h1>
+      <p class="lead">Vous prenez votre poste au lycée Horizon, un établissement fictif du réseau AEFE. Chaque atelier part d'une vraie difficulté de début de carrière. Vous réagissez d'abord seul. Puis vous enquêtez en groupe dans un dossier où tout n'est pas fiable, vous affrontez un rebondissement et vous défendez vos choix. Le formateur conclut par un bilan et des apports théoriques.</p>
       <div class="hero-actions"><a class="btn light" href="positionnement.html">Commencer par me positionner</a><a class="btn light ghost" href="atelier-1.html">Aller à l'atelier 1</a></div>
     </div>
     <aside class="hero-aside">
@@ -399,7 +193,7 @@ def index_page():
 
   <section class="block three">
     <div><h3>1 · Je me positionne</h3><p>Avant le premier atelier, j'évalue où j'en suis sur les huit gestes professionnels. Je recommence à la fin.</p><a href="positionnement.html">Me positionner →</a></div>
-    <div><h3>2 · Je travaille les ateliers</h3><p>Chaque atelier se déroule en temps successifs. Les documents arrivent au moment prévu ; je réponds avant d'en savoir plus.</p><a href="atelier-1.html">Atelier 1 →</a></div>
+    <div><h3>2 · J'affronte des situations</h3><p>Je réagis seul, j'enquête en groupe dans un dossier piégé, je débats, puis je produis un écrit professionnel jugé sur des critères précis.</p><a href="atelier-1.html">Atelier 1 →</a></div>
     <div><h3>3 · Je garde une trace</h3><p>Mes notes alimentent mon carnet et ma mallette, que j'exporte en fin de formation pour les emporter dans mon établissement.</p><a href="carnet.html">Mon carnet →</a></div>
   </section>
 
@@ -562,7 +356,7 @@ def formateur_index():
                 lines.append(f"<tr><td>—</td><td>{esc(label)}</td><td>{fmt_min(m)}</td></tr>")
         tot = sum(m for _, m in items)
         prog.append(f'<div><h3 class="day">{jour} · {fmt_min(tot)}</h3><div class="tablewrap"><table><thead><tr><th></th><th>Séquence</th><th>Durée</th></tr></thead><tbody>{"".join(lines)}</tbody></table></div></div>')
-    cards = "".join(f'<li class="card-atelier"><a href="atelier-{a["n"]}.html"><span class="card-no">{a["n"]:02d}</span><span class="card-txt"><strong>{esc(a["titre"])}</strong><span>{fmt_min(sum(t["duree"] for t in a["temps"]) + 5)} · {len(a["temps"])} temps</span></span></a></li>' for a in C.ATELIERS)
+    cards = "".join(f'<li class="card-atelier"><a href="atelier-{a["n"]}.html"><span class="card-no">{a["n"]:02d}</span><span class="card-txt"><strong>{esc(a["titre"])}</strong><span>{fmt_min(sum(t["duree"] for t in a["temps"]) + 15)} · {len(a["temps"])} étapes</span></span></a></li>' for a in C.ATELIERS)
     body = f"""
 <section class="hero hero-formateur"><div class="wrap"><p class="eyebrow">Espace formateur · {esc(C.DUREE_TOTALE)}</p><h1>Conduire la formation</h1><p class="lead">Déroulés minutés, éléments de correction, points de vigilance et bilans à projeter. Cet espace n'est pas lié depuis les pages stagiaires.</p>
 <div class="hero-actions"><a class="btn light" href="../ressources/01_Guide_Formateur_Pedagogie_Active.pdf">Guide formateur (PDF)</a></div></div></section>

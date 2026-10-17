@@ -9,19 +9,19 @@ Site statique publié avec GitHub Pages : https://xseorkly.github.io/Cpe/
 | --- | --- | --- |
 | `index.html` | Stagiaires | Accueil, public, finalité, les 8 ateliers |
 | `positionnement.html` | Stagiaires | Autopositionnement avant l'atelier 1 et après l'atelier 8 |
-| `atelier-1.html` à `atelier-8.html` | Stagiaires | Ateliers : objectifs, compétences, temps successifs, documents révélés au fil des temps, repères, notes |
+| `atelier-1.html` à `atelier-8.html` | Stagiaires | Situations-problèmes : réaction spontanée, enquête en groupes experts dans un dossier documentaire, rebondissement, controverse, production, retour réflexif, bilan projetable |
 | `carnet.html` | Stagiaires | Toutes les notes réunies ; export Markdown, sauvegarde JSON, import, effacement |
 | `mallette.html` | Stagiaires | Huit fiches réflexes à construire au fil des ateliers |
 | `ressources.html` | Stagiaires | PDF, approfondissements, textes de référence, compétences C1 à C8 et blocs 2026 |
 | `approfondir/` | Stagiaires | Six pages de savoirs développés, liées aux ateliers |
-| `formateur/` | Formateur | Programme minuté, fiches par atelier, corrigés, vigilance, bilans projetables |
+| `formateur/` | Formateur | Programme minuté, fiches par atelier : déroulé, questions pour mettre en difficulté, attendus, vigilance, dossier imprimable, diaporama |
 | `ressources/` | Tous | Guide formateur, carnet, banque de prompts IA, mallette réflexe (PDF) |
 
 L'espace `formateur/` n'est lié depuis aucune page stagiaire et il est exclu des moteurs de recherche (`robots.txt`, `noindex`). Ce n'est pas une protection : toute page publiée sur GitHub Pages est accessible à qui connaît son adresse.
 
 ## Modifier le contenu
 
-Tout le contenu pédagogique est dans **`_build/content.py`** : objectifs, temps, consignes, documents, corrigés, bilans, références. Les pages HTML et les deux PDF (guide formateur, carnet) sont générés à partir de ce fichier.
+Les huit ateliers sont dans **`_build/ateliers.py`** : problématique, situation, dossier documentaire (avec ses documents pièges), missions des groupes, étapes, rebondissements, controverses, critères de réussite, attendus, questions pour mettre en difficulté et diaporamas de bilan. Les éléments communs (références, compétences, programme) sont dans `_build/content.py`. Les pages HTML et les deux PDF (guide formateur, carnet) sont générés à partir de ces fichiers.
 
 ```bash
 python3 _build/build.py   # régénère toutes les pages HTML

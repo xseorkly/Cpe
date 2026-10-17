@@ -21,6 +21,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 import content as C  # noqa: E402
+import build as B  # noqa: E402,F401  (charge les ateliers dans C.ATELIERS)
 
 FD = "/usr/share/fonts/truetype/dejavu/"
 pdfmetrics.registerFont(TTFont("Sans", FD + "DejaVuSans.ttf"))
@@ -139,30 +140,54 @@ def build_guide():
     f.append(Paragraph("Espace formateur en ligne : ajouter « formateur/ » à l'adresse du site. Il est exclu des moteurs de recherche et n'est lié depuis aucune page stagiaire.", S["small"]))
     for a in C.ATELIERS:
         fo = a["formateur"]
-        total = sum(t["duree"] for t in a["temps"]) + 5
+        total = sum(t["duree"] for t in a["phases"]) + 15
         f += [PageBreak(), Paragraph(f"ATELIER {a['n']} · {fmt(total).upper()}", S["eyebrow"]), Paragraph(a["titre"], S["h1"]),
-              Paragraph(a["but"], S["p"]), Paragraph("Objectifs", S["h3"])]
+              Paragraph("<b>Problématique.</b> " + a["problematique"], S["p"]),
+              Paragraph("La situation", S["h3"])]
+        f += html_flow(a["situation"])
+        f.append(Paragraph("Objectifs", S["h3"]))
         f += [Paragraph(o, S["li"], bulletText="•") for o in a["objectifs"]]
         f.append(Paragraph("Compétences : " + " ; ".join(f"<b>{k}</b> {C.C2013[k]}" for k in a["competences"]) + f". Référentiel 2026 : {a['blocs_detail']}.", S["small"]))
         f.append(Paragraph("Matériel : " + " ; ".join(fo["materiel"]) + ".", S["small"]))
         f.append(Paragraph("Déroulé", S["h3"]))
-        rows = [["Temps", "Durée", "Modalité", "Consigne aux stagiaires", "Conduite du formateur"]]
-        for i, t in enumerate(a["temps"], 1):
+        rows = [["Étape", "Durée", "Modalité", "Consigne aux stagiaires", "Conduite du formateur"]]
+        for i, t in enumerate(a["phases"], 1):
             rows.append([f"<b>{i}. {t['titre']}</b>", f"{t['duree']} min", t["modalite"], t["consigne"], fo["deroule"][i - 1]])
-        rows.append(["<b>Clôture</b>", "5 min", "Collectif", " ".join(a["cloture"]), "Bilan projeté, puis écrit individuel."])
+        rows.append(["<b>Bilan</b>", "15 min", "Collectif", " ".join(a["cloture"]), "Retour sur les pièges du dossier, puis diaporama d'apports."])
         f.append(table(rows, [26 * mm, 14 * mm, 24 * mm, 54 * mm, 52 * mm]))
-        for t in a["temps"]:
+        if a["groupes"]:
+            f.append(Paragraph("Missions des groupes experts", S["h3"]))
+            f.append(table([["Groupe", "Question", "Documents pistes"]] + [[f"{i}. {g['nom']}", g["angle"] + "<br/>" + " ".join(g["questions"]), ", ".join(map(str, g["docs"]))] for i, g in enumerate(a["groupes"], 1)], [32 * mm, 110 * mm, 28 * mm]))
+        f.append(Paragraph("Le dossier documentaire", S["h3"]))
+        f.append(table([["N°", "Document", "Type"]] + [[str(k), d["titre"], d.get("type", "")] for k, d in enumerate(a["docs"], 1)], [12 * mm, 120 * mm, 38 * mm]))
+        for t in a["phases"]:
             if t.get("sequence"):
                 f.append(Paragraph("Événements à révéler", S["h3"]))
                 f.append(table([["Heure", "Événement"]] + [[h, x] for h, x in t["sequence"]], [20 * mm, 150 * mm]))
-        f.append(Paragraph("Éléments de correction", S["h2"]))
-        f += html_flow(fo["corrige"])
+        f.append(Paragraph("Questions pour mettre en difficulté", S["h3"]))
+        f += [Paragraph(r, S["li"], bulletText="•") for r in fo["relances"]]
+        f.append(Paragraph("Ce que l'on attend", S["h2"]))
+        f += html_flow(fo["attendus"])
         f.append(Paragraph("Points de vigilance", S["h3"]))
         f += [Paragraph(v, S["li"], bulletText="•") for v in fo["vigilance"]]
-        f.append(Paragraph("Bilan à projeter", S["h3"]))
-        for s in fo["slides"]:
-            f.append(KeepTogether([Paragraph(f"<b>{s['titre']}</b> — " + " ; ".join(s["points"]) + ".", S["p"])]))
-        f.append(Paragraph("Références : " + " ; ".join(C.REF[k][0] for k in a["refs"]) + ".", S["small"]))
+        f.append(Paragraph("Le diaporama de bilan", S["h3"]))
+        for s_ in a["slides"]:
+            if s_["t"] == "titre":
+                txt = f"<b>{s_['titre']}</b>"
+            elif s_["t"] == "points":
+                txt = f"<b>{s_['titre']}</b> — " + " ; ".join(s_["points"])
+            elif s_["t"] == "deux":
+                txt = f"<b>{s_['titre']}</b> — {s_['a'][0]} : " + " ; ".join(s_["a"][1]) + f". {s_['b'][0]} : " + " ; ".join(s_["b"][1])
+            elif s_["t"] == "etapes":
+                txt = f"<b>{s_['titre']}</b> — " + " ; ".join(f"{l} : {x}" for l, x in s_["etapes"])
+            elif s_["t"] == "def":
+                txt = f"<b>{s_['titre']}</b> — <i>{s_['terme']}</i>. {s_['definition']}"
+            else:
+                txt = f"<b>À retenir</b> — {s_['texte']}"
+            if s_.get("source"):
+                txt += f" <font size=7.5 color='#555b66'>({s_['source']})</font>"
+            f.append(KeepTogether([Paragraph(txt, S["p"])]))
+        f.append(Paragraph("Références : " + " ; ".join(C.REF[k][0] for k in a["refs"]) + ". Le dossier complet est imprimable depuis la fiche formateur en ligne.", S["small"]))
     f += [PageBreak(), Paragraph("Textes de référence", S["h1"])]
     for g, keys in C.GROUPES_REF:
         f.append(Paragraph(g, S["h3"]))
@@ -187,10 +212,10 @@ def build_carnet():
     rows = [["Ce que je sais faire", "Début (1 à 4)", "Fin (1 à 4)"]] + [[f"<b>Atelier {a['n']}</b> · {a['but']}", "", ""] for a in C.ATELIERS]
     f += [table(rows, [130 * mm, 20 * mm, 20 * mm]), Spacer(1, 8), Paragraph("Avant de commencer : pour moi, être CPE, c'est…", S["h3"]), lines(4)]
     for a in C.ATELIERS:
-        f += [PageBreak(), Paragraph(f"ATELIER {a['n']}", S["eyebrow"]), Paragraph(a["titre"], S["h2"]),
+        f += [PageBreak(), Paragraph(f"ATELIER {a['n']} · {a['titre'].upper()}", S["eyebrow"]), Paragraph(a["problematique"], S["h2"]),
               Paragraph(f"<b>Production attendue :</b> {a['production']}", S["p"])]
-        for i, t in enumerate(a["temps"], 1):
-            f += [Paragraph(f"Temps {i} · {t['titre']}", S["h3"]), Paragraph(t["consigne"], S["small"]), lines(2)]
+        for i, t in enumerate(a["phases"], 1):
+            f += [Paragraph(f"Étape {i} · {t['titre']}", S["h3"]), Paragraph(t["consigne"], S["small"]), lines(3 if i == 1 else 2)]
         f += [Paragraph("Ce que je retiens", S["h3"])]
         f += [Paragraph(q, S["li"], bulletText="•") for q in a["cloture"]]
         f.append(lines(3))

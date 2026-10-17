@@ -58,7 +58,7 @@
       if (scrollTo) { var target = sections.filter(function (s) { return !s.hidden; }).pop(); if (target) { target.scrollIntoView({ block: "start" }); var h = $("h2", target); if (h) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); } } }
     };
     $$("[data-next]", at).forEach(function (b) {
-      b.addEventListener("click", function () { set(pk, b.dataset.next); apply(true); });
+      b.addEventListener("click", function () { set(pk, b.dataset.next); $$("[data-recall]").forEach(function (r) { var v = get("note:" + r.dataset.recall); if (v) r.textContent = v; }); apply(true); });
     });
     var reset = $("[data-reset]"); if (reset) reset.addEventListener("click", function () {
       confirmTwice(reset, "Confirmer : revenir au temps 1 (notes conservées)", function () {
@@ -104,6 +104,8 @@
       slides.forEach(function (s, k) { s.classList.toggle("active", k === pos); });
       counter.textContent = (pos + 1) + " / " + slides.length;
       $("[data-prev]", dlg).disabled = pos === 0; $("[data-next-slide]", dlg).disabled = pos === slides.length - 1;
+      var bar = $(".bilan-progress span", dlg); if (bar) bar.style.width = ((pos + 1) / slides.length * 100) + "%";
+      var box = $(".slides", dlg); if (box) box.scrollTop = 0;
     };
     $$("[data-open-bilan]").forEach(function (b) { b.addEventListener("click", function () { dlg.showModal(); show(0); }); });
     $("[data-prev]", dlg).addEventListener("click", function () { show(pos - 1); });
@@ -119,6 +121,42 @@
       if (e.key === "ArrowLeft") { show(pos - 1); e.preventDefault(); }
     });
   }
+
+
+  /* ---------- Dossier documentaire : filtres, recherche, liens ---------- */
+  $$("[data-dossier]").forEach(function (dz) {
+    var docs = $$(".doc-lib", dz), filters = $$("[data-filter]", dz), q = $("[data-doc-search]", dz), none = $("[data-no-result]", dz), cur = "";
+    var run = function () {
+      var term = (q && q.value || "").trim().toLowerCase(), shown = 0;
+      docs.forEach(function (d) {
+        var okG = !cur || (" " + d.dataset.groups + " ").indexOf(" " + cur + " ") > -1;
+        var okT = !term || d.textContent.toLowerCase().indexOf(term) > -1;
+        d.hidden = !(okG && okT); d.classList.toggle("is-hit", !!term && okT);
+        if (!d.hidden) shown++;
+      });
+      if (none) none.hidden = shown > 0;
+    };
+    filters.forEach(function (f) { f.addEventListener("click", function () { cur = f.dataset.filter; filters.forEach(function (x) { x.classList.toggle("is-on", x === f); }); run(); }); });
+    if (q) q.addEventListener("input", run);
+  });
+  $$("a[data-open-doc], .chip-link").forEach(function (l) {
+    l.addEventListener("click", function () {
+      var t = document.getElementById(l.getAttribute("href").slice(1)); if (!t) return;
+      if (t.hidden) { t.hidden = false; }
+      if (t.tagName === "DETAILS") t.open = true;
+    });
+  });
+
+  /* ---------- Rappel de la première réaction ---------- */
+  $$("[data-recall]").forEach(function (b) {
+    var v = get("note:" + b.dataset.recall); if (v) b.textContent = v;
+  });
+
+  /* ---------- Critères de réussite ---------- */
+  $$("input[data-check]").forEach(function (c) {
+    c.checked = get("check:" + c.dataset.check) === "1";
+    c.addEventListener("change", function () { if (c.checked) set("check:" + c.dataset.check, "1"); else del("check:" + c.dataset.check); });
+  });
 
   /* ---------- Accueil : état d'avancement ---------- */
   $$("[data-state-for]").forEach(function (el) {
@@ -150,7 +188,7 @@
     var groups = [];
     D.ateliers.forEach(function (a) {
       var items = [];
-      a.temps.forEach(function (t, i) { var v = get("note:a" + a.n + ":t" + (i + 1)); if (v) items.push(["Temps " + (i + 1) + " · " + t, v]); });
+      a.temps.forEach(function (t, i) { var v = get("note:a" + a.n + ":t" + (i + 1)); if (v) items.push(["Étape " + (i + 1) + " · " + t, v]); });
       var b = get("note:a" + a.n + ":fin"); if (b) items.push(["Bilan personnel", b]);
       groups.push(["Atelier " + a.n + " · " + a.titre, items]);
     });
