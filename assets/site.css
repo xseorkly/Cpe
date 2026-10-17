@@ -395,3 +395,12 @@ dialog.bilan.full .slides{max-height:calc(100vh - 70px)}
 .planner-grid th[scope="row"]{white-space:nowrap;background:var(--surface-2);font-weight:700}
 .planner-grid td{padding:4px;min-width:150px}
 .planner-grid textarea{min-height:58px;font-size:.86rem;padding:6px 8px;border-radius:6px}
+
+.pistes{border:2px solid var(--navy-2);border-radius:var(--radius);padding:20px 22px;margin:0 0 22px;background:color-mix(in srgb,var(--navy-2) 5%,var(--surface))}
+.pistes-head{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.pistes-head h3{margin:.1em 0 .2em}
+.pistes-intro{font-style:italic;color:var(--ink-2)}
+.pistes-body h4{margin-top:1.2em}
+.pistes-attendus{background:var(--ok-soft);border-radius:var(--radius-s);padding:14px 18px}
+.pistes-attendus p:last-child{margin-bottom:0}
+@media print{.pistes-lock{display:none!important}}

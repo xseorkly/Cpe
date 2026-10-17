@@ -168,6 +168,34 @@
     });
   }
 
+
+  /* ---------- Propositions de réponse (protégées) ---------- */
+  $$("[data-pistes]").forEach(function (box) {
+    var form = $("[data-pistes-form]", box), body = $(".pistes-body", box), raw = $(".pistes-data", box);
+    var err = $(".lock-err", box), inp = $("input[type=password]", box), lockBtn = $("[data-pistes-lock]", box);
+    var b64 = function (x) { return Uint8Array.from(atob(x), function (c) { return c.charCodeAt(0); }); };
+    var norm = function (p) { return String(p || "").replace(/\s+/g, "").toUpperCase(); };
+    var dec = function (pwd) {
+      if (!window.crypto || !crypto.subtle) return Promise.reject(new Error("crypto"));
+      var d = JSON.parse(raw.textContent), enc = new TextEncoder();
+      return crypto.subtle.importKey("raw", enc.encode(pwd), "PBKDF2", false, ["deriveKey"]).then(function (k) {
+        return crypto.subtle.deriveKey({ name: "PBKDF2", salt: b64(d.s), iterations: 200000, hash: "SHA-256" }, k, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+      }).then(function (key) { return crypto.subtle.decrypt({ name: "AES-GCM", iv: b64(d.iv) }, key, b64(d.ct)); })
+        .then(function (buf) { return new TextDecoder().decode(buf); });
+    };
+    var show = function (html) { body.innerHTML = html; body.hidden = false; form.hidden = true; lockBtn.hidden = false; };
+    var hide = function () { body.innerHTML = ""; body.hidden = true; form.hidden = false; lockBtn.hidden = true; err.hidden = true; };
+    var saved = get("formateur"); if (saved) dec(saved).then(show).catch(function () {});
+    form.addEventListener("submit", function (e) {
+      e.preventDefault(); err.hidden = true;
+      var btn = $("button[type=submit]", form), lab = btn.textContent; btn.disabled = true; btn.textContent = "Ouverture…";
+      dec(norm(inp.value)).then(function (h) { set("formateur", norm(inp.value)); inp.value = ""; show(h); })
+        .catch(function (x) { err.textContent = x && x.message === "crypto" ? "Votre navigateur ne permet pas d'ouvrir ce contenu ici. Ouvrez le site en ligne (https)." : "Mot de passe incorrect."; err.hidden = false; })
+        .then(function () { btn.disabled = false; btn.textContent = lab; });
+    });
+    lockBtn.addEventListener("click", function () { del("formateur"); hide(); });
+  });
+
   /* ---------- Dossier documentaire : filtres, recherche, liens ---------- */
   $$("[data-dossier]").forEach(function (dz) {
     var docs = $$(".doc-lib", dz), filters = $$("[data-filter]", dz), q = $("[data-doc-search]", dz), none = $("[data-no-result]", dz), cur = "";

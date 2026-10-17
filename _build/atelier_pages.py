@@ -101,6 +101,32 @@ def bilan_dialog(a):
 </dialog>"""
 
 
+def pistes_block(a):
+    n = a["n"]
+    f = a["formateur"]
+    crit = "".join(f"<li>{esc(c)}</li>" for c in a["criteres"])
+    obj = "".join(f"<li>{esc(r)}</li>" for r in f["relances"])
+    vig = "".join(f"<li>{esc(v)}</li>" for v in f["vigilance"])
+    contenu = (f'<p class="pistes-intro">Ces propositions sont des pistes argumentées, pas un corrigé unique : '
+               f'd\'autres réponses sont recevables si elles s\'appuient sur les faits, les textes et le cadre de votre établissement.</p>'
+               f'<div class="pistes-attendus">{f["attendus"]}</div>'
+               f'<h4>Les objections qu\'on vous opposera, et auxquelles il faut savoir répondre</h4><ul>{obj}</ul>'
+               f'<h4>Points de vigilance</h4><ul>{vig}</ul>'
+               f'<h4>Votre production est réussie si…</h4><ul class="checks">{crit}</ul>')
+    data = chiffrer(contenu)
+    return f"""<section class="pistes" data-pistes>
+  <div class="pistes-head"><div><p class="label">Propositions de réponse · protégé</p><h3>Pistes pour l'atelier {n}</h3><p class="muted small">À consulter après votre propre travail : elles servent de référence au bilan et à la relecture.</p></div>
+  <button class="btn ghost" type="button" data-pistes-lock hidden>Verrouiller</button></div>
+  <form class="pistes-lock" data-pistes-form action="#" onsubmit="return false">
+    <label for="ppwd-{n}" class="sr">Mot de passe</label>
+    <div class="lock-row"><input id="ppwd-{n}" type="password" autocomplete="current-password" placeholder="Mot de passe de la formation" required><button class="btn" type="submit">Afficher les propositions</button></div>
+    <p class="lock-err" role="alert" hidden>Mot de passe incorrect.</p>
+  </form>
+  <div class="pistes-body" hidden></div>
+  <script type="application/json" class="pistes-data">{data}</script>
+</section>"""
+
+
 def competences_list(C, a):
     return '<ul class="comp-list">' + "".join(f'<li><abbr title="{esc(C.C2013[k])}">{k}</abbr><span>{esc(C.C2013[k])}</span></li>' for k in a["competences"]) + "</ul>"
 
@@ -221,6 +247,7 @@ def atelier_page(C, a, MALLETTE_BY_ATELIER):
     <ol class="questions">{clot}</ol>
     <div class="note-zone"><label for="note-a{n}-fin">Ce que je retiens de l'atelier {n}</label>
     <textarea id="note-a{n}-fin" data-note="a{n}:fin" data-label="Atelier {n} · Ce que je retiens" rows="5" placeholder="Le geste professionnel que je garde, l'idée qui m'a déplacé, ce que je vérifierai dans mon établissement."></textarea></div>
+    {pistes_block(a)}
     <div class="refs"><h3 class="label">Textes de référence</h3><ul>{refs}</ul></div>
     <div class="actions">{ap}<a class="btn ghost" href="mallette.html#fiche-{MALLETTE_BY_ATELIER.get(n, 1)}">Compléter ma fiche de mallette</a></div>
   </section>
