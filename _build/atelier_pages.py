@@ -114,9 +114,9 @@ def pistes_block(a):
                f'<h4>Points de vigilance</h4><ul>{vig}</ul>'
                f'<h4>Votre production est réussie si…</h4><ul class="checks">{crit}</ul>')
     data = chiffrer(contenu)
-    return f"""<section class="pistes" data-pistes>
+    return f"""<dialog class="pistes-dlg" aria-label="Propositions de réponse de l'atelier {n}"><section class="pistes" data-pistes>
   <div class="pistes-head"><div><p class="label">Propositions de réponse · protégé</p><h3>Pistes pour l'atelier {n}</h3><p class="muted small">À consulter après votre propre travail : elles servent de référence au bilan et à la relecture.</p></div>
-  <button class="btn ghost" type="button" data-pistes-lock hidden>Verrouiller</button></div>
+  <div class="pistes-btns"><button class="btn ghost small" type="button" data-pistes-lock hidden>Verrouiller</button><button class="btn small" type="button" data-pistes-close>Fermer</button></div></div>
   <form class="pistes-lock" data-pistes-form action="#" onsubmit="return false">
     <label for="ppwd-{n}" class="sr">Mot de passe</label>
     <div class="lock-row"><input id="ppwd-{n}" type="password" autocomplete="current-password" placeholder="Mot de passe de la formation" required><button class="btn" type="submit">Afficher les propositions</button></div>
@@ -124,7 +124,7 @@ def pistes_block(a):
   </form>
   <div class="pistes-body" hidden></div>
   <script type="application/json" class="pistes-data">{data}</script>
-</section>"""
+</section></dialog>"""
 
 
 def competences_list(C, a):
@@ -231,7 +231,7 @@ def atelier_page(C, a, MALLETTE_BY_ATELIER):
 
   <section class="howto">
     <p><strong>Comment avancer ?</strong> Vous écrivez d'abord votre réaction spontanée. Puis vous enquêtez en groupe dans un dossier où tout n'est pas fiable. Une information nouvelle viendra bousculer vos conclusions. Chaque étape ne s'ouvre que lorsque la précédente est terminée.</p>
-    <div class="howto-actions"><button class="btn ghost small" type="button" data-reset>Recommencer l'atelier</button><button class="btn ghost small" type="button" data-print-revealed>Imprimer les documents ouverts</button><button class="btn ghost small" type="button" data-open-bilan>Bilan formateur 🔒</button></div>
+    <div class="howto-actions"><button class="btn ghost small" type="button" data-reset>Recommencer l'atelier</button><button class="btn ghost small" type="button" data-print-revealed>Imprimer les documents ouverts</button><button class="btn ghost small" type="button" data-open-bilan>Bilan formateur 🔒</button><button class="btn ghost small" type="button" data-open-pistes>Propositions de réponse 🔒</button></div>
   </section>
 
   <ol class="stepper" aria-label="Étapes de l'atelier">{steps}</ol>
@@ -247,7 +247,7 @@ def atelier_page(C, a, MALLETTE_BY_ATELIER):
     <ol class="questions">{clot}</ol>
     <div class="note-zone"><label for="note-a{n}-fin">Ce que je retiens de l'atelier {n}</label>
     <textarea id="note-a{n}-fin" data-note="a{n}:fin" data-label="Atelier {n} · Ce que je retiens" rows="5" placeholder="Le geste professionnel que je garde, l'idée qui m'a déplacé, ce que je vérifierai dans mon établissement."></textarea></div>
-    {pistes_block(a)}
+    <div class="pistes-launch"><div><p class="label">Propositions de réponse · protégé</p><p>Les pistes argumentées pour chaque étape, à relire après votre travail.</p></div><button class="btn" type="button" data-open-pistes>Voir les propositions de réponse 🔒</button></div>
     <div class="refs"><h3 class="label">Textes de référence</h3><ul>{refs}</ul></div>
     <div class="actions">{ap}<a class="btn ghost" href="mallette.html#fiche-{MALLETTE_BY_ATELIER.get(n, 1)}">Compléter ma fiche de mallette</a></div>
   </section>
@@ -255,6 +255,7 @@ def atelier_page(C, a, MALLETTE_BY_ATELIER):
 </div>
 </div>
 {bilan_dialog(a)}
+{pistes_block(a)}
 <noscript><style>.temps[hidden],.event[hidden]{{display:block!important}}</style></noscript>
 """
 

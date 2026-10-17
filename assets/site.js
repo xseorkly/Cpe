@@ -194,6 +194,18 @@
         .then(function () { btn.disabled = false; btn.textContent = lab; });
     });
     lockBtn.addEventListener("click", function () { del("formateur"); hide(); });
+    var dlgP = box.closest("dialog");
+    if (dlgP) {
+      $$("[data-open-pistes]").forEach(function (b) {
+        b.addEventListener("click", function () {
+          dlgP.showModal();
+          var sv = get("formateur");
+          if (body.hidden && sv) dec(sv).then(show).catch(function () {});
+          if (body.hidden) setTimeout(function () { inp.focus(); }, 50);
+        });
+      });
+      $("[data-pistes-close]", box).addEventListener("click", function () { dlgP.close(); });
+    }
   });
 
   /* ---------- Dossier documentaire : filtres, recherche, liens ---------- */

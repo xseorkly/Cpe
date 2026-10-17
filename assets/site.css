@@ -404,3 +404,10 @@ dialog.bilan.full .slides{max-height:calc(100vh - 70px)}
 .pistes-attendus{background:var(--ok-soft);border-radius:var(--radius-s);padding:14px 18px}
 .pistes-attendus p:last-child{margin-bottom:0}
 @media print{.pistes-lock{display:none!important}}
+
+dialog.pistes-dlg{width:min(980px,94vw);max-height:92vh;border:0;border-radius:18px;padding:0;background:var(--surface);color:var(--ink);box-shadow:0 30px 80px rgba(0,0,0,.4)}
+dialog.pistes-dlg::backdrop{background:rgba(15,18,26,.7)}
+dialog.pistes-dlg .pistes{margin:0;border:0;border-radius:0;max-height:92vh;overflow-y:auto}
+.pistes-btns{display:flex;gap:6px}
+.pistes-launch{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;border:2px solid var(--navy-2);border-radius:var(--radius);padding:18px 22px;margin:0 0 22px}
+.pistes-launch p{margin:0}
