@@ -70,7 +70,18 @@ NAV = [
 ]
 
 
+def _ver():
+    import hashlib
+    h = hashlib.sha1()
+    for f in ("assets/site.css", "assets/site.js", "assets/data.js"):
+        p = os.path.join(ROOT, f)
+        if os.path.exists(p):
+            h.update(open(p, "rb").read())
+    return h.hexdigest()[:10]
+
+
 def page(rel, title, body, desc="", current="", formateur=False, extra_head=""):
+    VER = _ver()
     depth = rel.count("/")
     up = "../" * depth
     nav = "".join(
@@ -91,9 +102,9 @@ def page(rel, title, body, desc="", current="", formateur=False, extra_head=""):
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(desc or C.FINALITE[:150])}">
 {robots}
-<link rel="stylesheet" href="{up}assets/site.css">
-<script src="{up}assets/data.js" defer></script>
-<script src="{up}assets/site.js" defer></script>
+<link rel="stylesheet" href="{up}assets/site.css?v={VER}">
+<script src="{up}assets/data.js?v={VER}" defer></script>
+<script src="{up}assets/site.js?v={VER}" defer></script>
 {extra_head}
 </head>
 <body{FORM_CLS if formateur else ""}>

@@ -87,12 +87,12 @@ def bilan_dialog(a):
     return f"""<dialog class="bilan" aria-label="Bilan de l'atelier {a['n']}">
   <div class="bilan-bar"><strong>Bilan · Atelier {a['n']}</strong><span class="slidecount" aria-live="polite"></span>
     <div class="bilan-btns"><button class="btn small ghost" data-prev type="button" aria-label="Diapositive précédente" hidden>←</button><button class="btn small ghost" data-next-slide type="button" aria-label="Diapositive suivante" hidden>→</button><button class="btn small ghost" data-full type="button" hidden>Plein écran</button><button class="btn small ghost" data-lock type="button" hidden>Verrouiller</button><button class="btn small" data-close type="button">Fermer</button></div></div>
-  <form class="bilan-lock" data-unlock>
+  <form class="bilan-lock" data-unlock action="#" onsubmit="return false">
     <p class="slide-kicker">Espace formateur</p>
     <h3>Ce bilan est réservé au formateur</h3>
     <p class="muted">Saisissez le mot de passe de la formation pour projeter le diaporama. Il reste mémorisé sur cet appareil jusqu'à ce que vous cliquiez sur « Verrouiller ».</p>
     <label for="pwd-{a['n']}" class="sr">Mot de passe</label>
-    <div class="lock-row"><input id="pwd-{a['n']}" type="password" autocomplete="current-password" placeholder="Mot de passe" required><button class="btn" type="submit">Déverrouiller</button></div>
+    <div class="lock-row"><input id="pwd-{a['n']}" type="password" autocomplete="current-password" placeholder="Mot de passe" required><button class="btn" type="submit" data-unlock-btn>Déverrouiller</button></div>
     <p class="lock-err" role="alert" hidden>Mot de passe incorrect.</p>
   </form>
   <div class="slides" hidden></div>

@@ -102,7 +102,7 @@
     var err = $(".lock-err", dlg), pwdIn = $("input[type=password]", dlg), raw = $(".bilan-data", dlg);
     var ctrls = ["[data-prev]", "[data-next-slide]", "[data-full]", "[data-lock]"].map(function (q) { return $(q, dlg); });
     var b64 = function (x) { return Uint8Array.from(atob(x), function (c) { return c.charCodeAt(0); }); };
-    var norm = function (p) { return String(p || "").replace(/\s+/g, ""); };
+    var norm = function (p) { return String(p || "").replace(/\s+/g, "").toUpperCase(); };
     var decrypt = function (pwd) {
       if (!window.crypto || !crypto.subtle) return Promise.reject(new Error("crypto"));
       var d = JSON.parse(raw.textContent), enc = new TextEncoder();
@@ -145,7 +145,10 @@
     });
     form.addEventListener("submit", function (e) {
       e.preventDefault(); err.hidden = true;
-      tryOpen(pwdIn.value, true).then(function () { pwdIn.value = ""; }).catch(function (x) {
+      var btn = $("[data-unlock-btn]", dlg); if (btn) { btn.disabled = true; btn.textContent = "Ouverture…"; }
+      var done = function () { if (btn) { btn.disabled = false; btn.textContent = "Déverrouiller"; } };
+      tryOpen(pwdIn.value, true).then(function () { pwdIn.value = ""; done(); }).catch(function (x) {
+        done();
         err.textContent = x && x.message === "crypto" ? "Votre navigateur ne permet pas d'ouvrir le bilan ici. Ouvrez le site en ligne (https)." : "Mot de passe incorrect.";
         err.hidden = false; pwdIn.select();
       });
