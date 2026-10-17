@@ -47,7 +47,7 @@ def slides_html(a):
         t = s["t"]
         src = f'<p class="slide-src">{esc(s["source"])}</p>' if s.get("source") else ""
         if t == "titre":
-            inner = f'<p class="slide-kicker">Atelier {a["n"]} · Bilan</p><h3 class="slide-big">{esc(s["titre"])}</h3><p class="slide-sous">{esc(s["sous"])}</p><p class="slide-q">« {esc(a["problematique"])} »</p>'
+            inner = f'<p class="slide-kicker">Atelier {a["n"]} · Bilan</p><h3 class="slide-big">{esc(s["titre"])}</h3><p class="slide-sous">Bilan de l&#39;atelier {a["n"]} · {esc(a["titre"])}</p><p class="slide-q">« {esc(a["problematique"])} »</p>'
         elif t == "points":
             inner = f'<h3>{esc(s["titre"])}</h3><ul class="slide-list">' + "".join(f"<li>{esc(p)}</li>" for p in s["points"]) + "</ul>"
         elif t == "deux":
@@ -107,6 +107,7 @@ def competences_list(C, a):
 
 def atelier_page(C, a, MALLETTE_BY_ATELIER):
     n = a["n"]
+    NB = len(C.ATELIERS)
     docs = a["docs"]
     inl = inline_ids(a)
     lib_ids = [k for k in range(1, len(docs) + 1) if k not in inl]
@@ -141,6 +142,16 @@ def atelier_page(C, a, MALLETTE_BY_ATELIER):
   <div class="dossier-list">{lib}</div>
   <p class="small muted" data-no-result hidden>Aucun document ne contient ce mot.</p>
 </div>""")
+        if p.get("planner"):
+            mois = ["Septembre", "Octobre", "Novembre", "Décembre", "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Toute l'année"]
+            doms = ["Démocratie scolaire", "Équipe AED", "Suivi des élèves", "Prévention et pilotage"]
+            head = "".join(f"<th scope=\"col\">{esc(d)}</th>" for d in doms)
+            rows = "".join(
+                f'<tr><th scope="row">{esc(m)}</th>' + "".join(
+                    f'<td><textarea rows="2" aria-label="{esc(m)} · {esc(d)}" data-note="a{n}:cal:{mi}:{di}" data-label="Atelier {n} · Calendrier · {esc(m)} · {esc(d)}"></textarea></td>'
+                    for di, d in enumerate(doms, 1)) + "</tr>"
+                for mi, m in enumerate(mois, 1))
+            parts.append(f'<div class="planner"><p class="label">Mon calendrier annuel · enregistré au fur et à mesure</p><div class="tablewrap"><table class="planner-grid"><thead><tr><th></th>{head}</tr></thead><tbody>{rows}</tbody></table></div><p class="small muted">Pour chaque moment : quoi, qui pilote, avec qui, date au plus tard. Votre calendrier se retrouve dans « Mon carnet ».</p></div>')
         if p.get("positions"):
             pos = "".join(f'<div class="position pos-{j}"><h4>{esc(t)}</h4><p>{esc(x)}</p></div>' for j, (t, x) in enumerate(p["positions"], 1))
             parts.append(f'<div class="positions">{pos}</div>')
@@ -165,8 +176,8 @@ def atelier_page(C, a, MALLETTE_BY_ATELIER):
     refs = "".join(f'<li><a href="{C.REF[k][1]}" target="_blank" rel="noopener">{esc(C.REF[k][0])}</a></li>' for k in a["refs"])
     ap = f'<a class="btn ghost" href="approfondir/{a["approfondir"]}.html">Approfondir : {esc(C.APPROFONDIR[a["approfondir"]])}</a>' if a.get("approfondir") else ""
     prev_l = f'<a class="btn ghost" href="atelier-{n - 1}.html">← Atelier {n - 1}</a>' if n > 1 else '<a class="btn ghost" href="index.html">← Le parcours</a>'
-    next_l = f'<a class="btn" href="atelier-{n + 1}.html">Atelier {n + 1} →</a>' if n < 8 else '<a class="btn" href="positionnement.html#fin">Mon positionnement final →</a>'
-    pager = "".join(f'<a href="atelier-{k}.html"{ARIA if k == n else ""}>{k}</a>' for k in range(1, 9))
+    next_l = f'<a class="btn" href="atelier-{n + 1}.html">Atelier {n + 1} →</a>' if n < NB else '<a class="btn" href="positionnement.html#fin">Mon positionnement final →</a>'
+    pager = "".join(f'<a href="atelier-{k}.html"{ARIA if k == n else ""}>{k}</a>' for k in range(1, NB + 1))
     crit_plain = "".join(f"<li>{esc(c)}</li>" for c in a["criteres"])
 
     return f"""
@@ -174,7 +185,7 @@ def atelier_page(C, a, MALLETTE_BY_ATELIER):
 <section class="hero hero-atelier">
   <div class="wrap">
     <nav class="pager" aria-label="Ateliers">{pager}</nav>
-    <p class="eyebrow">Atelier {n} sur 8 · {esc(a['titre'])}</p>
+    <p class="eyebrow">Atelier {n} sur {NB} · {esc(a['titre'])}</p>
     <h1 class="problem">{esc(a['problematique'])}</h1>
   </div>
 </section>
@@ -223,6 +234,7 @@ def atelier_page(C, a, MALLETTE_BY_ATELIER):
 
 def formateur_page(C, a):
     n = a["n"]
+    NB = len(C.ATELIERS)
     f = a["formateur"]
     total = sum(p["duree"] for p in a["phases"]) + 15
     rows = "".join(
@@ -242,7 +254,7 @@ def formateur_page(C, a):
         if p.get("sequence"):
             seq = '<h3>Événements à révéler</h3><ol class="events plain">' + "".join(f'<li class="event"><span class="event-time">{h}</span><p>{esc(x)}</p></li>' for h, x in p["sequence"]) + "</ol>"
     docs = "".join(doc_card(a, k, d) for k, d in enumerate(a["docs"], 1))
-    pager = "".join(f'<a href="atelier-{k}.html"{ARIA if k == n else ""}>{k}</a>' for k in range(1, 9))
+    pager = "".join(f'<a href="atelier-{k}.html"{ARIA if k == n else ""}>{k}</a>' for k in range(1, NB + 1))
     outline = "".join(f"<li>{esc(s.get('titre') or s.get('texte', ''))}</li>" for s in a["slides"])
     return f"""
 <section class="hero hero-formateur">

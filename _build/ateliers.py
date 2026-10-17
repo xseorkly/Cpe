@@ -1399,3 +1399,14 @@ ATELIERS.append(dict(
         dict(t="cle", texte="Vous ne saurez pas tout dans trente jours. Mais vous saurez qui décide, à qui alerter, et ce que vous ne faites jamais seul."),
     ],
 ))
+
+
+# ----------------------------------------------------------------------
+# Atelier « Construire mon année de CPE », inséré en 2e position, puis
+# numérotation automatique de tous les ateliers.
+# ----------------------------------------------------------------------
+from atelier_annee import ATELIER_ANNEE  # noqa: E402
+
+ATELIERS.insert(1, ATELIER_ANNEE)
+for _i, _a in enumerate(ATELIERS, 1):
+    _a["n"] = _i

@@ -1,17 +1,17 @@
 # Entrer dans le métier de CPE
 
-Formation des CPE débutants du réseau AEFE : huit ateliers progressifs, 12 heures sur 2 jours.
+Formation des CPE débutants du réseau AEFE : huit ateliers progressifs, 13 h 30 sur 2 jours.
 Site statique publié avec GitHub Pages : https://xseorkly.github.io/Cpe/
 
 ## Ce que contient le site
 
 | Page | Public | Rôle |
 | --- | --- | --- |
-| `index.html` | Stagiaires | Accueil, public, finalité, les 8 ateliers |
+| `index.html` | Stagiaires | Accueil, public, finalité, les 9 ateliers |
 | `positionnement.html` | Stagiaires | Autopositionnement avant l'atelier 1 et après l'atelier 8 |
-| `atelier-1.html` à `atelier-8.html` | Stagiaires | Situations-problèmes : réaction spontanée, enquête en groupes experts dans un dossier documentaire, rebondissement, controverse, production, retour réflexif, bilan projetable |
+| `atelier-1.html` à `atelier-9.html` | Stagiaires | Situations-problèmes : réaction spontanée, enquête en groupes experts dans un dossier documentaire, rebondissement, controverse, production, retour réflexif, bilan projetable |
 | `carnet.html` | Stagiaires | Toutes les notes réunies ; export Markdown, sauvegarde JSON, import, effacement |
-| `mallette.html` | Stagiaires | Huit fiches réflexes à construire au fil des ateliers |
+| `mallette.html` | Stagiaires | Neuf fiches réflexes à construire au fil des ateliers |
 | `ressources.html` | Stagiaires | PDF, approfondissements, textes de référence, compétences C1 à C8 et blocs 2026 |
 | `approfondir/` | Stagiaires | Six pages de savoirs développés, liées aux ateliers |
 | `formateur/` | Formateur | Programme minuté, fiches par atelier : déroulé, questions pour mettre en difficulté, attendus, vigilance, dossier imprimable, diaporama |
@@ -21,7 +21,7 @@ L'espace `formateur/` n'est lié depuis aucune page stagiaire et il est exclu de
 
 ## Modifier le contenu
 
-Les huit ateliers sont dans **`_build/ateliers.py`** : problématique, situation, dossier documentaire (avec ses documents pièges), missions des groupes, étapes, rebondissements, controverses, critères de réussite, attendus, questions pour mettre en difficulté et diaporamas de bilan. Les éléments communs (références, compétences, programme) sont dans `_build/content.py`. Les pages HTML et les deux PDF (guide formateur, carnet) sont générés à partir de ces fichiers.
+Les neuf ateliers sont dans **`_build/ateliers.py`** (l’atelier 2, « Construire mon année de CPE », est dans `_build/atelier_annee.py`) : problématique, situation, dossier documentaire (avec ses documents pièges), missions des groupes, étapes, rebondissements, controverses, critères de réussite, attendus, questions pour mettre en difficulté et diaporamas de bilan. Les éléments communs (références, compétences, programme) sont dans `_build/content.py`. Les pages HTML et les deux PDF (guide formateur, carnet) sont générés à partir de ces fichiers.
 
 ```bash
 python3 _build/build.py   # régénère toutes les pages HTML

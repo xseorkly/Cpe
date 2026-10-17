@@ -8,7 +8,7 @@ par build.py. Toutes les situations du lycée Horizon sont fictives.
 
 TITRE = "Entrer dans le métier de CPE"
 SOUS_TITRE = "Formation AEFE · CPE débutants"
-DUREE_TOTALE = "12 heures sur 2 jours"
+DUREE_TOTALE = "13 h 30 sur 2 jours"
 VERSION = "Version 3.0 · octobre 2026"
 
 PUBLIC = (
@@ -103,8 +103,8 @@ ECHELLE = [
 # Programme des deux journées (formateur)
 PROGRAMME = [
     ("Jour 1", [("Accueil, contrat de formation, positionnement initial", 15),
-                ("Atelier 1", 75), ("Atelier 2", 90), ("Atelier 3", 90), ("Atelier 4", 75)]),
-    ("Jour 2", [("Atelier 5", 90), ("Atelier 6", 105), ("Atelier 7", 75), ("Atelier 8", 90),
+                ("Atelier 1", 75), ("Atelier 2", 90), ("Atelier 3", 90), ("Atelier 4", 90)]),
+    ("Jour 2", [("Atelier 5", 75), ("Atelier 6", 90), ("Atelier 7", 105), ("Atelier 8", 75), ("Atelier 9", 90),
                 ("Positionnement final et évaluation de la formation", 15)]),
 ]
 

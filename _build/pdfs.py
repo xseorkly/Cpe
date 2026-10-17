@@ -118,7 +118,7 @@ def build_guide():
                             title="Guide du formateur", author="Formation CPE AEFE")
     f = [Paragraph(f"FORMATION CPE · {C.DUREE_TOTALE.upper()}", S["eyebrow"]),
          Paragraph("Guide du formateur", S["h1"]),
-         Paragraph("Déroulés minutés, éléments de correction, points de vigilance et bilans des huit ateliers.", S["p"]),
+         Paragraph("Déroulés minutés, éléments de correction, points de vigilance et bilans des neuf ateliers.", S["p"]),
          Paragraph("Public", S["h3"]), Paragraph(C.PUBLIC, S["p"]),
          Paragraph("Finalité", S["h3"]), Paragraph(C.FINALITE, S["p"]),
          Paragraph("Programme des deux journées", S["h2"])]
@@ -135,7 +135,7 @@ def build_guide():
               "Ne jamais faire jouer une victime : les situations sensibles s'analysent avec des cartes.",
               "N'utiliser que des données fictives ; arrêter avec bienveillance tout récit de situation réelle identifiable et proposer un échange individuel.",
               "Préparer le règlement intérieur et les circuits d'alerte de l'établissement d'accueil, après vérification avec la direction.",
-              "Positionnement initial avant l'atelier 1, positionnement final après l'atelier 8. Évaluer le raisonnement et l'ordre des priorités, pas une réponse unique."]:
+              "Positionnement initial avant l'atelier 1, positionnement final après le dernier atelier. Évaluer le raisonnement et l'ordre des priorités, pas une réponse unique."]:
         f.append(Paragraph(t, S["li"], bulletText="•"))
     f.append(Paragraph("Espace formateur en ligne : ajouter « formateur/ » à l'adresse du site. Il est exclu des moteurs de recherche et n'est lié depuis aucune page stagiaire.", S["small"]))
     for a in C.ATELIERS:

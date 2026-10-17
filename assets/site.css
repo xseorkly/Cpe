@@ -390,3 +390,8 @@ dialog.bilan.full .slides{max-height:calc(100vh - 70px)}
 .lock-row input:focus{outline:3px solid #f2b48f;outline-offset:2px}
 .lock-err{color:var(--danger);font-weight:600;margin-top:10px}
 [hidden]{display:none!important}
+
+.planner{margin:0 0 18px}
+.planner-grid th[scope="row"]{white-space:nowrap;background:var(--surface-2);font-weight:700}
+.planner-grid td{padding:4px;min-width:150px}
+.planner-grid textarea{min-height:58px;font-size:.86rem;padding:6px 8px;border-radius:6px}

@@ -234,6 +234,7 @@
     D.ateliers.forEach(function (a) {
       var items = [];
       a.temps.forEach(function (t, i) { var v = get("note:a" + a.n + ":t" + (i + 1)); if (v) items.push(["Étape " + (i + 1) + " · " + t, v]); });
+      allKeys().forEach(function (k) { if (k.indexOf("note:a" + a.n + ":cal:") === 0) items.push([(get("label:" + k.slice(5)) || k).replace("Atelier " + a.n + " · ", ""), get(k)]); });
       var b = get("note:a" + a.n + ":fin"); if (b) items.push(["Bilan personnel", b]);
       groups.push(["Atelier " + a.n + " · " + a.titre, items]);
     });

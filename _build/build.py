@@ -136,17 +136,18 @@ import ateliers as A  # noqa: E402
 import atelier_pages as AP  # noqa: E402
 
 BUT = {
-    1: "Situer ce qui relève de mes missions, de la coopération et de la décision d'une autre autorité.",
-    2: "Poser un diagnostic de vie scolaire à partir de données fiables et organiser le service sous contraintes.",
-    3: "Animer une équipe d'AED, réguler un écart et conduire une réunion qui décide.",
-    4: "Analyser un comportement sans diagnostiquer et tenir le cadre sans humilier.",
-    5: "Repérer des signaux faibles et construire une alliance avec les deux parents.",
-    6: "Traiter un incident dans le respect du droit disciplinaire et protéger tous les élèves concernés.",
-    7: "Accompagner les élus vers une participation réelle, sans la confisquer.",
-    8: "Prioriser sous pression, refuser ce qui excède mon rôle et rendre compte de mes choix.",
+    "Découvrir mon métier de CPE": "Situer ce qui relève de mes missions, de la coopération et de la décision d'une autre autorité.",
+    "Construire mon année de CPE": "Anticiper l'année de la vie scolaire : instances, AED, conseils, orientation, prévention.",
+    "Organiser et piloter la vie scolaire": "Poser un diagnostic de vie scolaire à partir de données fiables et organiser le service sous contraintes.",
+    "Animer et accompagner l'équipe AED": "Animer une équipe d'AED, réguler un écart et conduire une réunion qui décide.",
+    "Comprendre les adolescents": "Analyser un comportement sans diagnostiquer et tenir le cadre sans humilier.",
+    "Accompagner un élève et sa famille": "Repérer des signaux faibles et construire une alliance avec les deux parents.",
+    "Gérer un incident et protéger les élèves": "Traiter un incident dans le respect du droit disciplinaire et protéger tous les élèves concernés.",
+    "Faire vivre la démocratie scolaire": "Accompagner les élus vers une participation réelle, sans la confisquer.",
+    "Une matinée dans la peau du CPE": "Prioriser sous pression, refuser ce qui excède mon rôle et rendre compte de mes choix.",
 }
 for _a in A.ATELIERS:
-    _a["but"] = BUT[_a["n"]]
+    _a["but"] = BUT[_a["titre"]]
     _a["temps"] = _a["phases"]
 C.ATELIERS = A.ATELIERS
 
@@ -176,13 +177,13 @@ def index_page():
   </a>
 </li>""")
     day1 = "".join(cards[:4])
-    day2 = "".join(cards[4:])
+    day2 = "".join(cards[4:])  # jour 1 : ateliers 1 à 4 ; jour 2 : 5 à 9
     body = f"""
 <section class="hero hero-home">
   <div class="wrap hero-grid">
     <div>
       <p class="eyebrow">Parcours de formation · {esc(C.DUREE_TOTALE)}</p>
-      <h1>Huit situations-problèmes pour entrer dans le métier de CPE.</h1>
+      <h1>Neuf situations-problèmes pour entrer dans le métier de CPE.</h1>
       <p class="lead">Vous prenez votre poste au lycée Horizon, un établissement fictif du réseau AEFE. Chaque atelier part d'une vraie difficulté de début de carrière. Vous réagissez d'abord seul. Puis vous enquêtez en groupe dans un dossier où tout n'est pas fiable, vous affrontez un rebondissement et vous défendez vos choix. Le formateur conclut par un bilan et des apports théoriques.</p>
       <div class="hero-actions"><a class="btn light" href="positionnement.html">Commencer par me positionner</a><a class="btn light ghost" href="atelier-1.html">Aller à l'atelier 1</a></div>
     </div>
@@ -195,15 +196,15 @@ def index_page():
 <div class="wrap">
   <section class="block">
     <h2>Le parcours</h2>
-    <p class="muted">Suivez les ateliers dans l'ordre : chacun réinvestit les précédents, et l'atelier 8 les mobilise tous.</p>
+    <p class="muted">Suivez les ateliers dans l'ordre : chacun réinvestit les précédents, et le dernier atelier les mobilise tous.</p>
     <div class="days">
-      <div><h3 class="day">Jour 1 · Entrer dans le métier, organiser le service</h3><ol class="cards">{day1}</ol></div>
+      <div><h3 class="day">Jour 1 · Entrer dans le métier, organiser l'année et le service</h3><ol class="cards">{day1}</ol></div>
       <div><h3 class="day">Jour 2 · Accompagner, protéger, faire participer</h3><ol class="cards">{day2}</ol></div>
     </div>
   </section>
 
   <section class="block three">
-    <div><h3>1 · Je me positionne</h3><p>Avant le premier atelier, j'évalue où j'en suis sur les huit gestes professionnels. Je recommence à la fin.</p><a href="positionnement.html">Me positionner →</a></div>
+    <div><h3>1 · Je me positionne</h3><p>Avant le premier atelier, j'évalue où j'en suis sur les neuf gestes professionnels. Je recommence à la fin.</p><a href="positionnement.html">Me positionner →</a></div>
     <div><h3>2 · J'affronte des situations</h3><p>Je réagis seul, j'enquête en groupe dans un dossier piégé, je débats, puis je produis un écrit professionnel jugé sur des critères précis.</p><a href="atelier-1.html">Atelier 1 →</a></div>
     <div><h3>3 · Je garde une trace</h3><p>Mes notes alimentent mon carnet et ma mallette, que j'exporte en fin de formation pour les emporter dans mon établissement.</p><a href="carnet.html">Mon carnet →</a></div>
   </section>
@@ -224,7 +225,7 @@ def index_page():
 </div>
 """
     write("index.html", page("index.html", f"{C.TITRE} · Formation CPE AEFE", body, current="index.html",
-                             desc="Huit ateliers progressifs pour former les CPE débutants du réseau AEFE."))
+                             desc="Neuf ateliers progressifs pour former les CPE débutants du réseau AEFE."))
 
 
 # --------------------------------------------------------------------------
@@ -242,7 +243,7 @@ def positionnement_page():
         rows.append(f'<tr><th scope="row"><span class="small muted">Atelier {a["n"]}</span><br>{esc(a["but"])}</th>{"".join(cells)}<td class="delta" data-delta="{a["n"]}"></td></tr>')
     legend = "".join(f"<li><strong>{i}</strong> {esc(l)}</li>" for i, l in enumerate(C.ECHELLE, 1))
     body = f"""
-<section class="hero"><div class="wrap"><p class="eyebrow">Avant et après la formation</p><h1>Me positionner</h1><p class="lead">Pour chacun des huit gestes professionnels, indiquez où vous en êtes. Faites-le une première fois avant l'atelier 1, puis à la fin de l'atelier 8. L'écart montre ce que la formation vous a apporté et ce qui reste à travailler.</p></div></section>
+<section class="hero"><div class="wrap"><p class="eyebrow">Avant et après la formation</p><h1>Me positionner</h1><p class="lead">Pour chacun des neuf gestes professionnels, indiquez où vous en êtes. Faites-le une première fois avant l'atelier 1, puis à la fin du dernier atelier. L'écart montre ce que la formation vous a apporté et ce qui reste à travailler.</p></div></section>
 <div class="wrap">
   <section class="block"><h2 class="label">Échelle</h2><ol class="scale-legend">{legend}</ol>
   <p class="small muted">Soyez précis plutôt que généreux : un positionnement étayé par des faits vaut mieux qu'un sentiment général de maîtrise.</p></section>
@@ -282,13 +283,14 @@ def carnet_page():
 # --------------------------------------------------------------------------
 MALLETTE = [
     (1, "Ma première semaine en poste", "Acteurs et instances ; documents à demander ; cadre AEFE et circuits à vérifier ; rendez-vous prioritaires."),
-    (2, "Diagnostiquer et piloter la vie scolaire", "Faits étayés ; besoins des élèves ; objectif ; postes ; transmissions ; indicateurs et date de bilan."),
-    (3, "Accueillir, animer et réguler l'équipe AED", "Missions des AED ; accueil ; consignes ; réunion ; observation factuelle ; entretien de régulation."),
-    (4, "Comprendre un comportement d'adolescent", "Comportement observable ; hypothèses multiples ; contexte ; informations manquantes ; réponse éducative à tester."),
-    (5, "Conduire un entretien et suivre l'assiduité", "Faits d'assiduité ; questions ouvertes ; parole de l'élève ; coordination ; compte rendu ; date de suivi."),
-    (6, "Analyser un incident et choisir la réponse appropriée", "Sécurité ; faits ; personnes à protéger ; qui décide ; punition ou sanction ; dimension éducative ; suivi."),
-    (6, "Protéger, alerter et suivre une situation préoccupante", "Sécurité immédiate ; secours si urgence ; personnes compétentes ; protocole local ; trace factuelle ; suivi."),
-    (7, "Accompagner les élus et la démocratie scolaire", "Consultation ; compétences des instances ; préparation des élus ; priorités ; décisions ; retour aux élèves."),
+    (2, "Mon calendrier annuel de la vie scolaire", "Temps forts mois par mois ; démocratie scolaire ; cycle des AED ; conseils et orientation ; prévention ; périodes de vigilance."),
+    (3, "Diagnostiquer et piloter la vie scolaire", "Faits étayés ; besoins des élèves ; objectif ; postes ; transmissions ; indicateurs et date de bilan."),
+    (4, "Accueillir, animer et réguler l'équipe AED", "Missions et fiche de poste des AED ; accueil ; consignes ; réunion ; observation factuelle ; entretien de régulation."),
+    (5, "Comprendre un comportement d'adolescent", "Comportement observable ; hypothèses multiples ; contexte ; informations manquantes ; réponse éducative à tester."),
+    (6, "Conduire un entretien et suivre l'assiduité", "Faits d'assiduité ; questions ouvertes ; parole de l'élève ; coordination ; compte rendu ; date de suivi."),
+    (7, "Analyser un incident et choisir la réponse appropriée", "Sécurité ; faits ; personnes à protéger ; qui décide ; punition ou sanction ; dimension éducative ; suivi."),
+    (7, "Protéger, alerter et suivre une situation préoccupante", "Sécurité immédiate ; secours si urgence ; personnes compétentes ; protocole local ; trace factuelle ; suivi."),
+    (8, "Accompagner les élus et la démocratie scolaire", "Consultation ; compétences des instances ; préparation des élus ; priorités ; décisions ; retour aux élèves."),
 ]
 MALLETTE_BY_ATELIER = {}
 for _i, (_a, _t, _d) in enumerate(MALLETTE, 1):
@@ -307,7 +309,7 @@ def mallette_page():
   <p class="small muted">À confronter au règlement intérieur, aux personnes habilitées et aux procédures réellement applicables dans votre établissement.</p>
 </section>""")
     body = f"""
-<section class="hero"><div class="wrap"><p class="eyebrow">Mes outils de prise de poste</p><h1>Ma mallette professionnelle</h1><p class="lead">Huit fiches à construire au fil des ateliers, puis à personnaliser dans votre établissement. Elles ne remplacent ni un protocole validé, ni les procédures locales.</p>
+<section class="hero"><div class="wrap"><p class="eyebrow">Mes outils de prise de poste</p><h1>Ma mallette professionnelle</h1><p class="lead">Neuf fiches à construire au fil des ateliers, puis à personnaliser dans votre établissement. Elles ne remplacent ni un protocole validé, ni les procédures locales.</p>
 <div class="hero-actions"><a class="btn light" href="ressources/04_Mallette_Reflexe_Fiches_Operationnelles.pdf">Version PDF à imprimer</a><button class="btn light ghost" type="button" data-export="md">Exporter mes fiches</button></div></div></section>
 <div class="wrap"><nav class="toc">{"".join(f'<a href="#fiche-{i}">{i} · {esc(t)}</a>' for i, (_, t, _) in enumerate(MALLETTE, 1))}</nav>
 {"".join(fiches)}
@@ -377,7 +379,7 @@ def formateur_index():
   <section class="block three">
     <div><h3>Avant la session</h3><ul><li>Constituer des groupes de trois ou quatre ; prévoir des rôles tournants.</li><li>Imprimer les documents à révéler séparément pour les groupes sans écran.</li><li>Préparer le règlement intérieur et les circuits d'alerte de l'établissement d'accueil, après vérification.</li></ul></div>
     <div><h3>Pendant</h3><ul><li>Faire produire une réponse avant de révéler la suite : c'est le ressort de chaque atelier.</li><li>Ne jamais faire jouer une victime : utiliser des cartes d'analyse.</li><li>Arrêter avec bienveillance tout récit de situation réelle identifiable.</li></ul></div>
-    <div><h3>Évaluer</h3><ul><li>Positionnement initial avant l'atelier 1, final après l'atelier 8.</li><li>La grille de l'atelier 8 sert d'évaluation formative de tout le parcours.</li><li>Évaluer le raisonnement et l'ordre des priorités, pas une réponse unique.</li></ul></div>
+    <div><h3>Évaluer</h3><ul><li>Positionnement initial avant l'atelier 1, final après le dernier atelier.</li><li>La grille du dernier atelier sert d'évaluation formative de tout le parcours.</li><li>Évaluer le raisonnement et l'ordre des priorités, pas une réponse unique.</li></ul></div>
   </section>
   <section class="block"><h2>Confidentialité de cet espace</h2><p>Le site est publié sur GitHub Pages : cet espace est public pour qui connaît son adresse. Il est exclu des moteurs de recherche et n'est lié depuis aucune page stagiaire, mais ce n'est pas une protection. Pour une confidentialité réelle, imprimez les fiches ou utilisez le guide PDF hors ligne.</p></section>
 </div>"""
