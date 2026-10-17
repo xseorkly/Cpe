@@ -1,6 +1,6 @@
 # Entrer dans le métier de CPE
 
-Formation des CPE débutants du réseau AEFE : huit ateliers progressifs, 13 h 30 sur 2 jours.
+Formation des CPE débutants du réseau AEFE : neuf ateliers progressifs, 13 h 30 sur 2 jours.
 Site statique publié avec GitHub Pages : https://xseorkly.github.io/Cpe/
 
 ## Ce que contient le site
