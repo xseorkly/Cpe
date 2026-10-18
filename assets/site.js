@@ -208,6 +208,18 @@
     }
   });
 
+
+  /* ---------- Votes (baromètres, votes à chaud) ---------- */
+  $$("input[data-vote]").forEach(function (r) {
+    var k = "vote:" + r.dataset.vote;
+    if (get(k) === r.value) r.checked = true;
+    r.addEventListener("change", function () { set(k, r.value); set("label:" + k, r.dataset.voteQ || ""); refreshVotes(); });
+  });
+  function refreshVotes() {
+    $$("[data-recall-vote]").forEach(function (b) { var v = get("vote:" + b.dataset.recallVote); if (v) b.textContent = v; });
+  }
+  refreshVotes();
+
   /* ---------- Dossier documentaire : filtres, recherche, liens ---------- */
   $$("[data-dossier]").forEach(function (dz) {
     var docs = $$(".doc-lib", dz), filters = $$("[data-filter]", dz), q = $("[data-doc-search]", dz), none = $("[data-no-result]", dz), cur = "";
@@ -275,6 +287,7 @@
       var items = [];
       a.temps.forEach(function (t, i) { var v = get("note:a" + a.n + ":t" + (i + 1)); if (v) items.push(["Étape " + (i + 1) + " · " + t, v]); });
       allKeys().forEach(function (k) { if (k.indexOf("note:a" + a.n + ":cal:") === 0) items.push([(get("label:" + k.slice(5)) || k).replace("Atelier " + a.n + " · ", ""), get(k)]); });
+      allKeys().forEach(function (k) { if (k.indexOf("vote:a" + a.n + ":") === 0) items.push(["Vote · " + (get("label:" + k) || ""), get(k)]); });
       var b = get("note:a" + a.n + ":fin"); if (b) items.push(["Bilan personnel", b]);
       groups.push(["Atelier " + a.n + " · " + a.titre, items]);
     });

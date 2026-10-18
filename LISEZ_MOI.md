@@ -8,8 +8,8 @@ Site statique publié avec GitHub Pages : https://xseorkly.github.io/Cpe/
 | Page | Public | Rôle |
 | --- | --- | --- |
 | `index.html` | Stagiaires | Accueil, public, finalité, les 9 ateliers |
-| `positionnement.html` | Stagiaires | Autopositionnement avant l'atelier 1 et après l'atelier 8 |
-| `atelier-1.html` à `atelier-9.html` | Stagiaires | Situations-problèmes : réaction spontanée, enquête en groupes experts dans un dossier documentaire, rebondissement, controverse, production, retour réflexif, bilan projetable |
+| `positionnement.html` | Stagiaires | Autopositionnement avant l'atelier 1 et après le dernier atelier |
+| `atelier-1.html` à `atelier-9.html` | Stagiaires | Situations-problèmes, chacune avec son propre moteur (débat mouvant, forum-théâtre, tables tournantes, commission simulée, crash-test…), dossier documentaire, rebondissement, production, bilan et propositions de réponse protégés |
 | `carnet.html` | Stagiaires | Toutes les notes réunies ; export Markdown, sauvegarde JSON, import, effacement |
 | `mallette.html` | Stagiaires | Neuf fiches réflexes à construire au fil des ateliers |
 | `ressources.html` | Stagiaires | PDF, approfondissements, textes de référence, compétences C1 à C8 et blocs 2026 |
@@ -21,7 +21,7 @@ L'espace `formateur/` n'est lié depuis aucune page stagiaire et il est exclu de
 
 ## Modifier le contenu
 
-Les neuf ateliers sont dans **`_build/ateliers.py`** (l’atelier 2, « Construire mon année de CPE », est dans `_build/atelier_annee.py`) : problématique, situation, dossier documentaire (avec ses documents pièges), missions des groupes, étapes, rebondissements, controverses, critères de réussite, attendus, questions pour mettre en difficulté et diaporamas de bilan. Les éléments communs (références, compétences, programme) sont dans `_build/content.py`. Les pages HTML et les deux PDF (guide formateur, carnet) sont générés à partir de ces fichiers.
+Les neuf ateliers sont dans **`_build/ateliers.py`** (l’atelier 2, « Construire mon année de CPE », est dans `_build/atelier_annee.py`) : problématique, situation, dossier documentaire (avec ses documents pièges), missions des groupes, étapes, rebondissements, controverses, critères de réussite, attendus, questions pour mettre en difficulté et diaporamas de bilan. La scénarisation (étapes, formats, durées, consignes et conduite du formateur) est dans `_build/scenarios.py`. Les éléments communs (références, compétences, programme) sont dans `_build/content.py`. Les pages HTML et les deux PDF (guide formateur, carnet) sont générés à partir de ces fichiers.
 
 ```bash
 python3 _build/build.py   # régénère toutes les pages HTML

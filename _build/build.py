@@ -205,7 +205,7 @@ def index_page():
 
   <section class="block three">
     <div><h3>1 · Je me positionne</h3><p>Avant le premier atelier, j'évalue où j'en suis sur les neuf gestes professionnels. Je recommence à la fin.</p><a href="positionnement.html">Me positionner →</a></div>
-    <div><h3>2 · J'affronte des situations</h3><p>Je réagis seul, j'enquête en groupe dans un dossier piégé, je débats, puis je produis un écrit professionnel jugé sur des critères précis.</p><a href="atelier-1.html">Atelier 1 →</a></div>
+    <div><h3>2 · J'affronte des situations</h3><p>Chaque atelier a son propre déroulé : débat mouvant, forum-théâtre, simulation de commission, crash-test, enquête de données. Je produis à chaque fois un écrit professionnel jugé sur des critères précis.</p><a href="atelier-1.html">Atelier 1 →</a></div>
     <div><h3>3 · Je garde une trace</h3><p>Mes notes alimentent mon carnet et ma mallette, que j'exporte en fin de formation pour les emporter dans mon établissement.</p><a href="carnet.html">Mon carnet →</a></div>
   </section>
 
@@ -357,6 +357,9 @@ def ressources_page():
 # Espace formateur : accueil
 # --------------------------------------------------------------------------
 def formateur_index():
+    SCEN = "".join(
+        f'<tr><td><a href="atelier-{a["n"]}.html">{a["n"]} · {esc(a["titre"])}</a></td><td>{esc(" · ".join(a.get("moteur", [])))}</td><td class="small">{esc(" → ".join(p.get("format", p["titre"]) for p in a["phases"]))}</td></tr>'
+        for a in C.ATELIERS)
     prog = []
     for jour, items in C.PROGRAMME:
         lines = []
@@ -375,6 +378,10 @@ def formateur_index():
 <div class="hero-actions"><a class="btn light" href="../ressources/01_Guide_Formateur_Pedagogie_Active.pdf">Guide formateur (PDF)</a></div></div></section>
 <div class="wrap">
   <section class="block"><h2>Programme des deux journées</h2><div class="days">{"".join(prog)}</div></section>
+  <section class="block"><h2>La scénarisation des neuf ateliers</h2>
+    <p class="muted">Chaque atelier a son propre moteur, pour que les stagiaires ne retrouvent jamais deux fois le même déroulé. Les formats alternent l'individuel, le groupe, le mouvement et la simulation.</p>
+    <div class="tablewrap"><table><thead><tr><th>Atelier</th><th>Moteur</th><th>Enchaînement des étapes</th></tr></thead><tbody>{SCEN}</tbody></table></div>
+  </section>
   <section class="block"><h2>Fiches par atelier</h2><ol class="cards grid">{cards}</ol></section>
   <section class="block three">
     <div><h3>Avant la session</h3><ul><li>Constituer des groupes de trois ou quatre ; prévoir des rôles tournants.</li><li>Imprimer les documents à révéler séparément pour les groupes sans écran.</li><li>Préparer le règlement intérieur et les circuits d'alerte de l'établissement d'accueil, après vérification.</li></ul></div>

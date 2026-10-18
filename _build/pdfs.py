@@ -143,6 +143,7 @@ def build_guide():
         total = sum(t["duree"] for t in a["phases"]) + 15
         f += [PageBreak(), Paragraph(f"ATELIER {a['n']} · {fmt(total).upper()}", S["eyebrow"]), Paragraph(a["titre"], S["h1"]),
               Paragraph("<b>Problématique.</b> " + a["problematique"], S["p"]),
+              Paragraph("<b>Moteur de l'atelier :</b> " + " · ".join(a.get("moteur", [])), S["p"]),
               Paragraph("La situation", S["h3"])]
         f += html_flow(a["situation"])
         f.append(Paragraph("Objectifs", S["h3"]))
@@ -152,7 +153,7 @@ def build_guide():
         f.append(Paragraph("Déroulé", S["h3"]))
         rows = [["Étape", "Durée", "Modalité", "Consigne aux stagiaires", "Conduite du formateur"]]
         for i, t in enumerate(a["phases"], 1):
-            rows.append([f"<b>{i}. {t['titre']}</b>", f"{t['duree']} min", t["modalite"], t["consigne"], fo["deroule"][i - 1]])
+            rows.append([f"<b>{i}. {t['titre']}</b><br/><i>{t.get('format', '')}</i>", f"{t['duree']} min", t["modalite"], t["consigne"], fo["deroule"][i - 1]])
         rows.append(["<b>Bilan</b>", "15 min", "Collectif", " ".join(a["cloture"]), "Retour sur les pièges du dossier, puis diaporama d'apports."])
         f.append(table(rows, [26 * mm, 14 * mm, 24 * mm, 54 * mm, 52 * mm]))
         if a["groupes"]:

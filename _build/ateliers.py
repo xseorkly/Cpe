@@ -153,10 +153,10 @@ ATELIERS.append(dict(
                         "Lesquelles sont compatibles avec les textes ? Lesquelles faut-il faire évoluer, et comment ?",
                         "Qu'est-ce que le mot de Mme Martel vous apprend sur l'histoire de la maison ?"],
              docs=[8, 2, 3]),
-        dict(nom="Les urgences", angle="Que traiter aujourd'hui, et qui décide ?",
-             questions=["Pour chacun des douze messages : qui décide ? avec qui coopérer ? que manque-t-il ?",
-                        "Quels deux messages ne peuvent pas attendre une heure ? Pourquoi ?",
-                        "Quels messages appellent un refus ? Comment le formuler ?"],
+        dict(nom="Les compétences", angle="Pour chaque message : je décide, je conseille, je coopère ou je signale ?",
+             questions=["Classez les douze messages dans les quatre verbes : je décide, je conseille, je coopère, je signale.",
+                        "Quels messages appellent un refus ? Formulez-le sans fermer la porte.",
+                        "Deux messages relèvent d'un réflexe immédiat de signalement : lesquels, et vers qui ?"],
              docs=[1, 7]),
     ],
     phases=[
@@ -210,7 +210,7 @@ ATELIERS.append(dict(
 <p><strong>Groupe « Les textes ».</strong> La circulaire de 2015 abroge celle de 1982 : le document 4 est périmé. Le passage du « fonctionnement de l'établissement » à une « politique éducative » et au « suivi des élèves » marque le glissement d'un métier de surveillance vers un métier d'éducation.</p>
 <p><strong>Groupe « L'établissement ».</strong> Trois lignes de la fiche de poste sont hors cadre : décider des exclusions (compétence du chef d'établissement), remplacer les enseignants absents (ce n'est pas une mission du CPE), gérer les congés des personnels administratifs. Stratégie attendue : demander un entretien à la proviseure, s'appuyer sur la circulaire, proposer une version révisée plutôt que refuser.</p>
 <p><strong>Groupe « Les attentes ».</strong> Les représentations du « surveillant général », du « bras armé des enseignants », du « confident » coexistent. Le texte de 2015 les dépasse : il faut les entendre, sans les laisser définir le poste.</p>
-<p><strong>Groupe « Les urgences ».</strong> Deux messages ne peuvent pas attendre : l'élève qui ne veut pas rentrer chez elle (protection, alerte immédiate) et l'élève absente depuis jeudi sans nouvelles (contact famille dans la journée). Deux appellent un refus motivé : le nom de l'autre élève (données personnelles) et l'exclusion de trois jours (pas la compétence du CPE).</p>
+<p><strong>Groupe « Les compétences ».</strong> Deux messages ne peuvent pas attendre : l'élève qui ne veut pas rentrer chez elle (protection, alerte immédiate) et l'élève absente depuis jeudi sans nouvelles (contact famille dans la journée). Deux appellent un refus motivé : le nom de l'autre élève (données personnelles) et l'exclusion de trois jours (pas la compétence du CPE).</p>
 <p><strong>Rebondissement.</strong> Ne pas répondre à la liste de diffusion. Rencontrer M. Garnier en tête-à-tête avant jeudi, revenir aux faits et à la règle (qui décide d'une exclusion), lui proposer ce que le CPE peut faire (suivi de l'élève, retour sur la situation). Jeudi : présenter le cadre sans régler de comptes.</p>""",
         vigilance=[
             "Les stagiaires veulent souvent « gagner » contre M. Garnier. Ramener à l'objectif : construire une relation de travail durable.",
@@ -424,7 +424,7 @@ ATELIERS.append(dict(
 <p>Depuis, les signaux s'accumulent. Fabien ne transmet presque rien. Bérénice, qui débute, a été secouée par une bagarre et n'ose plus aller dans la cour. David réclame des critères pour les postes du midi. Elsa prépare un concours et demande des aménagements. Et vous découvrez que l'équipe communique par un groupe de messagerie dont vous ne faites pas partie.</p>
 <p>Vendredi, vous réunissez l'équipe pour la première fois.</p>""",
     objectifs=[
-        "Distinguer autorité hiérarchique et coordination fonctionnelle, et identifier l'employeur des AED.",
+        "Situer mon rôle d'organisateur du service face à la direction, employeur des AED.",
         "Repérer un texte qui ne s'applique pas aux personnels recrutés localement.",
         "Conduire un entretien de régulation fondé sur des faits, sans glisser vers le disciplinaire.",
         "Conduire une réunion qui débouche sur des décisions suivies.",
@@ -468,9 +468,14 @@ ATELIERS.append(dict(
 <p class="note">Aucun article ne mentionne de crédit d'heures de formation.</p>"""),
         dict(titre="Note de la direction sur les rôles", type="Établissement", groupe=1, html="""
 <blockquote>« Le CPE organise et anime le service de vie scolaire. Les décisions relatives aux contrats, aux congés, aux avertissements et à toute procédure concernant les personnels relèvent de la proviseure, en lien avec la gestionnaire des ressources humaines. »</blockquote>"""),
-        dict(titre="Deux comptes rendus du même incident", type="Écrits professionnels", groupe=2, html="""
-<p><strong>Fabien, sur un papier volant :</strong> « Élève agressif devant la cantine, incident grave, à voir. »</p>
-<p><strong>Camille, dans le cahier :</strong> « Mercredi 12 h 20, devant la cantine : deux élèves de 4e ont élevé la voix et se sont poussés. Séparés sans blessure constatée. M. Vidal informé à 12 h 30. »</p>"""),
+        dict(titre="Comment l'équipe transmet aujourd'hui", type="Écrits professionnels", groupe=2, html="""
+<table><thead><tr><th>Canal</th><th>Qui l'utilise</th><th>Ce que l'on observe</th></tr></thead><tbody>
+<tr><td>Papier volant posé sur le bureau</td><td>Fabien</td><td>Souvent perdu ; jamais daté</td></tr>
+<tr><td>Cahier de vie scolaire</td><td>Camille, Bérénice</td><td>Lisible, mais il reste dans le bureau : inaccessible quand le CPE est en réunion</td></tr>
+<tr><td>Groupe de messagerie personnel</td><td>Toute l'équipe sauf le CPE</td><td>Rapide ; voir le document 7</td></tr>
+<tr><td>Logiciel de vie scolaire</td><td>Personne</td><td>Un module « observations » existe ; aucun AED n'a été formé</td></tr>
+<tr><td>Oral, « au passage »</td><td>Antoine, David</td><td>Aucune trace ; l'information se perd au changement de poste</td></tr>
+</tbody></table>"""),
         dict(titre="Extraits du groupe de messagerie de l'équipe", type="Écrits professionnels", groupe=2, html="""
 <p>Capture fournie par Camille, qui « n'est plus à l'aise ».</p>
 <ul>
@@ -502,13 +507,19 @@ ATELIERS.append(dict(
         dict(titre="Le lundi suivant, 8 h 50", type="Rebondissement", html="""
 <p>La proviseure vous convoque. Une mère d'élève de 4e B lui a transmis une capture d'écran : son fils l'a photographiée sur le téléphone d'un AED, posé sur le bureau de l'accueil. On y lit le message « Le boulet de 4e B a encore séché ».</p>
 <blockquote>Mme Laurent : « La famille parle de porter plainte. Je veux savoir ce que vous saviez, depuis quand, et ce que vous proposez. »</blockquote>"""),
+        dict(titre="Cartes du forum-théâtre : l'entretien avec Antoine", type="Simulation", html="""
+<div class="cards">
+<div class="card"><h4>Carte CPE</h4><p>Objectif : rétablir l'usage d'un outil commun de transmission et faire d'Antoine un allié. Vous partez des faits, vous reconnaissez son expérience, vous ne cédez pas sur la règle.</p></div>
+<div class="card"><h4>Carte Antoine</h4><p>Vous êtes blessé qu'on change les habitudes sans vous consulter. Vous vous braquez si le CPE parle d'emblée d'autorité ou de règlement. Vous vous ouvrez s'il reconnaît votre expérience et vous demande votre avis : vous proposez alors d'accompagner Bérénice.</p></div>
+<div class="card"><h4>Le public</h4><p>À tout moment, un spectateur peut dire « Stop ! », prendre la place du CPE et rejouer la dernière réplique autrement. On ne remplace jamais Antoine.</p></div>
+</div>"""),
     ],
     groupes=[
         dict(nom="Le cadre", angle="Qui décide quoi pour ces personnels ?",
              questions=["La circulaire de 2025 s'applique-t-elle à Elsa ? Justifiez.", "Que pouvez-vous décider seul ? Que devez-vous renvoyer à la proviseure ?", "Que répondre à Elsa, et qui doit lui répondre ?"],
              docs=[3, 4, 5]),
         dict(nom="Les écrits", angle="Qu'est-ce qu'une transmission professionnelle ?",
-             questions=["Comparez les deux comptes rendus : faits, jugements, actions.", "Qu'est-ce qui pose problème dans le groupe de messagerie ? Sur quels plans (déontologie, données personnelles, sécurité) ?", "Que devez-vous faire maintenant que vous savez ?"],
+             questions=["Comparez les cinq canaux : lequel est sûr, traçable et accessible au bon destinataire ?", "Qu'est-ce qui pose problème dans le groupe de messagerie ? Sur quels plans (déontologie, données personnelles, sécurité) ?", "Que devez-vous faire maintenant que vous savez ?"],
              docs=[6, 7]),
         dict(nom="Les personnes", angle="Besoins individuels ou règles collectives ?",
              questions=["Que cache la demande de Bérénice ? Comment l'accompagner sans l'exposer ?", "La demande de David est-elle légitime ? Que lui proposer ?", "Antoine est-il un problème ou une ressource ?"],
@@ -562,9 +573,10 @@ ATELIERS.append(dict(
             "« Vous saviez pour le groupe depuis jeudi. Pourquoi n'avez-vous rien dit à la proviseure ? »",
         ],
         attendus="""
+<p><strong>Forum-théâtre.</strong> Les arrêts les plus utiles portent sur la première phrase du CPE : celles qui commencent par « Je suis le CPE » ou « Le règlement dit » ferment l'échange ; celles qui reconnaissent l'expérience d'Antoine avant de poser la règle l'ouvrent.</p>
 <p><strong>Réponse immédiate à Antoine.</strong> Ne pas engager l'épreuve de force en public ni céder. Une réponse attendue : « J'entends que l'équipe fonctionnait bien. Je veux qu'on en parle tous les deux, et en réunion vendredi. D'ici là, on utilise le cahier. » Puis un entretien individuel rapide.</p>
 <p><strong>Le cadre.</strong> La circulaire de 2025 concerne les AED recrutés en France sur le fondement du code de l'éducation. Elsa a un contrat de droit local qui ne prévoit pas de crédit d'heures : la circulaire ne lui ouvre aucun droit. La réponse relève de la proviseure ; le CPE peut appuyer une demande d'aménagement de planning si le service le permet.</p>
-<p><strong>Les écrits.</strong> Le compte rendu de Fabien juge sans décrire. Le groupe de messagerie pose trois problèmes : propos dégradants sur des élèves et une famille (déontologie), photo et données d'élèves sur un outil personnel (protection des données), traçabilité nulle. Dès qu'il en a connaissance, le CPE en informe la direction et met fin à l'usage de cet outil pour le service.</p>
+<p><strong>Les écrits.</strong> Aucun canal actuel n'est à la fois sûr, traçable et accessible : le logiciel de vie scolaire est la seule solution conforme, à condition de former l'équipe. Le groupe de messagerie pose trois problèmes : propos dégradants sur des élèves et une famille (déontologie), photo et données d'élèves sur un outil personnel (protection des données), traçabilité nulle. Dès qu'il en a connaissance, le CPE en informe la direction et met fin à l'usage de cet outil pour le service.</p>
 <p><strong>Les personnes.</strong> Bérénice : entretien individuel, debriefing de l'incident, binôme dans la cour, retour progressif. David : critères explicites de rotation, publiés. Antoine : ressource possible (tutorat de Bérénice), à condition d'expliciter son rôle.</p>
 <p><strong>Rebondissement.</strong> Dire la vérité à la proviseure, y compris depuis quand vous saviez. Proposer : recevoir la famille avec la direction, protéger l'élève, rappeler par écrit les règles à toute l'équipe. La suite à donner concernant l'AED relève de la proviseure et de l'employeur, pas du CPE.</p>""",
         vigilance=[
@@ -603,18 +615,18 @@ ATELIERS.append(dict(
         "Formuler des hypothèses alternatives et identifier les informations manquantes.",
         "Distinguer un savoir solide sur l'adolescence d'un neuromythe.",
         "Situer le rôle du CPE face à un diagnostic sauvage et au secret médical.",
-        "Recevoir la parole d'un élève qui met en cause un adulte.",
+        "Partager une information de santé au seul bénéfice de l'élève, sans la divulguer ni s'en servir comme excuse.",
     ],
     competences=["C5", "C2", "C8"],
     blocs=["1", "2"],
     blocs_detail="1.4 (développement de l'adolescent, suivi) ; 2.2 (diversité des élèves, équipes pluriprofessionnelles)",
-    production="Un plan d'action éducatif pour Noah et le message que j'adresse à Mme Roche.",
+    production="Une grille d'observation de deux semaines confiée aux AED et la réponse que j'adresse à Mme Roche.",
     criteres=[
-        "Le plan distingue au moins trois faits, deux hypothèses et les informations manquantes.",
-        "Aucune formulation diagnostique ni jugement sur la personne.",
-        "La réponse éducative maintient la règle et prévoit une réparation possible.",
-        "Le plan nomme les relais pertinents et une date de réévaluation.",
-        "Le message à la professeure ne la désavoue pas et ne lui donne pas raison par principe.",
+        "La grille ne porte que sur des faits observables : moment, lieu, consigne donnée, réponse de l'adulte, réaction de Noah.",
+        "Elle ne contient ni case de jugement, ni information de santé, ni formulation diagnostique.",
+        "Elle précise qui observe, quand, et à qui la grille est remise.",
+        "La réponse à Mme Roche ne la désavoue pas, ne lui donne pas raison par principe, et propose un appui concret en classe.",
+        "Elle fixe une date de bilan partagé avec l'équipe.",
     ],
     docs=[
         dict(titre="Le message de Mme Roche", type="Messages", html="""
@@ -658,9 +670,11 @@ ATELIERS.append(dict(
         dict(titre="Deux propositions dans la boîte du CPE", type="Messages", groupe=4, html="""
 <p><strong>D'un AED :</strong> « J'ai fait un test en ligne avec la description de Noah, ça ressort TDAH à 80 %. Il faudrait le dire à la mère pour qu'elle le fasse soigner. »</p>
 <p><strong>De Mme Benali, infirmière :</strong> « Noah est venu trois fois. Je ne peux pas vous dire pourquoi, mais je pense qu'il faudrait que l'on se voie, avec la psychologue, pour réfléchir ensemble à ce qu'on peut faire pour lui. »</p>"""),
-        dict(titre="L'entretien avec Noah", type="Rebondissement", html="""
-<p>Vous recevez Noah. Il est d'abord fermé, puis il parle :</p>
-<blockquote>« En étude, je ne sais pas ce qu'il faut faire, alors je sors. En français, la prof m'a appelé "le cas social" devant tout le monde, le deuxième jour. Depuis, tout le monde rigole. Quand elle me fait une remarque, je ne supporte plus. Mais si vous lui dites, ce sera pire. »</blockquote>"""),
+        dict(titre="Jeudi : la mère de Noah revient", type="Rebondissement", html="""
+<p>La mère de Noah vous remet le compte rendu d'une psychologue libérale : « anxiété de performance, forte sensibilité au jugement d'autrui ; éviter les remarques publiques ; privilégier des consignes écrites et explicites ».</p>
+<blockquote>« Je veux que tous les professeurs et tous les AED en reçoivent une copie. Et je demande que Noah soit dispensé des oraux en français. »</blockquote>
+<p>Une heure plus tard, Mme Roche, qui en a entendu parler :</p>
+<blockquote>« Si c'est médical, ce n'est plus mon problème. Quand ça ne va pas, qu'il aille à l'infirmerie. »</blockquote>"""),
     ],
     groupes=[
         dict(nom="Les faits", angle="Que s'est-il réellement passé ?",
@@ -702,7 +716,7 @@ ATELIERS.append(dict(
     cloture=[
         "Quel mot d'une fiche d'incident aviez-vous pris pour un fait ?",
         "Qu'est-ce qui distingue comprendre un élève et l'excuser ?",
-        "Comment soutenir une collègue sans renoncer à ce que l'élève a dit ?",
+        "Comment soutenir une collègue sans transformer une information de santé en excuse ?",
     ],
     approfondir="adolescence",
     refs=["cps", "climat", "missions"],
@@ -720,32 +734,33 @@ ATELIERS.append(dict(
             "« Quatre fiches en trois semaines, ce sont des faits. Qu'est-ce qu'il vous faut de plus ? »",
             "« Si l'infirmière ne vous dit rien, vous ne pouvez rien faire. »",
             "« Le test dit 80 %. Ne pas prévenir la mère, c'est lui faire perdre du temps. »",
-            "« Noah ment peut-être pour se protéger. Vous allez croire un élève contre une collègue ? »",
-            "« Il vous a demandé de ne rien dire. Si vous en parlez, vous trahissez sa confiance. »",
+            "« La mère a le droit de demander que tout le monde soit informé : c'est son fils. »",
+            "« Un compte rendu de psychologue, c'est un diagnostic : vous pouvez enfin dire aux collègues qu'il est anxieux. »",
         ],
         attendus="""
 <p><strong>Les faits.</strong> Trois sorties d'étude sans autorisation ; un « c'est bon, lâchez-moi » après une remarque ; un refus de se rasseoir ; une porte claquée. Les mots « défi », « ingérable », « provocateur », « aucune envie » sont des interprétations ou des jugements. Les incidents se concentrent en français et en étude, depuis le changement de classe.</p>
 <p><strong>Les regards.</strong> Noah va bien quand la consigne est explicite et la relation individuelle (EPS, Camille). Il va mal dans les situations d'écrit long et de remarque publique. Les maux du dimanche soir et les passages à l'infirmerie sont des signaux de mal-être, pas un diagnostic.</p>
 <p><strong>Les savoirs.</strong> La maturation tardive du cortex préfrontal et la sensibilité au regard des pairs sont des tendances documentées à l'échelle des groupes. En conclure qu'un adolescent « ne peut pas se contrôler » ou expliquer un élève par son cerveau est abusif : c'est un neuromythe. L'affichage de l'article légitime l'étiquetage.</p>
+<p><strong>Note sur les fiches.</strong> Les quatre fiches mêlent faits et verdicts : « défi permanent », « ingérable », « aucune envie » ne décrivent rien d'observable. C'est le seul atelier où l'on travaille la réécriture des écrits : y passer le temps nécessaire.</p>
 <p><strong>Les limites.</strong> Le CPE ne pose pas de diagnostic et n'en suggère pas à la famille. L'infirmière est tenue au secret ; elle propose justement le bon cadre : une réunion avec la psychologue, où l'on partage ce qui est nécessaire pour agir.</p>
-<p><strong>Rebondissement.</strong> À Noah : le remercier, lui dire que ce qu'il a dit est important et que vous ne pouvez pas promettre de garder pour vous une parole qui met en cause un adulte, mais qu'il sera protégé. Tracer sa parole fidèlement, informer la direction, ne pas confronter Mme Roche devant qui que ce soit, ne pas conclure : les faits doivent être établis par la direction.</p>
+<p><strong>Rebondissement.</strong> Le document appartient à la famille : l'établissement ne le photocopie pas pour tout le monde. Avec l'accord de la mère, et en lien avec l'infirmière, on traduit le contenu en besoins éducatifs (pas de remarque publique, consignes écrites) transmis aux seuls adultes qui en ont besoin, sans diagnostic. Un aménagement durable relève du plan d'accompagnement prévu par l'établissement et du médecin ; une dispense d'oral est une décision pédagogique, qui ne relève pas du CPE. À Mme Roche : l'information n'est ni une excuse ni un transfert vers l'infirmerie ; la règle demeure, c'est la manière de l'exiger qui s'ajuste.</p>
 <p><strong>Controverse.</strong> Pas d'exclusion des cours (ce n'est pas la compétence du CPE et ce serait une réponse sans traitement de la cause). Mais soutenir réellement la collègue : rencontre, médiation pédagogique, place dans la classe, consignes explicites.</p>""",
         vigilance=[
-            "Le rebondissement place le stagiaire en conflit de loyauté. C'est voulu : l'aider à sortir du « pour ou contre la collègue » vers le circuit institutionnel.",
+            "Le rebondissement oppose deux pressions : tout diffuser (la famille) et se défausser (la professeure). Le travail consiste à traduire une information de santé en besoins éducatifs, sans la divulguer.",
             "Ne jamais laisser une formulation diagnostique circuler dans la salle, même pour plaisanter.",
             "Rappeler que le secret professionnel de l'infirmière n'empêche pas le travail en équipe : il le cadre.",
         ],
     ),
     slides=[
         dict(t="titre", titre="Comprendre sans excuser, tenir sans humilier", sous="Bilan de l'atelier 4 · Comprendre les adolescents"),
-        dict(t="points", titre="Ce que vous avez dû trancher", points=["Des fiches d'incident écrites comme des verdicts", "Des adultes qui ne voient pas le même élève", "Un article qui donne une caution scientifique à l'étiquette", "Un élève qui met en cause une adulte et demande le silence"]),
+        dict(t="points", titre="Ce que vous avez dû trancher", points=["Des fiches d'incident écrites comme des verdicts", "Des adultes qui ne voient pas le même élève", "Un article qui donne une caution scientifique à l'étiquette", "Une famille qui veut tout diffuser, une collègue qui veut se défausser"]),
         dict(t="etapes", titre="L'échelle d'inférence", etapes=[("Ce que j'observe", "Il sort trois fois de l'étude"), ("Ce que je sélectionne", "Il sort sans demander"), ("Ce que j'interprète", "Il teste les règles"), ("Ce que je conclus", "Il provoque volontairement"), ("Ce que je fais", "« Il faut le casser »")], source="D'après Chris Argyris"),
         dict(t="cle", texte="Plus on monte l'échelle, plus on parle de soi et moins on parle de l'élève. Une fiche d'incident professionnelle reste sur le premier barreau."),
         dict(t="deux", titre="Ce que l'on sait, ce que l'on extrapole", a=("Solide, à l'échelle des groupes", ["Le cerveau poursuit sa maturation à l'adolescence", "Le regard des pairs pèse davantage", "La variabilité individuelle est très grande"]), b=("Abusif, à l'échelle d'un élève", ["« Il ne peut pas se contrôler »", "« Son cerveau est en retard »", "« Inutile de lui demander de réfléchir »"])),
         dict(t="def", titre="Trois besoins psychologiques fondamentaux", terme="Autonomie · compétence · affiliation", definition="Selon la théorie de l'autodétermination, la motivation et le bien-être reposent sur trois besoins : se sentir à l'origine de ses actes, se sentir capable, se sentir relié aux autres. Une remarque humiliante devant la classe atteint à la fois la compétence et l'affiliation.", source="Edward Deci et Richard Ryan"),
         dict(t="etapes", titre="Les compétences psychosociales", etapes=[("Cognitives", "Conscience de soi, maîtrise des impulsions, prise de décision"), ("Émotionnelles", "Identifier, réguler ses émotions, gérer son stress"), ("Sociales", "Communiquer, coopérer, résoudre des difficultés")], source="Santé publique France, 2022"),
         dict(t="points", titre="Le CPE ne diagnostique pas", points=["Il décrit, il observe, il croise les regards", "Il n'évoque jamais un trouble devant la famille", "Il oriente vers l'infirmière, la psychologue, le médecin", "Le secret médical cadre le partage d'informations, il n'empêche pas le travail en équipe"]),
-        dict(t="etapes", titre="Quand un élève met en cause un adulte", etapes=[("Écouter", "Sans juger, sans interrompre, sans minimiser"), ("Ne pas promettre le secret", "Expliquer que vous devez en parler pour le protéger"), ("Tracer fidèlement", "Ses mots, la date, le contexte"), ("Informer la direction", "C'est elle qui établit les faits"), ("Ne pas confronter", "Ni l'élève à l'adulte, ni l'adulte en public")]),
+        dict(t="etapes", titre="Partager une information sensible", etapes=[("Qui en a besoin ?", "Seulement les adultes qui agissent auprès de l'élève"), ("Pour quoi faire ?", "Une adaptation concrète, pas une étiquette"), ("Sous quelle forme ?", "Des besoins éducatifs, jamais un diagnostic"), ("Avec quel accord ?", "Celui de la famille, et de l'élève selon son âge"), ("Par quel circuit ?", "Infirmière, médecin, direction ; plan d'accompagnement si nécessaire")], source="Secret professionnel partagé : le « besoin d'en connaître »"),
         dict(t="points", titre="Tenir le cadre sans humilier", points=["Le rappel à la règle se fait à l'écart, pas en public", "La consigne est explicite, montrée, vérifiée", "La réparation est possible et proposée", "Une réponse testée a une date de réévaluation"], source="Éduscol, levier « justice scolaire » du climat scolaire"),
     ],
 ))
@@ -760,13 +775,13 @@ ATELIERS.append(dict(
     problematique="Une élève accumule les retards, ses résultats baissent, elle s'isole, et ses deux parents me donnent des versions différentes. Comment construire une alliance éducative avec la famille sans appliquer mécaniquement le règlement et sans refermer trop vite le dossier ?",
     situation="""
 <p>Mila est en 3e. Depuis la rentrée, elle arrive en retard plusieurs fois par semaine. Le règlement intérieur prévoit une retenue tous les trois retards : elle en a cinq de retard, qu'elle n'a pas faites. Son professeur principal vous demande de « faire appliquer le règlement ».</p>
-<p>Dans le même temps, ses résultats baissent, un AED l'a vue seule à plusieurs récréations, et la professeure d'EPS signale qu'elle ne va plus aux vestiaires. Ses parents sont séparés. Sa mère vous écrit poliment ; son père vous écrit en colère.</p>""",
+<p>Dans le même temps, ses résultats baissent, un AED l'a vue seule à plusieurs récréations, et la professeure d'EPS l'a vue s'endormir deux fois pendant l'échauffement. Ses parents sont séparés. Sa mère vous écrit poliment ; son père vous écrit en colère.</p>""",
     objectifs=[
         "Repérer la convergence de signaux faibles derrière un problème d'assiduité.",
         "Distinguer retard et absence, punition automatique et réponse individualisée.",
-        "Identifier une procédure nationale qui ne s'applique pas telle quelle à l'étranger.",
+        "Distinguer une difficulté familiale à accompagner d'une situation de danger qui impose une alerte.",
         "Respecter les droits des deux parents exerçant l'autorité parentale.",
-        "Conduire un entretien qui permet à l'élève de parler, et basculer vers la protection si nécessaire.",
+        "Conduire un entretien qui permet à l'élève de parler et de chercher elle-même des solutions.",
     ],
     competences=["C5", "C7", "C8"],
     blocs=["1", "3"],
@@ -777,7 +792,7 @@ ATELIERS.append(dict(
         "Le plan de suivi nomme les personnes associées, ce qu'elles font et une date de réévaluation.",
         "Le plan traite à la fois l'assiduité et les autres signaux.",
         "Le message aux parents est identique pour les deux, sans prendre parti.",
-        "Si une révélation a eu lieu, le circuit de protection est engagé et tracé.",
+        "Le plan dit, en le justifiant, si la situation relève d'un accompagnement ou d'une alerte.",
     ],
     docs=[
         dict(titre="Le relevé d'assiduité de Mila", type="Données", groupe=2, html="""
@@ -800,7 +815,7 @@ ATELIERS.append(dict(
 <ul>
 <li><strong>Bulletin de mi-trimestre :</strong> moyenne générale passée de 14,2 à 10,8 ; « participation en net recul » (trois professeurs).</li>
 <li><strong>Elsa, AED :</strong> « Mila est restée seule pendant trois récréations cette semaine. Avant, elle était toujours avec le même groupe de filles. »</li>
-<li><strong>Mme Okafor, EPS :</strong> « Depuis deux semaines, Mila refuse d'aller aux vestiaires. Elle se change aux toilettes ou elle ne se change pas. »</li>
+<li><strong>Mme Okafor, EPS :</strong> « Deux fois ce mois-ci, Mila s'est endormie sur le banc pendant l'échauffement. Elle dit qu'elle se couche tard. »</li>
 </ul>"""),
         dict(titre="Le courriel de la mère", type="Messages", groupe=3, html="""
 <blockquote>« Bonjour, je suis désolée pour les retards. Les semaines où Mila est chez son père, le trajet est plus long. Mais ces derniers temps elle traîne aussi chez moi, elle n'a plus envie d'aller au lycée et elle ne veut pas me dire pourquoi. Pouvons-nous nous rencontrer ? »</blockquote>"""),
@@ -818,16 +833,16 @@ ATELIERS.append(dict(
 </ol>"""),
         dict(titre="Cartes des entretiens", type="Simulation", groupe=4, html="""
 <div class="cards">
-<div class="card"><h4>Mila</h4><p>Au départ : « Je suis fatiguée des remarques sur mes retards. »</p><p>Si le CPE pose une question ouverte : « Le matin, je n'ai pas envie de venir. »</p><p>Si le CPE reformule sans juger et annonce le cadre : vous vous mettez à parler des vestiaires (voir le document 10, que le formateur vous remettra).</p><p>Si le CPE parle d'abord des retenues : vous vous fermez.</p></div>
+<div class="card"><h4>Mila</h4><p>Au départ : « Je suis fatiguée des remarques sur mes retards. »</p><p>Si le CPE pose une question ouverte : « Le matin, je n'ai pas envie de venir. »</p><p>Si le CPE reformule sans juger et annonce le cadre : vous finissez par expliquer vos matins (voir le document 10, que le formateur vous remettra).</p><p>Si le CPE parle d'abord des retenues : vous vous fermez.</p></div>
 <div class="card"><h4>Le père</h4><p>Vous êtes en colère et vous menacez. Vous vous apaisez si le CPE ne se justifie pas, reconnaît votre inquiétude et vous présente des faits.</p><p>Vous demandez à nouveau que la mère ne soit pas informée.</p></div>
 <div class="card"><h4>Observateur</h4><p>Relevez : l'annonce du cadre, les questions ouvertes, les reformulations, ce qui a ouvert ou fermé la parole, la conclusion et la date de suivi.</p></div>
 </div>"""),
         dict(titre="Ce que Mila finit par dire", type="Rebondissement", html="""
-<blockquote>« Dans les vestiaires, il y a des filles qui prennent des photos quand on se change. Elles les mettent sur un groupe. Il y en a une de moi. Tout le monde l'a vue. Je ne veux pas que mes parents le sachent. Je ne veux plus venir. »</blockquote>"""),
+<blockquote>« Les semaines chez papa, il part travailler à 6 h. C'est moi qui emmène mon petit frère à son école, à l'autre bout de la ville, puis je cours prendre le bus. Le soir, je le garde jusqu'à 20 h. Les semaines chez maman, je n'arrive plus à me lever, je suis épuisée. Je ne veux pas que papa ait des ennuis. Et je ne veux pas que maman le sache, sinon ils vont encore se disputer. »</blockquote>"""),
     ],
     groupes=[
         dict(nom="Le cadre", angle="Que dit la règle, et s'applique-t-elle ici ?",
-             questions=["L'article 12 impose-t-il des retenues automatiques ? Que devient l'individualisation ?", "La procédure de l'article L131-8 concerne-t-elle Mila ? Pour deux raisons au moins.", "Que faire de la mention « à appliquer systématiquement » ?"],
+             questions=["L'article 12 impose-t-il des retenues automatiques ? Que devient l'individualisation ?", "La procédure de l'article L131-8 concerne-t-elle Mila ? Que traite-t-elle exactement ?", "Que faire de la mention « à appliquer systématiquement » ?"],
              docs=[3, 4, 2]),
         dict(nom="Les signaux", angle="Que disent les données quand on les croise ?",
              questions=["Les retards suivent-ils la garde alternée ? Regardez semaine par semaine.", "Quels signaux le trajet n'explique-t-il pas ?", "Quelles hypothèses devez-vous garder ouvertes ?"],
@@ -865,7 +880,7 @@ ATELIERS.append(dict(
         "Que répondez-vous désormais à un parent qui vous demande d'exclure l'autre parent ?",
     ],
     approfondir="accompagnement",
-    refs=["missions", "phare", "protection", "climat"],
+    refs=["missions", "protection", "climat"],
     formateur=dict(
         materiel=["Dossier en quatre jeux", "Cartes du document 9 par triade", "Document 10 en plusieurs exemplaires, remis seulement aux triades où Mila a parlé"],
         deroule=[
@@ -880,30 +895,30 @@ ATELIERS.append(dict(
             "« Le règlement a été voté. Si vous ne l'appliquez pas pour Mila, vous devrez l'expliquer aux trente autres. »",
             "« Quinze retards, c'est plus que quatre demi-journées. La procédure s'applique, non ? »",
             "« Le père a la garde cette semaine. C'est à lui que vous parlez, point. »",
-            "« Mila vous demande de ne rien dire à ses parents. Si vous les prévenez, elle ne vous fera plus jamais confiance. »",
-            "« Ce sont des histoires de filles entre elles. Une médiation suffira. »",
+            "« Mila vous demande de ne rien dire à sa mère. Si vous la prévenez, elle ne vous fera plus jamais confiance. »",
+            "« Une adolescente qui garde son petit frère tous les jours, c'est de la maltraitance : il faut signaler tout de suite. »",
         ],
         attendus="""
 <p><strong>Le cadre.</strong> Un règlement intérieur peut prévoir une punition après trois retards, mais une application automatique sans examen de la situation contredit l'individualisation et ne traite pas la cause. L'article L131-8 vise les absences (pas les retards) et la procédure française devant l'autorité académique ; à l'étranger, elle ne s'applique pas telle quelle : vérifier la procédure de l'établissement. La mention « à appliquer systématiquement » n'a aucune valeur.</p>
-<p><strong>Les signaux.</strong> Les retards ne suivent pas seulement la garde : la dernière semaine, chez la mère, en compte cinq. Le trajet explique une partie des retards, pas la baisse des résultats, l'isolement, ni le refus des vestiaires. La convergence de ces signaux justifie de penser à une situation de harcèlement ou de mal-être.</p>
+<p><strong>Les signaux.</strong> Les retards ne suivent pas seulement la garde : la dernière semaine, chez la mère, en compte cinq. Le trajet explique une partie des retards, pas la baisse des résultats, l'isolement, ni l'endormissement en EPS. La convergence de ces signaux justifie de chercher ce qui se passe hors du lycée, sans conclure.</p>
 <p><strong>La famille.</strong> Les deux parents exercent l'autorité parentale : l'établissement informe les deux, et ne peut pas exclure la mère à la demande du père. Répondre à la menace par des faits et une proposition de rencontre.</p>
-<p><strong>Rebondissement.</strong> À Mila : « Ce que tu me dis est grave et tu as bien fait de le dire. Je ne peux pas le garder pour moi, parce que je dois te protéger. Je vais en parler à la proviseure et nous allons voir ensemble comment informer tes parents. » Puis : direction, référents harcèlement, protection de l'image (signalement des contenus, conservation des preuves). Les parents sont informés, avec tact, par la direction et le CPE. Les retenues sont suspendues : elles ne sont plus le sujet.</p>""",
+<p><strong>Rebondissement.</strong> Mila porte chaque matin la charge de son petit frère et elle est épuisée : c'est une difficulté familiale sérieuse, pas en soi un danger qui impose une alerte immédiate. À Mila : la remercier, ne pas promettre de taire ce qui doit être traité, lui dire que l'on va chercher une solution avec ses parents sans les mettre en faute. Ensuite : informer la direction, solliciter l'infirmière et, s'il existe, le service social ou son équivalent local ; rencontrer le père sans le culpabiliser (horaires, solution de garde) ; informer les deux parents de ce qui concerne la scolarité, sans entrer dans leur conflit. Les retenues sont suspendues : elles ne sont plus le sujet. Si la situation s'aggravait (enfant laissé seul, épuisement majeur, mise en danger), elle relèverait du circuit de protection.</p>""",
         vigilance=[
-            "La diffusion d'images d'un élève dénudé est grave : elle relève du harcèlement et peut constituer une infraction. Les suites pénales et les signalements sont pris en charge par la direction.",
+            "Toute difficulté familiale n'est pas un danger : l'atelier entraîne au discernement entre accompagnement et alerte, sans minimiser ni dramatiser.",
             "Le document 10 n'est remis qu'aux triades qui ont ouvert la parole : en tirer la leçon au bilan, sans culpabiliser ceux qui ne l'ont pas obtenu.",
             "Si un stagiaire est touché par le thème, le laisser se retirer du jeu de rôle.",
         ],
     ),
     slides=[
         dict(t="titre", titre="Ne pas refermer trop vite le dossier", sous="Bilan de l'atelier 5 · Accompagner un élève et sa famille"),
-        dict(t="points", titre="Ce que vous avez dû trancher", points=["Appliquer un règlement ou traiter une situation", "Une procédure nationale qui ne s'appliquait pas", "Deux parents, deux versions, une demande d'exclure l'autre", "Une révélation et une demande de silence"]),
+        dict(t="points", titre="Ce que vous avez dû trancher", points=["Appliquer un règlement ou traiter une situation", "Une procédure nationale qui ne s'appliquait pas", "Deux parents, deux versions, une demande d'exclure l'autre", "Une révélation qui n'appelle ni le silence ni le signalement automatique"]),
         dict(t="def", titre="Les signaux faibles", terme="C'est la convergence qui alerte", definition="Un retard, une note en baisse, un moment de solitude ne disent rien seuls. Leur coïncidence dans le temps (assiduité, résultats, relations, rapport au corps) constitue un signal. Le rôle du CPE est de la repérer et de la partager avec les bonnes personnes.", source="Référentiel de formation 2026, compétences 1.4 et 1.5"),
         dict(t="deux", titre="Retard et absence ne relèvent pas des mêmes règles", a=("Le retard", ["Traité par le règlement intérieur", "Punition possible, réponse éducative à privilégier", "Toujours examiner la cause"]), b=("L'absence", ["En France : quatre demi-journées non justifiées dans le mois entraînent une saisine de l'autorité académique", "À l'étranger : procédure de l'établissement, à vérifier", "Code de l'éducation, art. L131-8"])),
         dict(t="cle", texte="Une punition automatique répond au symptôme. Elle ne dit rien de ce qui le produit, et peut fermer la seule porte par laquelle l'élève aurait parlé."),
         dict(t="points", titre="Coéducation et autorité parentale", points=["La coopération avec les parents est un principe inscrit dans la loi de refondation de l'École (2013)", "En cas de séparation, les deux parents exercent en principe l'autorité parentale", "L'établissement informe les deux, sauf décision de justice contraire", "On ne choisit pas un parent contre l'autre"]),
         dict(t="etapes", titre="L'écoute active", etapes=[("Empathie", "Comprendre le point de vue de l'autre de l'intérieur"), ("Considération", "Ne pas juger la personne, même si on juge l'acte"), ("Authenticité", "Être cohérent entre ce que l'on dit et ce que l'on fait"), ("Reformulation", "Redire pour vérifier et pour faire sentir que l'on a entendu")], source="D'après Carl Rogers"),
-        dict(t="points", titre="Annoncer le cadre de la confidentialité", points=["Dès le début de l'entretien, pas après la révélation", "« Ce que tu me dis reste entre nous, sauf si tu es en danger »", "Ne jamais promettre le secret absolu", "Expliquer ensuite à qui l'on parle, et pourquoi"]),
-        dict(t="etapes", titre="Quand la parole bascule vers la protection", etapes=[("Remercier et rassurer", "Tu as bien fait de parler"), ("Protéger", "Évaluer la sécurité immédiate, ne pas laisser l'élève seul"), ("Alerter", "Direction, référents harcèlement, infirmière"), ("Préserver les preuves", "Sans les diffuser ni les regarder en groupe"), ("Informer la famille", "Avec la direction, avec tact")], source="Programme pHARe ; Éduscol, protection de l'enfance"),
+        dict(t="def", titre="Les élèves aidants", terme="Une charge invisible", definition="Un élève qui apporte régulièrement une aide à un proche (petit frère ou petite sœur, parent malade ou absent) peut voir sa scolarité fragilisée : fatigue, retards, isolement. Le repérer permet d'adapter et d'orienter, sans culpabiliser la famille.", source="À articuler avec les ressources sociales et de santé disponibles localement"),
+        dict(t="deux", titre="Accompagner ou alerter ?", a=("Accompagner", ["Une difficulté réelle, sans danger immédiat", "Un travail avec l'élève et les deux parents", "Infirmière, service social, aménagements"]), b=("Alerter", ["Un danger ou un risque de danger pour l'élève", "La direction informée sans délai", "Le circuit de protection de l'établissement"]), source="Éduscol, protection de l'enfance"),
         dict(t="points", titre="Écrire un compte rendu professionnel", points=["Date, lieu, personnes présentes, objet", "Des faits, et des paroles rapportées entre guillemets", "Les actions décidées, les responsables, l'échéance", "Diffusé aux seules personnes qui en ont besoin pour agir"]),
     ],
 ))
@@ -920,7 +935,7 @@ ATELIERS.append(dict(
 <p>Lundi, 8 h 05. Une vidéo de quinze secondes circule depuis le week-end sur les téléphones des élèves de 2nde. On y voit Inès, élève de 2nde B, filmée à son insu à la cantine pendant qu'un groupe l'imite et rit. La vidéo est accompagnée de messages insultants, dont certains visent aussi un professeur.</p>
 <p>Plusieurs élèves désignent Yanis comme « celui qui a filmé ». Les parents d'Inès sont au portail : ils exigent son exclusion « dès aujourd'hui ». Inès est restée chez elle. La proviseure vous demande un point à 10 h et « une réponse ferme avant vendredi ». Sur un réseau social, un parent évoque déjà l'affaire.</p>""",
     objectifs=[
-        "Distinguer punition et sanction, et situer qui décide.",
+        "Choisir entre punition et sanction, et préparer une décision qui appartient au chef d'établissement.",
         "Appliquer les principes généraux du droit disciplinaire à une situation sous pression.",
         "Reconnaître une situation de harcèlement et engager une prise en charge adaptée.",
         "Situer les procédures de protection françaises et leur transposition dans un établissement à l'étranger.",
@@ -1002,6 +1017,31 @@ ATELIERS.append(dict(
         dict(titre="Mardi, 14 h : l'entretien avec Yanis", type="Rebondissement", html="""
 <blockquote>« Oui, j'ai filmé. Mais c'est les terminales qui m'ont dit de le faire, sinon ils mettaient en ligne la vidéo de moi de l'an dernier, quand ils m'avaient enfermé dans les toilettes. Je n'ai pas mis la vidéo sur le groupe. C'est Sacha qui l'a envoyée. Je ne veux pas qu'ils sachent que j'ai parlé. »</blockquote>
 <p class="note">Le dossier de Yanis mentionne, l'an dernier, un « conflit avec des élèves plus âgés, réglé par une discussion ».</p>"""),
+        dict(titre="Douze cartes pour la première heure", type="Outil", html="""
+<div class="cards nine">
+<div class="card">1 · Appeler les parents d'Inès pour organiser sa protection et son retour</div>
+<div class="card">2 · Conserver une preuve datée de la vidéo, sans la diffuser</div>
+<div class="card">3 · Informer la proviseure</div>
+<div class="card">4 · Convoquer Yanis devant sa classe</div>
+<div class="card">5 · Recevoir séparément les élèves cités</div>
+<div class="card">6 · Réunir la cellule de suivi</div>
+<div class="card">7 · Annoncer aux parents d'Inès que Yanis sera exclu</div>
+<div class="card">8 · Répondre sur le réseau social au nom du lycée</div>
+<div class="card">9 · Prévenir M. Garnier qu'il est visé et lui proposer un soutien</div>
+<div class="card">10 · Demander aux AED une vigilance à la cantine</div>
+<div class="card">11 · Montrer la vidéo à la classe pour la faire réagir</div>
+<div class="card">12 · Consigner les faits connus, avec l'heure</div>
+</div>"""),
+        dict(titre="Cartes de la commission éducative", type="Simulation", html="""
+<p class="note">La commission éducative examine la situation d'un élève et recherche une réponse éducative ; elle ne prononce pas de sanction. Son existence et sa composition dépendent du règlement de l'établissement.</p>
+<div class="cards">
+<div class="card"><h4>La proviseure</h4><p>Vous présidez. Vous rappelez l'objet de la commission et vous veillez à ce que Yanis et son parent soient entendus.</p></div>
+<div class="card"><h4>Le CPE</h4><p>Vous présentez les faits établis, ceux qui restent incertains, et la situation de Yanis.</p></div>
+<div class="card"><h4>Le professeur principal</h4><p>Vous décrivez Yanis en classe. Vous êtes partagé : il a filmé, mais il est en souffrance.</p></div>
+<div class="card"><h4>Yanis</h4><p>Vous reconnaissez avoir filmé. Vous avez peur des terminales et vous refusez de les nommer devant tout le monde.</p></div>
+<div class="card"><h4>Le parent de Yanis</h4><p>Vous défendez votre fils. Vous découvrez ce qui lui est arrivé l'an dernier et vous êtes en colère contre le lycée.</p></div>
+<div class="card"><h4>Les observateurs</h4><p>Vérifiez : contradictoire, individualisation, proportionnalité, protection de Yanis, mesure éducative proposée.</p></div>
+</div>"""),
     ],
     groupes=[
         dict(nom="Le droit disciplinaire", angle="Peut-on exclure Yanis aujourd'hui ?",
@@ -1065,6 +1105,8 @@ ATELIERS.append(dict(
             "« La publication sur le réseau social n'est pas notre affaire, c'est hors de l'établissement. »",
         ],
         attendus="""
+<p><strong>Les douze cartes.</strong> Ordre attendu : 3, 2 et 12 dans les premières minutes, puis 1, 6, 5, 9 et 10. Cartes à rejeter : 4 (humiliation publique), 7 (promesse d'une sanction qui ne relève pas du CPE), 8 (seule la direction communique), 11 (nouvelle diffusion de l'humiliation).</p>
+<p><strong>Commission éducative.</strong> Une issue réussie : la responsabilité de Yanis est reconnue, une mesure de responsabilisation ou de réparation est proposée, sa protection devient une priorité, et l'enquête sur les commanditaires est confiée à la direction. Une issue ratée : Yanis est sommé de nommer les terminales en séance.</p>
 <p><strong>Ordre attendu.</strong> 1) Inès : contacter la famille pour sa sécurité et son retour, proposer un accueil protégé. 2) Préserver les preuves (sans diffuser la vidéo). 3) Informer la direction et réunir la cellule. 4) Établir les faits. 5) Seulement ensuite, la question disciplinaire.</p>
 <p><strong>Le droit disciplinaire.</strong> Seul le chef d'établissement (ou le conseil de discipline) prononce une sanction, après une procédure contradictoire. Une exclusion « dès aujourd'hui » n'est possible que sous la forme d'une mesure conservatoire, dans le cadre d'une procédure engagée ; ce n'est pas une sanction. Individualisation : la part de chaque élève (filmer, diffuser, commanditer, commenter) est distincte.</p>
 <p><strong>Le harcèlement.</strong> Répétition (depuis la rentrée), rapport de force (un groupe contre une élève), isolement : les critères sont réunis. Camille aurait dû écrire : c'est un enseignement pour l'équipe. Pas de confrontation ni de médiation.</p>
@@ -1113,9 +1155,9 @@ ATELIERS.append(dict(
     competences=["C6", "C3"],
     blocs=["1", "3"],
     blocs_detail="1.6 (citoyenneté participative, engagement des élèves) ; 3.1 (principes et valeurs de la République)",
-    production="La feuille de route des élus jusqu'à la réunion avec la direction, et le plan de retour à tous les élèves.",
+    production="Le questionnaire réécrit et testé, et la feuille de route des élus jusqu'à la réunion avec la direction.",
     criteres=[
-        "La feuille de route prévoit une consultation corrigée de ses biais.",
+        "Le questionnaire réécrit pose une question neutre, ouverte à tous les niveaux, et a résisté au crash-test d'un autre groupe.",
         "Elle associe les collégiens par leurs propres instances.",
         "Elle distingue ce que les élus proposent et ce que l'instance compétente décide.",
         "Elle prévoit un retour aux élèves, quelle que soit la réponse de la direction.",
@@ -1166,14 +1208,11 @@ ATELIERS.append(dict(
         dict(titre="Le message de la direction", type="Messages", groupe=4, html="""
 <blockquote>M. Vidal : « Un espace calme, pourquoi pas, mais je n'ai pas de salle libre, pas de budget voté et des contraintes de surveillance. Je ne veux pas d'une nouvelle déception comme les casiers. Qu'ils viennent avec un projet sérieux. »</blockquote>
 <p class="note">Le conseil d'établissement qui vote le budget se réunit le 20 novembre.</p>"""),
-        dict(titre="Cartes de la réunion", type="Simulation", groupe=4, html="""
+        dict(titre="Cartes de la répétition", type="Simulation", groupe=4, html="""
 <div class="cards">
-<div class="card"><h4>Tom, élu</h4><p>Vous êtes méfiant. Vous ramenez les casiers et l'idée de blocage.</p></div>
-<div class="card"><h4>Sarah, élue</h4><p>Vous voulez un projet solide. Vous avez préparé un plan d'usage de l'espace.</p></div>
-<div class="card"><h4>Léo, élu du CVC</h4><p>Vous demandez la place des collégiens.</p></div>
-<div class="card"><h4>M. Vidal</h4><p>Vous posez vos contraintes. Vous refusez de promettre sans étude.</p></div>
-<div class="card"><h4>CPE</h4><p>Vous faites circuler la parole, vous faites préciser qui décide de quoi, vous ne portez pas le projet à la place des élus.</p></div>
-<div class="card"><h4>Observateur</h4><p>Notez qui parle, combien de temps, qui décide, et ce qui est promis.</p></div>
+<div class="card"><h4>L'élu ou l'élue</h4><p>Vous présentez le projet d'espace calme en deux minutes : le besoin, ce que disent les élèves, ce que vous demandez exactement.</p></div>
+<div class="card"><h4>M. Vidal</h4><p>Vous interrompez une fois avec une objection : salle, budget, surveillance ou « comme les casiers ». Vous ne promettez rien.</p></div>
+<div class="card"><h4>Le CPE coach</h4><p>Vous ne parlez pas pendant la présentation. Après : deux points forts, une question, une suggestion. Vous ne réécrivez pas le discours à la place de l'élu.</p></div>
 </div>"""),
         dict(titre="Vendredi : le journal lycéen", type="Rebondissement", html="""
 <p>Le journal lycéen, animé par deux élus, publie un article intitulé « Cantine : on nous empoisonne ? ». Il cite nommément le cuisinier, affirme sans preuve que « des produits périmés sont servis » et appelle à « boycotter la cantine lundi ».</p>
@@ -1238,6 +1277,7 @@ ATELIERS.append(dict(
             "« Le journal est diffamatoire : le CPE doit le confisquer immédiatement. »",
         ],
         attendus="""
+<p><strong>Crash-test.</strong> Une question recevable : « Parmi ces projets, lequel vous semble le plus utile pour la vie au lycée ? Espace calme · Accueil des nouveaux élèves · Cantine · Autre (précisez) », diffusée à tous les niveaux et au collège par le CVC, avec le nombre de réponses affiché.</p>
 <p><strong>Le cadre.</strong> Les droits des lycéens ne permettent pas d'empêcher l'accès au lycée : l'exercice de ces droits ne doit porter atteinte ni aux enseignements, ni à la sécurité, ni à la liberté d'autrui. Le CPE n'interdit pas seulement : il propose des formes légitimes (pétition, motion au CVL, publication, réunion d'information, présentation au conseil d'établissement).</p>
 <p><strong>Les chiffres.</strong> Question orientée (« ENFIN », « comme dans tous les bons lycées »), diffusion limitée aux terminales, réponses volontaires, 100 sur 300 : rien ne permet de parler au nom des lycéens. On peut dire que 87 des 100 répondants, majoritairement en terminale, sont favorables. Une consultation neutre, ouverte à tous les niveaux et au collège via le CVC, est nécessaire.</p>
 <p><strong>La confiance.</strong> Le projet de casiers est mort faute de suite écrite et de retour aux élèves. La participation s'effondre quand la parole ne produit rien de visible. Il faut une boucle de retour : ce qui a été demandé, ce qui a été répondu, pourquoi.</p>
@@ -1314,10 +1354,10 @@ ATELIERS.append(dict(
 <tr><td>3</td><td>Structurer les suivis et les partenariats</td><td></td><td></td><td></td></tr>
 <tr><td>4</td><td>Bilan avec la direction, deux ou trois priorités</td><td></td><td></td><td></td></tr>
 </tbody></table>"""),
-        dict(titre="9 h 20 : deux nouvelles", type="Rebondissement", html="""
+        dict(titre="9 h 20 : deux appels", type="Rebondissement", html="""
 <ul>
-<li>La mère de l'élève de 5e (événement de 8 h 25) appelle : « Ma fille vient de m'écrire qu'elle a parlé à quelqu'un au lycée. Pourquoi personne ne m'a prévenue ? »</li>
-<li>La proviseure, entre deux rendez-vous : « Pour le point de 11 h, mettez-moi les noms des élèves concernés et le détail de ce que la petite a raconté, je veux tout. Les inspecteurs pourraient demander. »</li>
+<li>Le père de l'élève de 6e (événement de 8 h 05) appelle de l'étranger : « Pourquoi avez-vous appelé ma sœur ? Mon fils est grand, il sait se débrouiller trois jours. Ce n'est pas votre affaire. »</li>
+<li>La proviseure, entre deux rendez-vous : « Pour le point de 11 h, mettez-moi les noms des élèves concernés, le détail de ce qu'a dit le petit de 6e et ce que l'infirmière a constaté pour l'élève de 1re. Les inspecteurs pourraient demander. »</li>
 </ul>"""),
     ],
     groupes=[],
@@ -1366,20 +1406,20 @@ ATELIERS.append(dict(
             "Écrit individuel ; inviter deux volontaires à lire leur critère qui a cédé.",
         ],
         relances=[
-            "« Le père crie dans le hall devant les élèves. Vous ne pouvez pas le laisser comme ça : recevez-le d'abord. »",
+            "« Le car attend : laissez partir l'élève, sa mère a dit oui au téléphone. »",
             "« Fouiller un sac, c'est cinq secondes. Le professeur est sûr de lui. »",
             "« La proviseure est votre supérieure. Si elle veut les noms, vous les donnez. »",
-            "« L'élève de 5e est en cours, elle est en sécurité. Ça peut attendre la récréation. »",
-            "« Six demi-journées en trois semaines, ce n'est pas grave, ça attendra demain. »",
+            "« L'élève de 6e est en classe, il est en sécurité : ça peut attendre ce soir. »",
+            "« L'élève de 1re sent l'alcool : c'est une sanction, appelez ses parents pour qu'ils viennent le chercher. »",
         ],
         attendus="""
 <p><strong>Critères attendus.</strong> Protection de l'élève, sécurité des personnes, continuité du service, puis relation et administratif. Les décisions irréversibles se prennent avec la direction ; les décisions réversibles se prennent et se tracent.</p>
-<p><strong>07:52.</strong> Portail T1 : Antoine seul, ou Fabien en binôme (disponible et libre). Accueil T2 : Camille ou Antoine. Prévenir l'équipe.</p>
-<p><strong>08:25 (prioritaire).</strong> Faire venir l'élève discrètement, l'écouter avec Elsa, évaluer sa sécurité, ne pas promettre le secret, informer la direction (même en rendez-vous) et l'infirmière, tracer. Pas de confrontation.</p>
-<p><strong>08:30.</strong> Faire sortir la tension du hall : un adulte le reçoit dans un bureau, le CPE annonce qu'il le verra dans un temps précis, ou propose un rendez-vous rapproché. Ne pas le faire passer devant la protection.</p>
-<p><strong>08:45.</strong> Refuser : un CPE ne fouille pas un élève ni son sac. On peut lui demander de montrer volontairement le contenu ; en cas de refus et de soupçon sérieux d'infraction, la direction peut faire appel aux autorités compétentes. Recevoir l'élève, garder le calme, informer la direction.</p>
-<p><strong>08:10.</strong> Contacter la famille dans la journée selon la procédure de l'établissement ; vérifier les saisies.</p>
-<p><strong>Rebondissement.</strong> À la mère : accueillir son inquiétude, lui dire que sa fille a bien fait de parler, qu'elle est prise en charge, et lui proposer de venir rapidement rencontrer la direction et le CPE. À la proviseure : l'informer oralement de l'essentiel ; dans l'écrit de 11 h, ne mettre ni le détail de la confidence ni les noms, qui relèvent du circuit de protection et non d'un point d'activité ; le lui expliquer.</p>""",
+<p><strong>07:50, la sortie.</strong> Sans l'autorisation écrite prévue, l'élève ne part pas : l'accord oral d'un parent ne suffit pas. Il est accueilli en étude ou dans une autre classe, et la famille est rappelée. Le professeur part avec le reste du groupe.</p>
+<p><strong>08:05, l'enfant seul (prioritaire).</strong> Un enfant de 11 ans seul chez lui depuis deux jours est une situation de danger : informer la direction sans attendre, joindre les parents et l'adulte de référence, activer le circuit de protection de l'établissement. On ne laisse pas l'élève repartir seul ce soir sans solution.</p>
+<p><strong>08:20, l'élève de 1re.</strong> D'abord la santé et la sécurité : accompagnement à l'infirmerie, jamais seul. Puis la famille et la direction. La question disciplinaire viendra après, si elle se pose.</p>
+<p><strong>08:40, la photo.</strong> Écouter, vérifier l'autorisation de droit à l'image, faire retirer la photo si elle manque, et renvoyer vers la direction, qui répond pour l'établissement. Ne pas promettre de sanction ni d'indemnité.</p>
+<p><strong>08:45, la fouille.</strong> Refuser : un CPE ne fouille pas un élève ni son sac. On peut lui demander de montrer volontairement le contenu ; en cas de refus et de soupçon sérieux, la direction décide de la suite. Recevoir l'élève, garder le calme.</p>
+<p><strong>Rebondissement.</strong> Au père : rester calme, expliquer que la sécurité de son fils est la priorité de l'établissement et que la direction le rappellera. À la proviseure : l'informer oralement de l'essentiel ; dans l'écrit de 11 h, ne mettre ni les noms, ni le récit de l'enfant, ni les constats de l'infirmière, qui relèvent du circuit de protection et du secret ; le lui expliquer.</p>""",
         vigilance=[
             "Évaluer le raisonnement et l'ordre des priorités, pas une réponse unique.",
             "Le refus de la fouille et le refus de transmettre des détails à la proviseure sont des moments clés : les stagiaires ont besoin de savoir qu'ils ont le droit de dire non, et comment le dire.",
@@ -1388,11 +1428,11 @@ ATELIERS.append(dict(
     ),
     slides=[
         dict(t="titre", titre="Décider quand tout arrive en même temps", sous="Bilan de l'atelier 8 · Une matinée dans la peau du CPE"),
-        dict(t="points", titre="Ce que vous avez dû trancher", points=["Une confidence pendant qu'un père crie dans le hall", "Un collègue qui exige une fouille", "Une proviseure qui veut tout savoir", "Des absences dont personne ne s'est occupé"]),
+        dict(t="points", titre="Ce que vous avez dû trancher", points=["Un enfant de 11 ans seul chez lui depuis deux jours", "Un élève qui sent l'alcool à 8 h 20", "Un collègue qui exige une fouille", "Une proviseure qui veut tout savoir"]),
         dict(t="etapes", titre="Une hiérarchie de critères", etapes=[("1. Protection", "Un élève en danger passe avant tout"), ("2. Sécurité", "Des personnes, des lieux, de l'ordre"), ("3. Continuité", "Le service qui permet d'accueillir"), ("4. Relation", "Les familles, les collègues"), ("5. Administratif", "Ce qui peut attendre une heure")]),
-        dict(t="deux", titre="Urgent n'est pas important", a=("Ce qui crie", ["Le père dans le hall", "Le collègue qui insiste", "Le planning qui manque"]), b=("Ce qui compte", ["L'élève qui a parlé à Elsa", "L'élève qui ne vient plus", "Le respect des droits de l'élève accusé"]), source="D'après la matrice d'Eisenhower"),
+        dict(t="deux", titre="Urgent n'est pas important", a=("Ce qui crie", ["Le parent au téléphone", "Le collègue qui insiste", "Le car qui attend"]), b=("Ce qui compte", ["L'enfant seul chez lui", "L'élève qui a bu, à mettre en sécurité", "Les droits de l'élève accusé de vol"]), source="D'après la matrice d'Eisenhower"),
         dict(t="def", titre="Décider dans l'incertitude", terme="Réversible ou irréversible ?", definition="Une décision réversible (déplacer un AED, différer un rendez-vous) se prend tout de suite et se trace. Une décision irréversible ou qui engage les droits d'une personne (sanction, signalement, communication de données) se prend avec l'autorité compétente.", source=""),
-        dict(t="points", titre="Ce que le CPE ne fait pas", points=["Fouiller un élève ou son sac", "Communiquer le contenu d'une confidence hors du circuit de protection", "Promettre une sanction à une famille", "Mais il le dit, il l'explique, et il propose ce qui est possible"]),
+        dict(t="points", titre="Ce que le CPE ne fait pas", points=["Fouiller un élève ou son sac", "Laisser partir un élève sans l'autorisation requise", "Transmettre des informations de santé ou de protection hors du circuit prévu", "Mais il le dit, il l'explique, et il propose ce qui est possible"]),
         dict(t="def", titre="Le praticien réflexif", terme="Réfléchir dans l'action, réfléchir sur l'action", definition="Pour Donald Schön, le professionnel compétent n'applique pas seulement des savoirs : il ajuste en situation, puis revient sur ce qu'il a fait pour en tirer des enseignements. L'analyse de pratique entre pairs est le lieu de cette seconde réflexion.", source="Donald Schön, The Reflective Practitioner, 1983"),
         dict(t="etapes", titre="Analyser sa pratique entre pairs", etapes=[("Exposer", "Une situation vécue, sans se justifier"), ("Clarifier", "Questions factuelles seulement"), ("Faire des hypothèses", "Plusieurs lectures, aucun conseil imposé"), ("Retenir", "Ce que l'exposant garde pour lui")], source="D'après les groupes d'analyse de pratique professionnelle"),
         dict(t="etapes", titre="Mes trente premiers jours", etapes=[("Semaine 1", "Rencontrer, observer, vérifier le cadre et les circuits d'alerte"), ("Semaine 2", "Sécuriser l'organisation et les transmissions"), ("Semaine 3", "Structurer les suivis et les partenariats"), ("Semaine 4", "Faire le bilan avec la direction, fixer deux ou trois priorités")]),
@@ -1410,3 +1450,10 @@ from atelier_annee import ATELIER_ANNEE  # noqa: E402
 ATELIERS.insert(1, ATELIER_ANNEE)
 for _i, _a in enumerate(ATELIERS, 1):
     _a["n"] = _i
+
+# ----------------------------------------------------------------------
+# Scénarisation : un moteur pédagogique différent pour chaque atelier
+# ----------------------------------------------------------------------
+from scenarios import appliquer  # noqa: E402
+
+appliquer(ATELIERS)

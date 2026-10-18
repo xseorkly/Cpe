@@ -156,7 +156,8 @@ def atelier_page(C, a, MALLETTE_BY_ATELIER):
                 links = "".join(f'<a class="chip-link" href="#a{n}-doc-{k}" data-open-doc>Doc. {k}</a>' for k in g["docs"])
                 qs = "".join(f"<li>{esc(q)}</li>" for q in g["questions"])
                 cards.append(f'<article class="mission"><header><span class="mission-no">Groupe {gi}</span><h4>{esc(g["nom"])}</h4><p class="mission-angle">{esc(g["angle"])}</p></header><ol>{qs}</ol><div class="mission-docs"><span class="label">Pistes dans le dossier</span>{links}</div></article>')
-            parts.append(f'<div class="missions"><h3 class="label">Les missions des groupes experts</h3><div class="mission-grid">{"".join(cards)}</div><p class="small muted">Les pistes ne suffisent pas : tout le dossier est à votre disposition, et certains documents doivent être lus avec méfiance.</p></div>')
+            mt = esc(p.get("mission_titre", "Les missions des groupes experts"))
+            parts.append(f'<div class="missions"><h3 class="label">{mt}</h3><div class="mission-grid">{"".join(cards)}</div><p class="small muted">Les pistes ne suffisent pas : tout le dossier est à votre disposition, et certains documents doivent être lus avec méfiance.</p></div>')
         if p.get("dossier"):
             filt = '<button type="button" class="filter is-on" data-filter="">Tout le dossier</button>' + "".join(
                 f'<button type="button" class="filter" data-filter="{gi}">Groupe {gi} · {esc(g["nom"])}</button>' for gi, g in enumerate(a["groupes"], 1))
@@ -168,6 +169,17 @@ def atelier_page(C, a, MALLETTE_BY_ATELIER):
   <div class="dossier-list">{lib}</div>
   <p class="small muted" data-no-result hidden>Aucun document ne contient ce mot.</p>
 </div>""")
+        if p.get("affirmations"):
+            aff = "".join(f"<li>{esc(x)}</li>" for x in p["affirmations"])
+            parts.append(f'<div class="affirmations"><p class="label">Les affirmations lues par le formateur</p><ol>{aff}</ol><p class="small muted">D\'accord ou pas d\'accord : pas de position médiane.</p></div>')
+        if p.get("vote"):
+            v = p["vote"]
+            opts = "".join(f'<label class="vote-opt"><input type="radio" name="vote-a{n}-{v["id"]}" value="{esc(o)}" data-vote="a{n}:{v["id"]}" data-vote-q="{esc(v["question"])}"><span>{esc(o)}</span></label>' for o in v["options"])
+            parts.append(f'<fieldset class="vote"><legend>{esc(v["question"])}</legend><div class="vote-opts">{opts}</div></fieldset>')
+        if p.get("rappel_vote"):
+            parts.append(f'<div class="recall"><p class="label">Votre premier choix</p><blockquote data-recall-vote="a{n}:{p["rappel_vote"]}"><span class="muted">Aucun vote enregistré sur cet appareil.</span></blockquote></div>')
+        if p.get("roles"):
+            parts.append(f'<p class="roles"><span class="label">Rôles dans le groupe, à faire tourner à chaque atelier</span>Animateur · gardien du temps · rapporteur · <strong>avocat du diable</strong> : il défend la position inverse de celle du groupe.</p>')
         if p.get("planner"):
             mois = ["Septembre", "Octobre", "Novembre", "Décembre", "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Toute l'année"]
             doms = ["Démocratie scolaire", "Équipe AED", "Suivi des élèves", "Prévention et pilotage"]
@@ -191,6 +203,7 @@ def atelier_page(C, a, MALLETTE_BY_ATELIER):
                else f'<button class="btn" type="button" data-next="{i + 1}">J\'ai terminé : passer à l\'étape {i + 1}</button>')
         sections.append(f"""<section class="temps" id="a{n}-t{i}" data-temps="{i}"{" hidden" if i > 1 else ""}>
   <header class="temps-head"><span class="temps-no">Étape {i}</span><h2>{esc(p['titre'])}</h2><span class="mod">{esc(p['modalite'])}</span></header>
+  {f'<p class="fmt"><span>{esc(p["format"])}</span></p>' if p.get("format") else ""}
   <div class="consigne"><p>{esc(p['consigne'])}</p></div>
   {"".join(parts)}
   <div class="note-zone"><label for="note-a{n}-t{i}">Mes notes · étape {i}</label>
@@ -213,6 +226,7 @@ def atelier_page(C, a, MALLETTE_BY_ATELIER):
     <nav class="pager" aria-label="Ateliers">{pager}</nav>
     <p class="eyebrow">Atelier {n} sur {NB} · {esc(a['titre'])}</p>
     <h1 class="problem">{esc(a['problematique'])}</h1>
+    <ul class="moteur" aria-label="Le déroulé de l'atelier">{"".join(f"<li>{esc(m)}</li>" for m in a.get("moteur", []))}</ul>
   </div>
 </section>
 <div class="wrap">
@@ -230,7 +244,7 @@ def atelier_page(C, a, MALLETTE_BY_ATELIER):
   </section>
 
   <section class="howto">
-    <p><strong>Comment avancer ?</strong> Vous écrivez d'abord votre réaction spontanée. Puis vous enquêtez en groupe dans un dossier où tout n'est pas fiable. Une information nouvelle viendra bousculer vos conclusions. Chaque étape ne s'ouvre que lorsque la précédente est terminée.</p>
+    <p><strong>Comment avancer ?</strong> Cet atelier a son propre déroulé : {esc(", ".join(a.get("moteur", [])).lower())}. Chaque étape ne s'ouvre que lorsque la précédente est terminée. Dans le dossier, tout n'est pas fiable, et une information nouvelle viendra bousculer vos conclusions.</p>
     <div class="howto-actions"><button class="btn ghost small" type="button" data-reset>Recommencer l'atelier</button><button class="btn ghost small" type="button" data-print-revealed>Imprimer les documents ouverts</button><button class="btn ghost small" type="button" data-open-bilan>Bilan formateur 🔒</button><button class="btn ghost small" type="button" data-open-pistes>Propositions de réponse 🔒</button></div>
   </section>
 
@@ -266,7 +280,7 @@ def formateur_page(C, a):
     f = a["formateur"]
     total = sum(p["duree"] for p in a["phases"]) + 15
     rows = "".join(
-        f"<tr><td><strong>{i}. {esc(p['titre'])}</strong></td><td>{p['duree']} min</td><td>{esc(p['modalite'])}</td><td>{esc(f['deroule'][i - 1])}</td></tr>"
+        f"<tr><td><strong>{i}. {esc(p['titre'])}</strong><br><span class=\"small muted\">{esc(p.get('format', ''))}</span></td><td>{p['duree']} min</td><td>{esc(p['modalite'])}</td><td>{esc(f['deroule'][i - 1])}</td></tr>"
         for i, p in enumerate(a["phases"], 1))
     rows += "<tr><td><strong>Bilan</strong></td><td>15 min</td><td>Collectif</td><td>Recueil des productions, retour sur les pièges du dossier, puis diaporama d'apports. Terminer par les questions individuelles.</td></tr>"
     pieges = []
@@ -291,6 +305,7 @@ def formateur_page(C, a):
     <p class="eyebrow">Fiche formateur · Atelier {n} · {fmt_min(total)}</p>
     <h1>{esc(a['titre'])}</h1>
     <p class="lead">{esc(a['problematique'])}</p>
+    <ul class="moteur">{"".join(f"<li>{esc(m)}</li>" for m in a.get("moteur", []))}</ul>
     <div class="hero-actions"><button class="btn light" type="button" data-open-bilan>Projeter le bilan</button><a class="btn light ghost" href="../atelier-{n}.html">Page stagiaire</a><button class="btn light ghost" type="button" data-print-page>Imprimer la fiche</button></div>
   </div>
 </section>
