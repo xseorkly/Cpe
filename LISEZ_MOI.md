@@ -15,7 +15,9 @@ Site statique publié avec GitHub Pages : https://xseorkly.github.io/Cpe/
 | `ressources.html` | Stagiaires | PDF, approfondissements, textes de référence, compétences C1 à C8 et blocs 2026 |
 | `approfondir/` | Stagiaires | Six pages de savoirs développés, liées aux ateliers |
 | `formateur/` | Formateur | Programme minuté, fiches par atelier : déroulé, questions pour mettre en difficulté, attendus, vigilance, dossier imprimable, diaporama |
+| `quiz.html` | Tous | Quiz flash de réactivation, en ouverture du jour 2 |
 | `ressources/` | Tous | Guide formateur, carnet, banque de prompts IA, mallette réflexe (PDF) |
+| `ressources/kits/` | Tous | Dossier de chaque atelier, un document par page : `atelier-N-dossier.pdf` (stagiaires, intégré à la page de l'atelier) et `atelier-N-complet.pdf` (formateur, rebondissements compris) |
 
 L'espace `formateur/` n'est lié depuis aucune page stagiaire et il est exclu des moteurs de recherche (`robots.txt`, `noindex`). Ce n'est pas une protection : toute page publiée sur GitHub Pages est accessible à qui connaît son adresse.
 
@@ -24,8 +26,8 @@ L'espace `formateur/` n'est lié depuis aucune page stagiaire et il est exclu de
 Les neuf ateliers sont dans **`_build/ateliers.py`** (l’atelier 2, « Construire mon année de CPE », est dans `_build/atelier_annee.py`) : problématique, situation, dossier documentaire (avec ses documents pièges), missions des groupes, étapes, rebondissements, controverses, critères de réussite, attendus, questions pour mettre en difficulté et diaporamas de bilan. La scénarisation (étapes, formats, durées, consignes et conduite du formateur) est dans `_build/scenarios.py`. Les éléments communs (références, compétences, programme) sont dans `_build/content.py`. Les pages HTML et les deux PDF (guide formateur, carnet) sont générés à partir de ces fichiers.
 
 ```bash
-python3 _build/build.py   # régénère toutes les pages HTML
-python3 _build/pdfs.py    # régénère le guide formateur et le carnet (nécessite reportlab)
+python3 _build/pdfs.py    # régénère le guide, le carnet et les dossiers d'atelier (nécessite reportlab)
+python3 _build/build.py   # régénère toutes les pages HTML (après pdfs.py : les liens vers les pages des PDF en dépendent)
 ```
 
 Ne modifiez pas directement les fichiers HTML générés : ils seraient écrasés à la génération suivante. Le style est dans `assets/site.css`, les comportements dans `assets/site.js`.

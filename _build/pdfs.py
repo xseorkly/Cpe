@@ -236,3 +236,102 @@ def build_carnet():
 if __name__ == "__main__":
     print(build_guide())
     print(build_carnet())
+
+
+# ======================================================================
+# Dossiers imprimables par atelier : un document par page
+# ======================================================================
+from reportlab.platypus import Flowable  # noqa: E402
+
+
+class PageMark(Flowable):
+    """Flowable invisible qui note le numéro de page où il est posé."""
+    def __init__(self, store, key):
+        super().__init__()
+        self.store, self.key = store, key
+        self.width = self.height = 0
+
+    def draw(self):
+        self.store[self.key] = self.canv.getPageNumber()
+
+
+def cards_flow(inner):
+    cards = re.findall(r'<div class="card">(.*?)</div>', inner, re.S)
+    cells = []
+    for c in cards:
+        h = re.search(r"<h4>(.*?)</h4>", c, re.S)
+        body = re.sub(r"<h4>.*?</h4>", "", c, flags=re.S)
+        paras = re.findall(r"<p>(.*?)</p>", body, re.S) or [body]
+        flow = []
+        if h:
+            flow.append(Paragraph(f"<b>{clean(h.group(1))}</b>", S["cell"]))
+        flow += [Paragraph(clean(x), S["cell"]) for x in paras if clean(x)]
+        cells.append(flow)
+    rows = [cells[i:i + 2] + ([[]] if len(cells[i:i + 2]) == 1 else []) for i in range(0, len(cells), 2)]
+    t = Table(rows, colWidths=[85 * mm, 85 * mm])
+    t.setStyle(TableStyle([("BOX", (0, 0), (-1, -1), .6, colors.HexColor("#999999")),
+                           ("INNERGRID", (0, 0), (-1, -1), .6, colors.HexColor("#999999")),
+                           ("VALIGN", (0, 0), (-1, -1), "TOP"), ("TOPPADDING", (0, 0), (-1, -1), 8),
+                           ("BOTTOMPADDING", (0, 0), (-1, -1), 10), ("LEFTPADDING", (0, 0), (-1, -1), 8)]))
+    return [Paragraph("✂ Cartes à découper", S["small"]), t]
+
+
+def doc_flow(html):
+    out = []
+    pat = re.compile(r'<div class="cards[^"]*">((?:\s*<div class="card">.*?</div>)+)\s*</div>', re.S)
+    pos = 0
+    for m in pat.finditer(html):
+        out += html_flow(html[pos:m.start()])
+        out += cards_flow(m.group(1))
+        pos = m.end()
+    out += html_flow(html[pos:])
+    return out
+
+
+def build_kits():
+    import json
+    kdir = os.path.join(ROOT, "ressources", "kits")
+    os.makedirs(kdir, exist_ok=True)
+    pages_all = {}
+    head = ParagraphStyle("kh", fontName="Sans-B", fontSize=9, leading=12, textColor=colors.white)
+    for a in C.ATELIERS:
+        n = a["n"]
+        for version in ("dossier", "complet"):
+            path = os.path.join(kdir, f"atelier-{n}-{version}.pdf")
+            label = "Dossier stagiaire" if version == "dossier" else "Dossier complet · formateur"
+            doc = SimpleDocTemplate(path, pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm, topMargin=16 * mm, bottomMargin=18 * mm,
+                                    title=f"Atelier {n} · {a['titre']} · {label}", author="Formation CPE AEFE")
+            store = {}
+            f = [Paragraph(f"ATELIER {n} · {label.upper()}", S["eyebrow"]), Paragraph(a["titre"], S["h1"]),
+                 Paragraph(a["problematique"], S["h2"]), Paragraph("La situation", S["h3"])]
+            f += html_flow(a["situation"])
+            f.append(Paragraph("Les documents", S["h3"]))
+            rows = [["N°", "Document", "Nature"]]
+            for k, d in enumerate(a["docs"], 1):
+                if version == "dossier" and d.get("type") == "Rebondissement":
+                    continue
+                rows.append([str(k), d["titre"], d.get("type", "")])
+            f.append(table(rows, [12 * mm, 118 * mm, 40 * mm]))
+            if version == "dossier":
+                f.append(Paragraph("N'ouvrez que les documents demandés par la consigne de l'étape. Les rebondissements ne figurent pas dans ce dossier : ils sont distribués au moment prévu.", S["small"]))
+            else:
+                f.append(Paragraph("Les documents marqués « Rebondissement » se distribuent séparément, au moment prévu par le déroulé.", S["small"]))
+            for k, d in enumerate(a["docs"], 1):
+                reb = d.get("type") == "Rebondissement"
+                if version == "dossier" and reb:
+                    continue
+                bar = Table([[Paragraph(f"Atelier {n} · Document {k} · {d.get('type', '')}{'  ·  À DISTRIBUER AU MOMENT PRÉVU' if reb else ''}", head)]], colWidths=[170 * mm])
+                bar.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#a3312b") if reb else NAVY),
+                                         ("TOPPADDING", (0, 0), (-1, -1), 5), ("BOTTOMPADDING", (0, 0), (-1, -1), 5)]))
+                f += [PageBreak(), PageMark(store, str(k)), bar, Spacer(1, 6), Paragraph(d["titre"], S["h2"])]
+                f += doc_flow(d["html"])
+            doc.build(f, onFirstPage=footer(f"Atelier {n} · {label}"), onLaterPages=footer(f"Atelier {n} · {label}"))
+            if version == "dossier":
+                pages_all[str(n)] = store
+    with open(os.path.join(HERE, "kit_pages.json"), "w", encoding="utf-8") as fh:
+        json.dump(pages_all, fh, indent=1)
+    return kdir
+
+
+if __name__ == "__main__":
+    print(build_kits())

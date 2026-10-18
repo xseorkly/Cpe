@@ -199,7 +199,7 @@ def index_page():
     <p class="muted">Suivez les ateliers dans l'ordre : chacun réinvestit les précédents, et le dernier atelier les mobilise tous.</p>
     <div class="days">
       <div><h3 class="day">Jour 1 · Entrer dans le métier, organiser l'année et le service</h3><ol class="cards">{day1}</ol></div>
-      <div><h3 class="day">Jour 2 · Accompagner, protéger, faire participer</h3><ol class="cards">{day2}</ol></div>
+      <div><h3 class="day">Jour 2 · Accompagner, protéger, faire participer</h3><p class="small"><a href="quiz.html">On commence par le quiz flash du jour 1 →</a></p><ol class="cards">{day2}</ol></div>
     </div>
   </section>
 
@@ -284,8 +284,8 @@ def carnet_page():
 MALLETTE = [
     (1, "Ma première semaine en poste", "Acteurs et instances ; documents à demander ; cadre AEFE et circuits à vérifier ; rendez-vous prioritaires."),
     (2, "Mon calendrier annuel de la vie scolaire", "Temps forts mois par mois ; démocratie scolaire ; cycle des AED ; conseils et orientation ; prévention ; périodes de vigilance."),
-    (3, "Diagnostiquer et piloter la vie scolaire", "Faits étayés ; besoins des élèves ; objectif ; postes ; transmissions ; indicateurs et date de bilan."),
-    (4, "Accueillir, animer et réguler l'équipe AED", "Missions et fiche de poste des AED ; accueil ; consignes ; réunion ; observation factuelle ; entretien de régulation."),
+    (3, "Accueillir, animer et réguler l'équipe AED", "Missions et fiche de poste des AED ; accueil ; consignes ; réunion ; observation factuelle ; entretien de régulation."),
+    (4, "Diagnostiquer et piloter la vie scolaire", "Faits étayés ; besoins des élèves ; objectif ; postes ; transmissions ; indicateurs et date de bilan."),
     (5, "Comprendre un comportement d'adolescent", "Comportement observable ; hypothèses multiples ; contexte ; informations manquantes ; réponse éducative à tester."),
     (6, "Conduire un entretien et suivre l'assiduité", "Faits d'assiduité ; questions ouvertes ; parole de l'élève ; coordination ; compte rendu ; date de suivi."),
     (7, "Analyser un incident et choisir la réponse appropriée", "Sécurité ; faits ; personnes à protéger ; qui décide ; punition ou sanction ; dimension éducative ; suivi."),
@@ -353,6 +353,42 @@ def ressources_page():
     write("ressources.html", page("ressources.html", "Ressources · CPE", body, current="ressources.html"))
 
 
+
+# --------------------------------------------------------------------------
+# Quiz flash du jour 2 (réactivation du jour 1)
+# --------------------------------------------------------------------------
+QUIZ = [
+    ("Quel texte définit aujourd'hui les missions du CPE ?", ["La circulaire de 1982", "La circulaire de 2015", "L'arrêté de 2013", "La fiche de poste de l'établissement"], 1, "La circulaire n° 2015-139 a abrogé celle de 1982. L'arrêté de 2013 fixe les compétences, pas les missions."),
+    ("Qui peut prononcer une exclusion temporaire de l'établissement ?", ["Le CPE", "Le professeur qui a constaté les faits", "Le chef d'établissement ou le conseil de discipline", "Le conseil pédagogique"], 2, "Le CPE établit les faits et conseille ; la sanction appartient au chef d'établissement ou au conseil de discipline."),
+    ("Un parent exige le nom de l'élève qui a frappé son fils. Vous…", ["Le donnez, c'est son droit", "Refusez, et recentrez l'échange sur son enfant", "Le renvoyez vers le professeur principal", "Lui promettez une sanction rapide"], 1, "On ne communique jamais les données d'un autre élève. On accueille l'inquiétude et l'on parle de ce qui est fait pour son enfant."),
+    ("Au lycée Horizon, avant quel rendez-vous les délégués doivent-ils être élus et formés ?", ["Les vacances d'hiver", "Le premier conseil d'établissement", "Les conseils de classe du troisième trimestre", "La réunion parents-professeurs"], 1, "Les élus siègent au premier conseil d'établissement du 12 novembre : des élections « en novembre » le rendaient impossible."),
+    ("Quand se prépare le recrutement des AED de la rentrée ?", ["En septembre, quand on connaît les besoins", "En mai et juin de l'année précédente", "Pendant les vacances d'été", "Après la période d'essai"], 1, "Anticiper en mai et juin permet une prise de poste à la pré-rentrée ; septembre sert aux derniers ajustements."),
+    ("Antoine conteste devant l'équipe : « Ici, on a toujours fait comme ça. » La meilleure première réponse ?", ["Le recadrer publiquement", "Céder pour garder la paix", "Reconnaître l'expérience de l'équipe, maintenir la règle, proposer d'en parler en tête-à-tête", "Ne rien répondre"], 2, "Ni épreuve de force en public, ni renoncement : on reconnaît, on maintient, on reprend en entretien."),
+    ("La circulaire AED de 2025 s'applique-t-elle à un AED en contrat de droit local ?", ["Oui, c'est un texte national", "Non, son contrat relève du droit local et du règlement de l'établissement", "Seulement pour les heures de formation", "Seulement s'il est français"], 1, "La circulaire vise les AED recrutés en France sur le fondement du code de l'éducation."),
+    ("Des photos d'élèves circulent sur le groupe de messagerie personnel des AED. Vous…", ["Laissez faire : c'est leur vie privée", "Rejoignez le groupe pour surveiller", "Informez la direction et mettez fin à l'usage de cet outil pour le service", "Supprimez vous-même les messages"], 2, "Déontologie et protection des données : le CPE informe sans délai la direction ; la suite concernant les personnels relève de l'employeur."),
+    ("61 retards la semaine 2, 45 la semaine 3, qui comptait un jour férié. Les retards…", ["Ont baissé de 26 %", "Ont un peu baissé", "N'ont pas baissé de façon démontrée", "Ont augmenté"], 2, "Par jour de classe : 12,2 puis 11,25, avec une semaine 2 sous-estimée par une panne de saisie. Aucune baisse n'est démontrée."),
+    ("280 élèves arrivent en sept minutes par un seul portillon. Le retard est d'abord…", ["Un problème de discipline", "Un problème d'organisation", "Un problème de motivation", "Un problème de familles"], 1, "Le CPE regarde le système avant de regarder les élèves : second portillon, horaires des cars, contrôle des carnets."),
+]
+
+
+def quiz_page():
+    items = []
+    for i, (q, opts, ok, why) in enumerate(QUIZ, 1):
+        o = "".join(f'<li><span class="qz-l">{"ABCD"[j]}</span>{esc(x)}</li>' for j, x in enumerate(opts))
+        items.append(f"""<li class="qz" data-qz>
+  <p class="qz-q"><span class="qz-n">{i}</span>{esc(q)}</p>
+  <ol class="qz-opts">{o}</ol>
+  <button class="btn ghost small" type="button" data-qz-show>Afficher la réponse</button>
+  <div class="qz-a" hidden><p><strong>Réponse {"ABCD"[ok]} · {esc(opts[ok])}.</strong> {esc(why)}</p></div>
+</li>""")
+    body = f"""
+<section class="hero"><div class="wrap"><p class="eyebrow">Jour 2 · 10 minutes</p><h1>Quiz flash du jour 1</h1><p class="lead">Par équipes, avec une ardoise ou une feuille : le formateur lit la question, chaque équipe écrit sa lettre et la lève en même temps. Une réponse juste vaut un point ; une justification juste en vaut un deuxième.</p>
+<div class="hero-actions"><button class="btn light" type="button" data-qz-all>Afficher toutes les réponses</button></div></div></section>
+<div class="wrap"><ol class="quiz">{"".join(items)}</ol>
+<nav class="next-prev"><a class="btn ghost" href="index.html">← Le parcours</a><a class="btn" href="atelier-5.html">Atelier 5 →</a></nav></div>"""
+    write("quiz.html", page("quiz.html", "Quiz flash du jour 1 · CPE", body, current="index.html"))
+
+
 # --------------------------------------------------------------------------
 # Espace formateur : accueil
 # --------------------------------------------------------------------------
@@ -368,6 +404,8 @@ def formateur_index():
                 k = int(label.split()[1])
                 a = C.ATELIERS[k - 1]
                 lines.append(f'<tr><td><a href="atelier-{k}.html">Atelier {k}</a></td><td>{esc(a["titre"])}</td><td>{fmt_min(m)}</td></tr>')
+            elif label.startswith("Quiz"):
+                lines.append(f'<tr><td><a href="../quiz.html">Quiz</a></td><td>{esc(label)}</td><td>{fmt_min(m)}</td></tr>')
             else:
                 lines.append(f"<tr><td>—</td><td>{esc(label)}</td><td>{fmt_min(m)}</td></tr>")
         tot = sum(m for _, m in items)
@@ -458,6 +496,7 @@ def main():
     mallette_page()
     ressources_page()
     formateur_index()
+    quiz_page()
     approfondir_pages()
     print("Site généré.")
 

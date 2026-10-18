@@ -40,10 +40,31 @@ def inline_ids(a):
     return s
 
 
+def slides_dialogue(a):
+    """Insère un temps de parole des groupes et trois questions à la salle."""
+    base = list(a["slides"])
+    q = list(a.get("cloture", []))
+    out = []
+    apports = [x for x in base[2:] if x["t"] != "cle"]
+    cut1, cut2 = 2 + max(1, len(apports) // 3), 2 + max(2, (2 * len(apports)) // 3)
+    for i, sl in enumerate(base):
+        out.append(sl)
+        if i == 1:
+            out.append(dict(t="dialogue", titre="À vous d'abord", texte="Par groupe, 5 minutes : pour chacun de ces points, qu'avez-vous décidé, et sur quel document vous êtes-vous appuyés ? Un porte-parole par groupe répond en une minute."))
+        if i == cut1 and q:
+            out.append(dict(t="q", texte=q.pop(0)))
+        if i == cut2 and q:
+            out.append(dict(t="q", texte=q.pop(0)))
+    for rest in q:
+        out.append(dict(t="q", texte=rest))
+    return out
+
+
 def slides_html(a):
     out = []
-    total = len(a["slides"])
-    for i, s in enumerate(a["slides"]):
+    slides = slides_dialogue(a)
+    total = len(slides)
+    for i, s in enumerate(slides):
         t = s["t"]
         src = f'<p class="slide-src">{esc(s["source"])}</p>' if s.get("source") else ""
         if t == "titre":
@@ -58,6 +79,10 @@ def slides_html(a):
             inner = f'<h3>{esc(s["titre"])}</h3><ol class="slide-steps">' + "".join(f'<li><strong>{esc(l)}</strong><span>{esc(x)}</span></li>' for l, x in s["etapes"]) + "</ol>"
         elif t == "def":
             inner = f'<h3>{esc(s["titre"])}</h3><div class="slide-def"><p class="slide-term">{esc(s["terme"])}</p><p>{esc(s["definition"])}</p></div>'
+        elif t == "dialogue":
+            inner = f'<p class="slide-kicker">Bilan dialogué · les groupes d\'abord</p><h3 class="slide-big">{esc(s["titre"])}</h3><p class="slide-q">{esc(s["texte"])}</p>'
+        elif t == "q":
+            inner = f'<p class="slide-kicker">Question à la salle</p><p class="slide-cle">{esc(s["texte"])}</p><p class="slide-src">Une minute de réflexion, puis trois réponses.</p>'
         elif t == "cle":
             inner = f'<p class="slide-kicker">À retenir</p><p class="slide-cle">{esc(s["texte"])}</p>'
         else:
@@ -127,6 +152,35 @@ def pistes_block(a):
 </section></dialog>"""
 
 
+def kit_pages():
+    import json, os
+    p = os.path.join(os.path.dirname(os.path.abspath(__file__)), "kit_pages.json")
+    try:
+        return json.load(open(p, encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
+def kit_box(a, prefix=""):
+    n = a["n"]
+    pages = kit_pages().get(str(n), {})
+    src = f"{prefix}ressources/kits/atelier-{n}-dossier.pdf"
+    items = []
+    for k, d in enumerate(a["docs"], 1):
+        if d.get("type") == "Rebondissement":
+            continue
+        pg = pages.get(str(k), 1)
+        items.append(f'<li><a href="{src}#page={pg}" data-kit-page="{pg}" target="_blank" rel="noopener"><span class="kit-no">{k}</span>{esc(d["titre"])}</a></li>')
+    return f"""<details class="kit" data-kit data-src="{src}">
+  <summary><span class="kit-ico" aria-hidden="true">PDF</span><span><strong>Le dossier de l'atelier, à l'écran ou sur papier</strong><span class="small muted"> · {len(items)} documents · les mêmes que ceux imprimés sur votre table</span></span></summary>
+  <div class="kit-body">
+    <ol class="kit-list">{"".join(items)}</ol>
+    <div class="kit-view"><iframe title="Dossier imprimable de l'atelier {n}" loading="lazy"></iframe></div>
+    <p class="small"><a href="{src}" target="_blank" rel="noopener">Ouvrir le PDF dans un nouvel onglet</a> · <a href="{src}" download>Télécharger</a> · Les rebondissements ne sont pas dans ce dossier : ils apparaissent à l'étape prévue.</p>
+  </div>
+</details>"""
+
+
 def competences_list(C, a):
     return '<ul class="comp-list">' + "".join(f'<li><abbr title="{esc(C.C2013[k])}">{k}</abbr><span>{esc(C.C2013[k])}</span></li>' for k in a["competences"]) + "</ul>"
 
@@ -169,6 +223,8 @@ def atelier_page(C, a, MALLETTE_BY_ATELIER):
   <div class="dossier-list">{lib}</div>
   <p class="small muted" data-no-result hidden>Aucun document ne contient ce mot.</p>
 </div>""")
+        if p.get("affiche"):
+            parts.append(f'<div class="affiche"><p class="label">Sur l\'affiche</p><p>{esc(p["affiche"])}</p></div>')
         if p.get("affirmations"):
             aff = "".join(f"<li>{esc(x)}</li>" for x in p["affirmations"])
             parts.append(f'<div class="affirmations"><p class="label">Les affirmations lues par le formateur</p><ol>{aff}</ol><p class="small muted">D\'accord ou pas d\'accord : pas de position médiane.</p></div>')
@@ -230,6 +286,7 @@ def atelier_page(C, a, MALLETTE_BY_ATELIER):
   </div>
 </section>
 <div class="wrap">
+  {kit_box(a)}
   <section class="situation" aria-labelledby="sit-{n}">
     <p class="label" id="sit-{n}">La situation</p>
     <div class="situation-txt">{a['situation'].strip()}</div>
@@ -254,7 +311,7 @@ def atelier_page(C, a, MALLETTE_BY_ATELIER):
   <section class="temps cloture" id="a{n}-fin" data-temps="fin" hidden>
     <header class="temps-head"><span class="temps-no">Bilan</span><h2>Mise en commun et apports</h2><span class="mod">Collectif · 15 min</span></header>
     <div class="bilan-launch">
-      <div><p class="label">Diaporama du formateur · protégé</p><p>Le formateur projette la synthèse : ce que vous avez dû trancher, les apports théoriques, les repères à emporter.</p></div>
+      <div><p class="label">Diaporama du formateur · protégé</p><p>Bilan dialogué : les groupes répondent d'abord, puis le formateur fait les apports, avec trois questions à la salle.</p></div>
       <button class="btn big" type="button" data-open-bilan>Ouvrir le bilan ▸</button>
     </div>
     <h3 class="label">Pour conclure, chacun pour soi</h3>
@@ -282,7 +339,7 @@ def formateur_page(C, a):
     rows = "".join(
         f"<tr><td><strong>{i}. {esc(p['titre'])}</strong><br><span class=\"small muted\">{esc(p.get('format', ''))}</span></td><td>{p['duree']} min</td><td>{esc(p['modalite'])}</td><td>{esc(f['deroule'][i - 1])}</td></tr>"
         for i, p in enumerate(a["phases"], 1))
-    rows += "<tr><td><strong>Bilan</strong></td><td>15 min</td><td>Collectif</td><td>Recueil des productions, retour sur les pièges du dossier, puis diaporama d'apports. Terminer par les questions individuelles.</td></tr>"
+    rows += "<tr><td><strong>Bilan</strong></td><td>15 min</td><td>Collectif</td><td>Bilan dialogué : 5 minutes de retour des groupes sur la diapositive « À vous d'abord », puis 10 minutes d'apports ponctuées de trois questions à la salle.</td></tr>"
     pieges = []
     for k, d in enumerate(a["docs"], 1):
         if d.get("type") == "Rebondissement":
@@ -323,7 +380,9 @@ def formateur_page(C, a):
   <section class="block corrige"><h2>Ce que l'on attend</h2>{f['attendus']}{seq}</section>
   <section class="block vigilance"><h2>Points de vigilance</h2><ul>{"".join(f"<li>{esc(v)}</li>" for v in f['vigilance'])}</ul></section>
   <section class="block"><h2>Le diaporama de bilan</h2><p class="muted">{len(a['slides'])} diapositives. Il s'ouvre aussi depuis la fin de la page stagiaire.</p><ol>{outline}</ol><button class="btn" type="button" data-open-bilan>Projeter le bilan</button></section>
-  <section class="block"><h2>Le dossier complet (version imprimable)</h2><p class="small muted">Sur la page stagiaire, les documents de départ et les rebondissements n'apparaissent qu'à l'étape prévue.</p><div class="docs all">{docs}</div></section>
+  <section class="block"><h2>Le dossier complet (version imprimable)</h2>
+  <p><a class="btn" href="../ressources/kits/atelier-{n}-complet.pdf" target="_blank" rel="noopener">PDF à imprimer pour la salle, rebondissements compris</a> <a class="btn ghost" href="../ressources/kits/atelier-{n}-dossier.pdf" target="_blank" rel="noopener">PDF vu par les stagiaires</a></p>
+  <p class="small muted">Un document par page, pour l'imprimer en cartes-documents à poser sur les tables. Sur la page stagiaire, les documents de départ et les rebondissements n'apparaissent qu'à l'étape prévue.</p><div class="docs all">{docs}</div></section>
 </div>
 {bilan_dialog(a)}
 """

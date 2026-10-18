@@ -220,6 +220,29 @@
   }
   refreshVotes();
 
+
+  /* ---------- Dossier imprimable (PDF intégré) ---------- */
+  $$("[data-kit]").forEach(function (k) {
+    var fr = $("iframe", k), src = k.dataset.src;
+    var load = function (page) { fr.src = src + "#page=" + (page || 1) + "&view=FitH"; };
+    k.addEventListener("toggle", function () { if (k.open && !fr.getAttribute("src")) load(1); });
+    $$("[data-kit-page]", k).forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        if (window.innerWidth < 700) return;
+        e.preventDefault(); load(a.dataset.kitPage);
+        $$("[data-kit-page]", k).forEach(function (x) { x.classList.toggle("is-on", x === a); });
+      });
+    });
+  });
+
+
+  /* ---------- Quiz flash ---------- */
+  $$("[data-qz]").forEach(function (q) {
+    var b = $("[data-qz-show]", q), a = $(".qz-a", q);
+    b.addEventListener("click", function () { a.hidden = !a.hidden; b.textContent = a.hidden ? "Afficher la réponse" : "Masquer la réponse"; });
+  });
+  $$("[data-qz-all]").forEach(function (b) { b.addEventListener("click", function () { $$(".qz-a").forEach(function (a) { a.hidden = false; }); }); });
+
   /* ---------- Dossier documentaire : filtres, recherche, liens ---------- */
   $$("[data-dossier]").forEach(function (dz) {
     var docs = $$(".doc-lib", dz), filters = $$("[data-filter]", dz), q = $("[data-doc-search]", dz), none = $("[data-no-result]", dz), cur = "";

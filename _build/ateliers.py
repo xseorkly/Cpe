@@ -1448,6 +1448,8 @@ ATELIERS.append(dict(
 from atelier_annee import ATELIER_ANNEE  # noqa: E402
 
 ATELIERS.insert(1, ATELIER_ANNEE)
+# L'équipe AED avant le pilotage : le forum-théâtre tombe juste après le déjeuner du jour 1.
+ATELIERS[2], ATELIERS[3] = ATELIERS[3], ATELIERS[2]
 for _i, _a in enumerate(ATELIERS, 1):
     _a["n"] = _i
 

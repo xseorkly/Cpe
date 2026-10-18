@@ -104,7 +104,7 @@ ECHELLE = [
 PROGRAMME = [
     ("Jour 1", [("Accueil, contrat de formation, positionnement initial", 15),
                 ("Atelier 1", 75), ("Atelier 2", 90), ("Atelier 3", 90), ("Atelier 4", 90)]),
-    ("Jour 2", [("Atelier 5", 75), ("Atelier 6", 90), ("Atelier 7", 105), ("Atelier 8", 75), ("Atelier 9", 90),
+    ("Jour 2", [("Quiz flash de réactivation du jour 1", 10), ("Atelier 5", 75), ("Atelier 6", 90), ("Atelier 7", 95), ("Atelier 8", 75), ("Atelier 9", 90),
                 ("Positionnement final et évaluation de la formation", 15)]),
 ]
 
