@@ -1,6 +1,6 @@
 # Entrer dans le métier de CPE
 
-Formation des CPE débutants du réseau AEFE : neuf ateliers progressifs, 13 h 30 sur 2 jours.
+Formation des CPE débutants du réseau AEFE : neuf ateliers progressifs, environ 22 h 30 de travail en temps indicatifs, sans découpage en journées (sessions en présence ou à distance).
 Site statique publié avec GitHub Pages : https://xseorkly.github.io/Cpe/
 
 ## Ce que contient le site
@@ -15,11 +15,16 @@ Site statique publié avec GitHub Pages : https://xseorkly.github.io/Cpe/
 | `ressources.html` | Stagiaires | PDF, approfondissements, textes de référence, compétences C1 à C8 et blocs 2026 |
 | `approfondir/` | Stagiaires | Six pages de savoirs développés, liées aux ateliers |
 | `formateur/` | Formateur | Programme minuté, fiches par atelier : déroulé, questions pour mettre en difficulté, attendus, vigilance, dossier imprimable, diaporama |
-| `quiz.html` | Tous | Quiz flash de réactivation, en ouverture du jour 2 |
+| `quiz.html` | Tous | Quiz de réactivation, à chaque reprise après une pause |
+| `lexique.html` | Stagiaires | Lexique du CPE débutant (définitions aussi en infobulle dans les ateliers) et fonctionnement des formats |
 | `ressources/` | Tous | Guide formateur, carnet, banque de prompts IA, mallette réflexe (PDF) |
 | `ressources/kits/` | Tous | Dossier de chaque atelier, un document par page : `atelier-N-dossier.pdf` (stagiaires, intégré à la page de l'atelier) et `atelier-N-complet.pdf` (formateur, rebondissements compris) |
 
-L'espace `formateur/` n'est lié depuis aucune page stagiaire et il est exclu des moteurs de recherche (`robots.txt`, `noindex`). Ce n'est pas une protection : toute page publiée sur GitHub Pages est accessible à qui connaît son adresse.
+Les fiches formateur, les bilans, les propositions de réponse, le guide PDF et les dossiers complets (rebondissements et cartes secrètes des jeux de rôle) sont chiffrés avec le mot de passe de la formation. Le dossier `_build/` n'est plus publié sur GitHub Pages (voir `.github/workflows/static.yml`) ; il reste lisible dans le dépôt GitHub tant que celui-ci est public.
+
+## Mot de passe de la formation
+
+Il n'est écrit nulle part dans le dépôt. Pour régénérer le site, créez le fichier `_build/.mot_de_passe` (exclu par `.gitignore`) contenant le mot de passe, ou définissez la variable d'environnement `CPE_MDP`.
 
 ## Modifier le contenu
 

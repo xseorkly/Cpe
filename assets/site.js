@@ -82,11 +82,18 @@
   }
 
   /* ---------- Impression ---------- */
-  $$("[data-print-doc]").forEach(function (b) {
-    b.addEventListener("click", function () {
-      var d = b.closest(".doc"); $$(".print-target").forEach(function (x) { x.classList.remove("print-target"); });
-      d.classList.add("print-target"); document.body.classList.add("print-one"); window.print();
-    });
+  // Délégué : fonctionne aussi pour les documents affichés après déverrouillage
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-print-doc]");
+    if (!b) return;
+    var d = b.closest(".doc"); $$(".print-target").forEach(function (x) { x.classList.remove("print-target"); });
+    d.classList.add("print-target"); document.body.classList.add("print-one"); window.print();
+  });
+  // Lexique : une infobulle s'ouvre au toucher (les écrans tactiles n'ont pas de survol)
+  document.addEventListener("click", function (e) {
+    var t = e.target.closest && e.target.closest("dfn.lex");
+    $$("dfn.lex.open").forEach(function (x) { if (x !== t) x.classList.remove("open"); });
+    if (t) t.classList.toggle("open");
   });
   $$("[data-print-revealed]").forEach(function (b) { b.addEventListener("click", function () { document.body.classList.add("print-revealed"); window.print(); }); });
   $$("[data-print-page]").forEach(function (b) { b.addEventListener("click", function () { window.print(); }); });

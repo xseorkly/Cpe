@@ -67,6 +67,7 @@ NAV = [
     ("carnet.html", "Mon carnet"),
     ("mallette.html", "Ma mallette"),
     ("ressources.html", "Ressources"),
+    ("lexique.html", "Lexique"),
 ]
 
 
@@ -152,6 +153,19 @@ for _a in A.ATELIERS:
 C.ATELIERS = A.ATELIERS
 
 
+def total_parcours():
+    hors = sum(m for _, items in C.PROGRAMME for it in items if isinstance(it, tuple) for m in [it[1]])
+    return hors + sum(AP.duree(C, a) for a in C.ATELIERS)
+
+
+def arrondi(m):
+    h = round(m / 30) / 2
+    return (f"{int(h)} h" if h == int(h) else f"{int(h)} h 30")
+
+
+C.DUREE_TOTALE = f"environ {arrondi(total_parcours())} de travail, temps indicatifs"
+
+
 def atelier_page(a):
     body = AP.atelier_page(C, a, MALLETTE_BY_ATELIER)
     write(f"atelier-{a['n']}.html", page(f"atelier-{a['n']}.html", f"Atelier {a['n']} · {a['titre']} · CPE", body, desc=a["problematique"]))
@@ -172,12 +186,13 @@ def index_page():
         cards.append(f"""<li class="card-atelier" data-card="{a['n']}">
   <a href="atelier-{a['n']}.html">
     <span class="card-no">{a['n']:02d}</span>
-    <span class="card-txt"><strong>{esc(a['titre'])}</strong><span>{esc(a['accroche'])}</span><span class="card-comp">{comp}</span></span>
+    <span class="card-txt"><strong>{esc(a['titre'])}</strong><span>{esc(a['accroche'])}</span><span class="card-comp">{comp} <span class="card-time">· temps indicatif {fmt_min(AP.duree(C, a))}</span></span></span>
     <span class="card-state" data-state-for="{a['n']}"></span>
   </a>
 </li>""")
-    day1 = "".join(cards[:4])
-    day2 = "".join(cards[4:])  # jour 1 : ateliers 1 à 4 ; jour 2 : 5 à 9
+    part1 = "".join(cards[:4])
+    part2 = "".join(cards[4:])
+    statuts = "".join(f"<tr><th scope=\"row\">{esc(a)}</th><td>{esc(b)}</td><td>{esc(c)}</td></tr>" for a, b, c in C.STATUTS)
     body = f"""
 <section class="hero hero-home">
   <div class="wrap hero-grid">
@@ -196,11 +211,18 @@ def index_page():
 <div class="wrap">
   <section class="block">
     <h2>Le parcours</h2>
-    <p class="muted">Suivez les ateliers dans l'ordre : chacun réinvestit les précédents, et le dernier atelier les mobilise tous.</p>
+    <p class="muted">Suivez les ateliers dans l'ordre : chacun réinvestit les précédents, et le dernier atelier les mobilise tous. Les temps sont indicatifs : le parcours se répartit librement entre plusieurs sessions, en présence ou à distance, et un atelier commencé peut se terminer à la session suivante.</p>
     <div class="days">
-      <div><h3 class="day">Jour 1 · Entrer dans le métier, organiser l'année et le service</h3><ol class="cards">{day1}</ol></div>
-      <div><h3 class="day">Jour 2 · Accompagner, protéger, faire participer</h3><p class="small"><a href="quiz.html">On commence par le quiz flash du jour 1 →</a></p><ol class="cards">{day2}</ol></div>
+      <div><h3 class="day">Entrer dans le métier, organiser l'année et le service</h3><ol class="cards">{part1}</ol></div>
+      <div><h3 class="day">Accompagner, protéger, faire participer</h3><p class="small"><a href="quiz.html">Pour reprendre après une pause : le quiz de réactivation →</a></p><ol class="cards">{part2}</ol></div>
     </div>
+  </section>
+
+  <section class="block statuts" id="statut">
+    <h2>Quel texte s'applique à moi ?</h2>
+    <p class="muted">Dans le réseau AEFE, tous les CPE ne relèvent pas des mêmes règles. Ce qui fait foi dépend de votre statut et du statut de votre établissement. Gardez ce tableau en tête dans tous les ateliers.</p>
+    <div class="tablewrap"><table><thead><tr><th>Votre situation</th><th>Ce qui fait foi pour vous</th><th>Ce que sont les textes français</th></tr></thead><tbody>{statuts}</tbody></table></div>
+    <p class="small muted">Dans tous les cas, les règles de l'établissement (règlement intérieur, protocoles, circuit de protection) s'appliquent à tous, et le CPE agit sous l'autorité du chef d'établissement. Votre situation exacte se vérifie auprès de la direction.</p>
   </section>
 
   <section class="block three">
@@ -220,7 +242,8 @@ def index_page():
 
   <section class="block glossary">
     <h2>Sigles utilisés</h2>
-    <dl><div><dt>CPE</dt><dd>Conseiller principal d'éducation</dd></div><div><dt>AED</dt><dd>Assistant d'éducation</dd></div><div><dt>AEFE</dt><dd>Agence pour l'enseignement français à l'étranger</dd></div><div><dt>CVL · CVC</dt><dd>Conseil de la vie lycéenne · collégienne</dd></div><div><dt>RI</dt><dd>Règlement intérieur</dd></div><div><dt>pHARe</dt><dd>Programme de lutte contre le harcèlement à l'école</dd></div></dl>
+    <p class="muted">Tous les autres termes du métier sont expliqués dans le <a href="lexique.html">lexique</a>, et au survol dans les ateliers.</p>
+    <dl><div><dt>CPE</dt><dd>Conseiller principal d'éducation</dd></div><div><dt>AED</dt><dd>Assistant d'éducation</dd></div><div><dt>AEFE</dt><dd>Agence pour l'enseignement français à l'étranger</dd></div><div><dt>CVL · CVC</dt><dd>Conseil de la vie lycéenne · collégienne</dd></div><div><dt>RI</dt><dd>Règlement intérieur</dd></div><div><dt>pHARe</dt><dd>Programme de lutte contre le harcèlement à l'école</dd></div><div><dt>PAP · PAI · PPS</dt><dd>Plans et projets d'aménagement de la scolarité (voir le lexique)</dd></div><div><dt>IA-IPR EVS</dt><dd>Inspecteur chargé de l'établissement et de la vie scolaire</dd></div></dl>
   </section>
 </div>
 """
@@ -342,6 +365,7 @@ def ressources_page():
 <div class="wrap">
   <section class="block"><h2>Supports à imprimer</h2><ul class="res-list">{pdfs}</ul></section>
   <section class="block"><h2>Approfondir un thème</h2><p class="muted">Des apports plus développés, à lire après l'atelier correspondant.</p><ul class="res-list">{appr}</ul></section>
+  <section class="block statuts"><h2>Quel texte s'applique à moi ?</h2><div class="tablewrap"><table><thead><tr><th>Votre situation</th><th>Ce qui fait foi pour vous</th><th>Ce que sont les textes français</th></tr></thead><tbody>{"".join(f"<tr><th scope='row'>{esc(x)}</th><td>{esc(y)}</td><td>{esc(z)}</td></tr>" for x, y, z in C.STATUTS)}</tbody></table></div></section>
   <section class="block"><h2>Textes de référence</h2><div class="refgroups">{groups}</div>
   <p class="small muted">Dans le réseau AEFE, les textes nationaux donnent des repères ; le règlement intérieur, les instances et les circuits d'alerte de l'établissement et du pays d'accueil s'appliquent et doivent être vérifiés.</p></section>
   <section class="block"><h2>Compétences du CPE travaillées</h2><p class="muted">Arrêté du 1er juillet 2013, compétences spécifiques aux CPE.</p>
@@ -355,18 +379,43 @@ def ressources_page():
 
 
 # --------------------------------------------------------------------------
-# Quiz flash du jour 2 (réactivation du jour 1)
+# Lexique du CPE débutant
+# --------------------------------------------------------------------------
+def lexique_page():
+    import unicodedata
+    cle = lambda t: unicodedata.normalize("NFD", t.lower()).encode("ascii", "ignore").decode()
+    blocs = []
+    for a in C.ATELIERS:
+        termes = sorted(((t, d) for t, (d, n, _) in C.LEXIQUE.items() if n == a["n"]), key=lambda x: cle(x[0]))
+        if not termes:
+            continue
+        dl = "".join(f'<div><dt id="lex-{cle(t).replace(" ", "-").replace(chr(39), "")}">{esc(t)}</dt><dd>{esc(d)}</dd></div>' for t, d in termes)
+        blocs.append(f'<section class="block lexique"><h2>Atelier {a["n"]} · {esc(a["titre"])}</h2><dl>{dl}</dl></section>')
+    fmts = sorted({p["format"] for a in C.ATELIERS for p in a["phases"] if p.get("format") in C.FORMATS}, key=cle)
+    dlf = "".join(f"<div><dt>{esc(f)}</dt><dd>{esc(C.FORMATS[f])}</dd></div>" for f in fmts)
+    body = f"""
+<section class="hero"><div class="wrap"><p class="eyebrow">Pour comprendre chaque mot</p><h1>Lexique du CPE débutant</h1><p class="lead">Les mots du métier, rangés par atelier, dans l'ordre où vous les rencontrez. Dans les ateliers, ils sont soulignés en pointillé : survolez-les ou touchez-les pour lire leur définition.</p></div></section>
+<div class="wrap">
+  {"".join(blocs)}
+  <section class="block lexique"><h2>Les formats des ateliers</h2><p class="muted">Comment fonctionne chaque activité proposée par le formateur.</p><dl>{dlf}</dl></section>
+  <p class="small muted">Les définitions sont simplifiées pour la formation. Plusieurs d'entre elles décrivent le droit français : dans le réseau AEFE, vérifiez ce qui s'applique dans votre établissement.</p>
+</div>"""
+    write("lexique.html", page("lexique.html", "Lexique · CPE", body, current="lexique.html"))
+
+
+# --------------------------------------------------------------------------
+# Quiz de réactivation (à chaque reprise après une pause)
 # --------------------------------------------------------------------------
 QUIZ = [
     ("Quel texte définit aujourd'hui les missions du CPE ?", ["La circulaire de 1982", "La circulaire de 2015", "L'arrêté de 2013", "La fiche de poste de l'établissement"], 1, "La circulaire n° 2015-139 a abrogé celle de 1982. L'arrêté de 2013 fixe les compétences, pas les missions."),
     ("Qui peut prononcer une exclusion temporaire de l'établissement ?", ["Le CPE", "Le professeur qui a constaté les faits", "Le chef d'établissement ou le conseil de discipline", "Le conseil pédagogique"], 2, "Le CPE établit les faits et conseille ; la sanction appartient au chef d'établissement ou au conseil de discipline."),
     ("Un parent exige le nom de l'élève qui a frappé son fils. Vous…", ["Le donnez, c'est son droit", "Refusez, et recentrez l'échange sur son enfant", "Le renvoyez vers le professeur principal", "Lui promettez une sanction rapide"], 1, "On ne communique jamais les données d'un autre élève. On accueille l'inquiétude et l'on parle de ce qui est fait pour son enfant."),
-    ("Au lycée Horizon, avant quel rendez-vous les délégués doivent-ils être élus et formés ?", ["Les vacances d'hiver", "Le premier conseil d'établissement", "Les conseils de classe du troisième trimestre", "La réunion parents-professeurs"], 1, "Les élus siègent au premier conseil d'établissement du 12 novembre : des élections « en novembre » le rendaient impossible."),
+    ("Au lycée Horizon, avant quel rendez-vous les délégués doivent-ils être élus et formés ?", ["Les vacances de fin d'année", "Le premier conseil d'établissement", "Les conseils de classe du troisième trimestre", "La réunion parents-professeurs"], 1, "Les élus siègent au premier conseil d'établissement du 12 novembre : des élections « en novembre » le rendaient impossible."),
     ("Quand se prépare le recrutement des AED de la rentrée ?", ["En septembre, quand on connaît les besoins", "En mai et juin de l'année précédente", "Pendant les vacances d'été", "Après la période d'essai"], 1, "Anticiper en mai et juin permet une prise de poste à la pré-rentrée ; septembre sert aux derniers ajustements."),
     ("Antoine conteste devant l'équipe : « Ici, on a toujours fait comme ça. » La meilleure première réponse ?", ["Le recadrer publiquement", "Céder pour garder la paix", "Reconnaître l'expérience de l'équipe, maintenir la règle, proposer d'en parler en tête-à-tête", "Ne rien répondre"], 2, "Ni épreuve de force en public, ni renoncement : on reconnaît, on maintient, on reprend en entretien."),
     ("La circulaire AED de 2025 s'applique-t-elle à un AED en contrat de droit local ?", ["Oui, c'est un texte national", "Non, son contrat relève du droit local et du règlement de l'établissement", "Seulement pour les heures de formation", "Seulement s'il est français"], 1, "La circulaire vise les AED recrutés en France sur le fondement du code de l'éducation."),
     ("Des photos d'élèves circulent sur le groupe de messagerie personnel des AED. Vous…", ["Laissez faire : c'est leur vie privée", "Rejoignez le groupe pour surveiller", "Informez la direction et mettez fin à l'usage de cet outil pour le service", "Supprimez vous-même les messages"], 2, "Déontologie et protection des données : le CPE informe sans délai la direction ; la suite concernant les personnels relève de l'employeur."),
-    ("61 retards la semaine 2, 45 la semaine 3, qui comptait un jour férié. Les retards…", ["Ont baissé de 26 %", "Ont un peu baissé", "N'ont pas baissé de façon démontrée", "Ont augmenté"], 2, "Par jour de classe : 12,2 puis 11,25, avec une semaine 2 sous-estimée par une panne de saisie. Aucune baisse n'est démontrée."),
+    ("61 retards la semaine 2, 45 la semaine 3, qui comptait un jour férié. Les retards…", ["Ont baissé de 26 %", "Ont un peu baissé", "N'ont pas baissé de façon démontrée", "Ont augmenté"], 2, "Il faut compter par jour de classe : 11,6 en semaine 1 et 11,25 en semaine 3, soit −3 %. La semaine 2 est incomplète à cause d'une panne de saisie. Les « −26 % » comparent une semaine de quatre jours à une semaine incomplète."),
     ("280 élèves arrivent en sept minutes par un seul portillon. Le retard est d'abord…", ["Un problème de discipline", "Un problème d'organisation", "Un problème de motivation", "Un problème de familles"], 1, "Le CPE regarde le système avant de regarder les élèves : second portillon, horaires des cars, contrôle des carnets."),
 ]
 
@@ -382,11 +431,11 @@ def quiz_page():
   <div class="qz-a" hidden><p><strong>Réponse {"ABCD"[ok]} · {esc(opts[ok])}.</strong> {esc(why)}</p></div>
 </li>""")
     body = f"""
-<section class="hero"><div class="wrap"><p class="eyebrow">Jour 2 · 10 minutes</p><h1>Quiz flash du jour 1</h1><p class="lead">Par équipes, avec une ardoise ou une feuille : le formateur lit la question, chaque équipe écrit sa lettre et la lève en même temps. Une réponse juste vaut un point ; une justification juste en vaut un deuxième.</p>
+<section class="hero"><div class="wrap"><p class="eyebrow">Ateliers 1 à 4 · environ 15 minutes</p><h1>Quiz de réactivation</h1><p class="lead">À faire à chaque reprise après une pause, avant l'atelier 5 ou en ouverture d'une session à distance. Par équipes, avec une ardoise ou une feuille : le formateur lit la question, chaque équipe écrit sa lettre et la lève en même temps. Une réponse juste vaut un point ; une justification juste en vaut un deuxième.</p>
 <div class="hero-actions"><button class="btn light" type="button" data-qz-all>Afficher toutes les réponses</button></div></div></section>
 <div class="wrap"><ol class="quiz">{"".join(items)}</ol>
 <nav class="next-prev"><a class="btn ghost" href="index.html">← Le parcours</a><a class="btn" href="atelier-5.html">Atelier 5 →</a></nav></div>"""
-    write("quiz.html", page("quiz.html", "Quiz flash du jour 1 · CPE", body, current="index.html"))
+    write("quiz.html", page("quiz.html", "Quiz de réactivation · CPE", body, current="index.html"))
 
 
 # --------------------------------------------------------------------------
@@ -399,34 +448,39 @@ def formateur_index():
     prog = []
     for jour, items in C.PROGRAMME:
         lines = []
-        for label, m in items:
-            if label.startswith("Atelier"):
-                k = int(label.split()[1])
+        tot = 0
+        for it in items:
+            if isinstance(it, str):
+                k = int(it.split()[1])
                 a = C.ATELIERS[k - 1]
+                m = AP.duree(C, a)
+                tot += m
                 lines.append(f'<tr><td><a href="atelier-{k}.html">Atelier {k}</a></td><td>{esc(a["titre"])}</td><td>{fmt_min(m)}</td></tr>')
-            elif label.startswith("Quiz"):
+                continue
+            label, m = it
+            tot += m
+            if label.startswith("Quiz"):
                 lines.append(f'<tr><td><a href="../quiz.html">Quiz</a></td><td>{esc(label)}</td><td>{fmt_min(m)}</td></tr>')
             else:
                 lines.append(f"<tr><td>—</td><td>{esc(label)}</td><td>{fmt_min(m)}</td></tr>")
-        tot = sum(m for _, m in items)
         prog.append(f'<div><h3 class="day">{jour} · {fmt_min(tot)}</h3><div class="tablewrap"><table><thead><tr><th></th><th>Séquence</th><th>Durée</th></tr></thead><tbody>{"".join(lines)}</tbody></table></div></div>')
-    cards = "".join(f'<li class="card-atelier"><a href="atelier-{a["n"]}.html"><span class="card-no">{a["n"]:02d}</span><span class="card-txt"><strong>{esc(a["titre"])}</strong><span>{fmt_min(sum(t["duree"] for t in a["temps"]) + 15)} · {len(a["temps"])} étapes</span></span></a></li>' for a in C.ATELIERS)
+    cards = "".join(f'<li class="card-atelier"><a href="atelier-{a["n"]}.html"><span class="card-no">{a["n"]:02d}</span><span class="card-txt"><strong>{esc(a["titre"])}</strong><span>{fmt_min(AP.duree(C, a))} · {len(a["temps"])} étapes</span></span></a></li>' for a in C.ATELIERS)
     body = f"""
-<section class="hero hero-formateur"><div class="wrap"><p class="eyebrow">Espace formateur · {esc(C.DUREE_TOTALE)}</p><h1>Conduire la formation</h1><p class="lead">Déroulés minutés, éléments de correction, points de vigilance et bilans à projeter. Cet espace n'est pas lié depuis les pages stagiaires.</p>
-<div class="hero-actions"><a class="btn light" href="../ressources/01_Guide_Formateur_Pedagogie_Active.pdf">Guide formateur (PDF)</a></div></div></section>
+<section class="hero hero-formateur"><div class="wrap"><p class="eyebrow">Espace formateur · {esc(C.DUREE_TOTALE)}</p><h1>Conduire la formation</h1><p class="lead">Déroulés, éléments de correction, points de vigilance et bilans à projeter. Les fiches de chaque atelier et le guide PDF s'ouvrent avec le mot de passe de la formation.</p>
+<div class="hero-actions"><a class="btn light" href="../ressources/01_Guide_Formateur_Pedagogie_Active.pdf">Guide formateur (PDF protégé)</a></div></div></section>
 <div class="wrap">
-  <section class="block"><h2>Programme des deux journées</h2><div class="days">{"".join(prog)}</div></section>
+  <section class="block"><h2>Le parcours et ses temps indicatifs</h2><p class="muted">Aucun découpage en journées : enchaînez les ateliers dans l'ordre, au rythme du groupe. Un atelier commencé peut se terminer à la session suivante, en présence ou à distance. À chaque reprise, ouvrez par le quiz de réactivation. Total indicatif : {fmt_min(total_parcours())}.</p><div class="days">{"".join(prog)}</div></section>
   <section class="block"><h2>La scénarisation des neuf ateliers</h2>
     <p class="muted">Chaque atelier a son propre moteur, pour que les stagiaires ne retrouvent jamais deux fois le même déroulé. Les formats alternent l'individuel, le groupe, le mouvement et la simulation.</p>
     <div class="tablewrap"><table><thead><tr><th>Atelier</th><th>Moteur</th><th>Enchaînement des étapes</th></tr></thead><tbody>{SCEN}</tbody></table></div>
   </section>
   <section class="block"><h2>Fiches par atelier</h2><ol class="cards grid">{cards}</ol></section>
   <section class="block three">
-    <div><h3>Avant la session</h3><ul><li>Constituer des groupes de trois ou quatre ; prévoir des rôles tournants.</li><li>Imprimer les documents à révéler séparément pour les groupes sans écran.</li><li>Préparer le règlement intérieur et les circuits d'alerte de l'établissement d'accueil, après vérification.</li></ul></div>
+    <div><h3>Avant la session</h3><ul><li>Constituer des groupes de trois ou quatre ; prévoir des rôles tournants.</li><li>Imprimer les documents à révéler séparément pour les groupes sans écran, et découper les cartes secrètes des jeux de rôle (dans le PDF complet de chaque atelier).</li><li>Préparer le règlement intérieur et les circuits d'alerte de l'établissement d'accueil, après vérification.</li></ul></div>
     <div><h3>Pendant</h3><ul><li>Faire produire une réponse avant de révéler la suite : c'est le ressort de chaque atelier.</li><li>Ne jamais faire jouer une victime : utiliser des cartes d'analyse.</li><li>Arrêter avec bienveillance tout récit de situation réelle identifiable.</li></ul></div>
-    <div><h3>Évaluer</h3><ul><li>Positionnement initial avant l'atelier 1, final après le dernier atelier.</li><li>La grille du dernier atelier sert d'évaluation formative de tout le parcours.</li><li>Évaluer le raisonnement et l'ordre des priorités, pas une réponse unique.</li></ul></div>
+    <div><h3>Évaluer</h3><ul><li>Positionnement initial avant l'atelier 1, final après le dernier atelier, même si le parcours s'étale sur plusieurs sessions.</li><li>La grille du dernier atelier sert d'évaluation formative de tout le parcours.</li><li>Évaluer le raisonnement et l'ordre des priorités, pas une réponse unique.</li></ul></div>
   </section>
-  <section class="block"><h2>Confidentialité de cet espace</h2><p>Le site est publié sur GitHub Pages : cet espace est public pour qui connaît son adresse. Il est exclu des moteurs de recherche et n'est lié depuis aucune page stagiaire, mais ce n'est pas une protection. Pour une confidentialité réelle, imprimez les fiches ou utilisez le guide PDF hors ligne.</p></section>
+  <section class="block"><h2>Confidentialité de cet espace</h2><p>Les corrigés, les déroulés détaillés, les cartes secrètes, les bilans, le guide PDF et les dossiers complets sont chiffrés avec le mot de passe de la formation. Cette page d'accueil, elle, est lisible par qui connaît son adresse. Ne communiquez pas le mot de passe aux stagiaires avant la fin de l'atelier concerné.</p></section>
 </div>"""
     write("formateur/index.html", page("formateur/index.html", "Espace formateur · CPE", body, formateur=True, current="formateur"))
 
@@ -497,6 +551,7 @@ def main():
     ressources_page()
     formateur_index()
     quiz_page()
+    lexique_page()
     approfondir_pages()
     print("Site généré.")
 

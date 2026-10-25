@@ -456,3 +456,24 @@ dialog.pistes-dlg .pistes{margin:0;border:0;border-radius:0;max-height:92vh;over
 .qz-l{font-weight:700;color:var(--accent);margin-right:8px}
 .qz-a{margin-top:10px;background:var(--ok-soft);border-radius:var(--radius-s);padding:10px 14px}
 .qz-a p{margin:0}
+
+/* ---------- Version 3.1 : lexique, prolongement, fiche formateur protégée, statuts ---------- */
+dfn.lex{font-style:normal;border-bottom:1px dotted var(--accent);cursor:help;position:relative;outline-offset:2px}
+dfn.lex::after{content:attr(data-def);position:absolute;left:0;top:calc(100% + 6px);z-index:30;width:min(320px,80vw);
+  background:var(--ink);color:var(--paper);font:400 .86rem/1.45 var(--sans);padding:10px 12px;border-radius:var(--radius-s);
+  box-shadow:var(--shadow);display:none;pointer-events:none;text-transform:none;letter-spacing:0;font-weight:400}
+dfn.lex:hover::after,dfn.lex:focus::after,dfn.lex.open::after{display:block}
+@media (max-width:760px){dfn.lex::after{position:fixed;left:16px;right:16px;top:auto;bottom:16px;width:auto}}
+@media print{dfn.lex{border:0}dfn.lex::after{display:none}}
+.fmt{color:var(--ink-2);font-size:.95rem}
+.fmt span{margin-right:8px}
+.prolongement{margin:14px 0 0;padding:10px 12px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 var(--radius-s) var(--radius-s) 0;font-size:.95rem}
+.pistes-inline{margin:28px 0;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);padding:20px}
+.pistes-inline .pistes-body{margin-top:12px}
+.statuts table{width:100%}
+.statuts td,.statuts th{vertical-align:top}
+.lexique dl{display:grid;grid-template-columns:minmax(140px,220px) 1fr;gap:6px 18px;margin:0}
+.lexique dt{font-weight:700}
+.lexique dd{margin:0;color:var(--ink-2)}
+@media (max-width:640px){.lexique dl{grid-template-columns:1fr}.lexique dd{margin-bottom:8px}}
+.card-time{font-size:.8rem;color:var(--muted)}

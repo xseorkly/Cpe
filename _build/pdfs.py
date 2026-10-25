@@ -107,6 +107,15 @@ def footer(title):
     return draw
 
 
+def proteger(path):
+    """Chiffre un PDF (AES-256) avec le mot de passe de la formation."""
+    from pypdf import PdfReader, PdfWriter
+    w = PdfWriter(clone_from=PdfReader(path))
+    w.encrypt(user_password=B.AP.MOT_DE_PASSE, owner_password=None, algorithm="AES-256")
+    with open(path, "wb") as fh:
+        w.write(fh)
+
+
 def fmt(m):
     h, r = divmod(m, 60)
     return f"{h} h {r:02d}" if h and r else (f"{h} h" if h else f"{r} min")
@@ -121,15 +130,19 @@ def build_guide():
          Paragraph("Déroulés minutés, éléments de correction, points de vigilance et bilans des neuf ateliers.", S["p"]),
          Paragraph("Public", S["h3"]), Paragraph(C.PUBLIC, S["p"]),
          Paragraph("Finalité", S["h3"]), Paragraph(C.FINALITE, S["p"]),
-         Paragraph("Programme des deux journées", S["h2"])]
-    rows = [["Journée", "Séquence", "Durée"]]
-    for jour, items in C.PROGRAMME:
-        for label, m in items:
-            if label.startswith("Atelier"):
-                k = int(label.split()[1])
-                label = f"Atelier {k} · {C.ATELIERS[k - 1]['titre']}"
-            rows.append([jour, label, fmt(m)])
-    f += [table(rows, [25 * mm, 120 * mm, 25 * mm]), Spacer(1, 8),
+         Paragraph("Le parcours et ses temps indicatifs", S["h2"]),
+         Paragraph("Aucun découpage en journées : les ateliers s'enchaînent dans l'ordre, au rythme du groupe, en présence ou à distance. Un atelier commencé peut se terminer à la session suivante ; chaque reprise s'ouvre par le quiz de réactivation.", S["p"])]
+    rows = [["Partie", "Séquence", "Temps indicatif"]]
+    for partie, items in C.PROGRAMME:
+        for it in items:
+            if isinstance(it, str):
+                k = int(it.split()[1])
+                label, m = f"Atelier {k} · {C.ATELIERS[k - 1]['titre']}", B.AP.duree(C, C.ATELIERS[k - 1])
+            else:
+                label, m = it
+            rows.append([partie, label, fmt(m)])
+    rows.append(["", "<b>Total indicatif</b>", f"<b>{fmt(B.total_parcours())}</b>"])
+    f += [table(rows, [45 * mm, 100 * mm, 25 * mm]), Spacer(1, 8),
           Paragraph("Principes de conduite", S["h2"])]
     for t in ["Faire produire une réponse avant de révéler la suite : c'est le ressort de chaque atelier. Les documents à révéler sont imprimés séparément pour les groupes sans écran.",
               "Ne jamais faire jouer une victime : les situations sensibles s'analysent avec des cartes.",
@@ -137,11 +150,11 @@ def build_guide():
               "Préparer le règlement intérieur et les circuits d'alerte de l'établissement d'accueil, après vérification avec la direction.",
               "Positionnement initial avant l'atelier 1, positionnement final après le dernier atelier. Évaluer le raisonnement et l'ordre des priorités, pas une réponse unique."]:
         f.append(Paragraph(t, S["li"], bulletText="•"))
-    f.append(Paragraph("Espace formateur en ligne : ajouter « formateur/ » à l'adresse du site. Il est exclu des moteurs de recherche et n'est lié depuis aucune page stagiaire.", S["small"]))
+    f.append(Paragraph("Espace formateur en ligne : ajouter « formateur/ » à l'adresse du site. Les fiches s'ouvrent avec le mot de passe de la formation.", S["small"]))
     for a in C.ATELIERS:
         fo = a["formateur"]
-        total = sum(t["duree"] for t in a["phases"]) + 15
-        f += [PageBreak(), Paragraph(f"ATELIER {a['n']} · {fmt(total).upper()}", S["eyebrow"]), Paragraph(a["titre"], S["h1"]),
+        total = B.AP.duree(C, a)
+        f += [PageBreak(), Paragraph(f"ATELIER {a['n']} · TEMPS INDICATIF {fmt(total).upper()}", S["eyebrow"]), Paragraph(a["titre"], S["h1"]),
               Paragraph("<b>Problématique.</b> " + a["problematique"], S["p"]),
               Paragraph("<b>Moteur de l'atelier :</b> " + " · ".join(a.get("moteur", [])), S["p"]),
               Paragraph("La situation", S["h3"])]
@@ -149,18 +162,19 @@ def build_guide():
         f.append(Paragraph("Objectifs", S["h3"]))
         f += [Paragraph(o, S["li"], bulletText="•") for o in a["objectifs"]]
         f.append(Paragraph("Compétences : " + " ; ".join(f"<b>{k}</b> {C.C2013[k]}" for k in a["competences"]) + f". Référentiel 2026 : {a['blocs_detail']}.", S["small"]))
+        f.append(Paragraph("<b>Production :</b> " + a["production"] + (" <i>Pour aller plus loin : " + a["prolongement"] + "</i>" if a.get("prolongement") else ""), S["p"]))
         f.append(Paragraph("Matériel : " + " ; ".join(fo["materiel"]) + ".", S["small"]))
         f.append(Paragraph("Déroulé", S["h3"]))
         rows = [["Étape", "Durée", "Modalité", "Consigne aux stagiaires", "Conduite du formateur"]]
         for i, t in enumerate(a["phases"], 1):
             rows.append([f"<b>{i}. {t['titre']}</b><br/><i>{t.get('format', '')}</i>", f"{t['duree']} min", t["modalite"], t["consigne"], fo["deroule"][i - 1]])
-        rows.append(["<b>Bilan</b>", "15 min", "Collectif", " ".join(a["cloture"]), "Retour sur les pièges du dossier, puis diaporama d'apports."])
+        rows.append(["<b>Bilan</b>", f"{C.BILAN_MIN} min", "Collectif", " ".join(a["cloture"]), "Retour sur les pièges du dossier, puis diaporama d'apports."])
         f.append(table(rows, [26 * mm, 14 * mm, 24 * mm, 54 * mm, 52 * mm]))
         if a["groupes"]:
             f.append(Paragraph("Missions des groupes experts", S["h3"]))
             f.append(table([["Groupe", "Question", "Documents pistes"]] + [[f"{i}. {g['nom']}", g["angle"] + "<br/>" + " ".join(g["questions"]), ", ".join(map(str, g["docs"]))] for i, g in enumerate(a["groupes"], 1)], [32 * mm, 110 * mm, 28 * mm]))
         f.append(Paragraph("Le dossier documentaire", S["h3"]))
-        f.append(table([["N°", "Document", "Type"]] + [[str(k), d["titre"], d.get("type", "")] for k, d in enumerate(a["docs"], 1)], [12 * mm, 120 * mm, 38 * mm]))
+        f.append(table([["N°", "Document", "Type"]] + [[str(k), d["titre"], d.get("type", "") + (" · carte secrète" if d.get("secret") else "")] for k, d in enumerate(a["docs"], 1)], [12 * mm, 120 * mm, 38 * mm]))
         for t in a["phases"]:
             if t.get("sequence"):
                 f.append(Paragraph("Événements à révéler", S["h3"]))
@@ -194,6 +208,7 @@ def build_guide():
         f.append(Paragraph(g, S["h3"]))
         f += [Paragraph(f"{C.REF[k][0]}<br/><font size=7.5 color='#555b66'>{C.REF[k][1]}</font>", S["li"], bulletText="•") for k in keys]
     doc.build(f, onFirstPage=footer("Guide du formateur"), onLaterPages=footer("Guide du formateur"))
+    proteger(path)
     return path
 
 
@@ -308,26 +323,30 @@ def build_kits():
             f.append(Paragraph("Les documents", S["h3"]))
             rows = [["N°", "Document", "Nature"]]
             for k, d in enumerate(a["docs"], 1):
-                if version == "dossier" and d.get("type") == "Rebondissement":
+                if version == "dossier" and (d.get("type") == "Rebondissement" or d.get("secret")):
                     continue
-                rows.append([str(k), d["titre"], d.get("type", "")])
+                rows.append([str(k), d["titre"], d.get("type", "") + (" · carte secrète" if d.get("secret") else "")])
             f.append(table(rows, [12 * mm, 118 * mm, 40 * mm]))
             if version == "dossier":
                 f.append(Paragraph("N'ouvrez que les documents demandés par la consigne de l'étape. Les rebondissements ne figurent pas dans ce dossier : ils sont distribués au moment prévu.", S["small"]))
             else:
-                f.append(Paragraph("Les documents marqués « Rebondissement » se distribuent séparément, au moment prévu par le déroulé.", S["small"]))
+                f.append(Paragraph("Les documents marqués « Rebondissement » se distribuent séparément, au moment prévu par le déroulé. Les cartes secrètes se découpent et se remettent aux seuls joueurs concernés.", S["small"]))
             for k, d in enumerate(a["docs"], 1):
                 reb = d.get("type") == "Rebondissement"
-                if version == "dossier" and reb:
+                sec = bool(d.get("secret"))
+                if version == "dossier" and (reb or sec):
                     continue
-                bar = Table([[Paragraph(f"Atelier {n} · Document {k} · {d.get('type', '')}{'  ·  À DISTRIBUER AU MOMENT PRÉVU' if reb else ''}", head)]], colWidths=[170 * mm])
-                bar.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#a3312b") if reb else NAVY),
+                tag = "  ·  À DISTRIBUER AU MOMENT PRÉVU" if reb else ("  ·  CARTES SECRÈTES À DÉCOUPER" if sec else "")
+                bar = Table([[Paragraph(f"Atelier {n} · Document {k} · {d.get('type', '')}{tag}", head)]], colWidths=[170 * mm])
+                bar.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#a3312b") if (reb or sec) else NAVY),
                                          ("TOPPADDING", (0, 0), (-1, -1), 5), ("BOTTOMPADDING", (0, 0), (-1, -1), 5)]))
                 f += [PageBreak(), PageMark(store, str(k)), bar, Spacer(1, 6), Paragraph(d["titre"], S["h2"])]
                 f += doc_flow(d["html"])
             doc.build(f, onFirstPage=footer(f"Atelier {n} · {label}"), onLaterPages=footer(f"Atelier {n} · {label}"))
             if version == "dossier":
                 pages_all[str(n)] = store
+            else:
+                proteger(path)
     with open(os.path.join(HERE, "kit_pages.json"), "w", encoding="utf-8") as fh:
         json.dump(pages_all, fh, indent=1)
     return kdir

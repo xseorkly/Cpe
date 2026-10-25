@@ -25,12 +25,12 @@ ATELIER_ANNEE = dict(
     competences=["C1", "C3", "C4", "C6"],
     blocs=["1", "2"],
     blocs_detail="1.1 (organiser et animer l'équipe), 1.5 et 1.6 (parcours, citoyenneté) ; 2.3 (contextes d'exercice)",
-    production="Le calendrier annuel de la vie scolaire sur une page, avec qui fait quoi et quand, et les trois périodes de vigilance de l'année.",
+    production="Le calendrier annuel de la vie scolaire sur une page, avec qui fait quoi et quand, et les périodes de vigilance de l'année.",
     criteres=[
         "Le calendrier couvre septembre à juillet et distingue au moins quatre domaines : démocratie scolaire, équipe AED, suivi des élèves, prévention et pilotage.",
         "Les élections et la formation des délégués précèdent la première réunion des instances.",
         "Le cycle de l'AED est complet : recrutement, fiche de poste, accueil, période d'essai, entretien intermédiaire, entretien de fin d'année.",
-        "Trois périodes de surcharge sont repérées, avec l'arbitrage proposé.",
+        "Au moins trois périodes de surcharge sont repérées, chacune avec l'arbitrage proposé.",
         "Chaque rendez-vous nomme un responsable et les partenaires associés.",
         "Les dates nationales sont adaptées au calendrier de l'établissement et du pays.",
     ],
@@ -57,7 +57,7 @@ ATELIER_ANNEE = dict(
 <tr><td>Octobre</td><td>Semaine de la démocratie scolaire ; élections au CVL et au CVC</td></tr>
 <tr><td>Début novembre</td><td>Journée « Non au harcèlement » (premier jeudi qui suit les vacances d'automne)</td></tr>
 <tr><td>9 et 10 décembre</td><td>Journée de la laïcité ; journée des droits de l'homme</td></tr>
-<tr><td>Mars</td><td>Semaine d'éducation contre le racisme et l'antisémitisme ; semaine de la persévérance scolaire</td></tr>
+<tr><td>Mars</td><td>Semaine d'éducation et d'actions contre le racisme et l'antisémitisme</td></tr>
 <tr><td>7 avril</td><td>Journée mondiale de la santé</td></tr>
 <tr><td>17 mai</td><td>Journée de lutte contre l'homophobie et la transphobie</td></tr>
 </tbody></table>
@@ -70,7 +70,7 @@ ATELIER_ANNEE = dict(
 <tr><td>Du 24 octobre au 2 novembre</td><td>Vacances d'automne</td></tr>
 <tr><td>12 novembre</td><td>Premier conseil d'établissement de l'année (il doit compter des représentants élus des élèves)</td></tr>
 <tr><td>Du 7 au 11 décembre</td><td>Conseils de classe du premier trimestre</td></tr>
-<tr><td>Du 19 décembre au 3 janvier</td><td>Vacances d'hiver</td></tr>
+<tr><td>Du 19 décembre au 3 janvier</td><td>Vacances de fin d'année</td></tr>
 <tr><td>Février</td><td>Examens blancs ; ouverture des réinscriptions pour l'année suivante</td></tr>
 <tr><td>Du 15 au 18 mars</td><td>Regroupement inter-CVL de la zone (deux élus et leur CPE)</td></tr>
 <tr><td>Du 22 au 26 mars</td><td>Conseils de classe du deuxième trimestre</td></tr>
@@ -109,21 +109,21 @@ ATELIER_ANNEE = dict(
 <li><strong>Le directeur de l'école primaire voisine :</strong> « Pour les futurs 6e, nous aimerions une visite en mai. »</li>
 </ul>"""),
         dict(titre="Douze moments forts d'une année de CPE", type="Outil", groupe=4, html="""
-<table><thead><tr><th>Moment</th><th>Période</th><th>Traces et indicateurs</th></tr></thead><tbody>
-<tr><td>Rentrée et accueil</td><td>Septembre</td><td>Absences des quinze premiers jours, diffusion du règlement, plannings AED</td></tr>
-<tr><td>Élections des délégués, CVC et CVL</td><td>Septembre–octobre</td><td>Taux de participation, procès-verbaux, affichage</td></tr>
-<tr><td>Formation des délégués</td><td>Octobre, puis à mi-année</td><td>Programme, émargements, évaluation</td></tr>
-<tr><td>Semaine de la démocratie scolaire</td><td>Octobre</td><td>Ateliers, fréquentation, productions</td></tr>
-<tr><td>Prévention et pHARe</td><td>Novembre, puis toute l'année</td><td>Signalements, délais de traitement, actions</td></tr>
-<tr><td>Exercices de sécurité</td><td>Septembre–novembre, puis rappels</td><td>Temps d'évacuation, rapports, ajustements</td></tr>
-<tr><td>Conseils de classe et suivis</td><td>Fin de chaque trimestre</td><td>Décisions, dispositifs d'aide, assiduité</td></tr>
-<tr><td>Parcours Avenir et orientation</td><td>Janvier–avril</td><td>Stages, entretiens, vœux</td></tr>
-<tr><td>Santé et prévention des conduites à risque</td><td>Novembre–mars</td><td>Séances, incidents, récidives</td></tr>
-<tr><td>Bilans de la vie scolaire</td><td>Chaque mois ou trimestre</td><td>Tableaux de bord, décisions prises</td></tr>
-<tr><td>Organisation et management des AED</td><td>Septembre, puis régulations</td><td>Plannings, fiches de poste, réunions, formations</td></tr>
-<tr><td>Portes ouvertes, inscriptions, examens</td><td>Avril–juin</td><td>Dossiers, incidents, retours des familles</td></tr>
+<table><thead><tr><th>Moment</th><th>Traces et indicateurs</th></tr></thead><tbody>
+<tr><td>Rentrée et accueil</td><td>Absences des quinze premiers jours, diffusion du règlement, plannings AED</td></tr>
+<tr><td>Élections des délégués, CVC et CVL</td><td>Taux de participation, procès-verbaux, affichage</td></tr>
+<tr><td>Formation des délégués</td><td>Programme, émargements, évaluation</td></tr>
+<tr><td>Semaine de la démocratie scolaire</td><td>Ateliers, fréquentation, productions</td></tr>
+<tr><td>Prévention et pHARe</td><td>Signalements, délais de traitement, actions</td></tr>
+<tr><td>Exercices de sécurité</td><td>Temps d'évacuation, rapports, ajustements</td></tr>
+<tr><td>Conseils de classe et suivis</td><td>Décisions, dispositifs d'aide, assiduité</td></tr>
+<tr><td>Parcours Avenir et orientation</td><td>Stages, entretiens, vœux</td></tr>
+<tr><td>Santé et prévention des conduites à risque</td><td>Séances, incidents, récidives</td></tr>
+<tr><td>Bilans de la vie scolaire</td><td>Tableaux de bord, décisions prises</td></tr>
+<tr><td>Organisation et management des AED</td><td>Plannings, fiches de poste, réunions, formations</td></tr>
+<tr><td>Portes ouvertes, inscriptions, examens</td><td>Dossiers, incidents, retours des familles</td></tr>
 </tbody></table>
-<p class="note">D'après les cartes « Une année de CPE ».</p>"""),
+<p class="note">D'après les cartes « Une année de CPE ». À vous de placer chaque moment sur l'année.</p>"""),
         dict(titre="Le calendrier à compléter", type="Outil", groupe=4, html="""
 <table class="blank"><thead><tr><th>Mois</th><th>Démocratie scolaire</th><th>Équipe AED</th><th>Suivi des élèves</th><th>Prévention et pilotage</th></tr></thead><tbody>
 <tr><td>Septembre</td><td></td><td></td><td></td><td></td></tr>
@@ -143,7 +143,7 @@ ATELIER_ANNEE = dict(
 <ul>
 <li>Le pays d'accueil organise des élections nationales : les autorités ferment les écoles du 9 au 13 novembre. Le premier conseil d'établissement est reporté au 23 novembre.</li>
 <li>Deux AED démissionnent pendant les vacances d'automne. Leurs remplaçants ne pourront arriver qu'à la fin novembre.</li>
-<li>L'AEFE annonce une visite d'inspection de la vie scolaire en février. L'inspecteur souhaite consulter le bilan du premier trimestre et le projet de la vie scolaire.</li>
+<li>L'inspecteur de la zone chargé de la vie scolaire annonce sa visite en février. Il souhaite consulter le bilan du premier trimestre et le projet de la vie scolaire (le document qui fixe, pour l'année, les objectifs et l'organisation de la vie scolaire, en lien avec le projet d'établissement).</li>
 </ul>
 <p>Que déplacez-vous ? Que maintenez-vous coûte que coûte ? Que produisez-vous, et pour quand ?</p>"""),
     ],
@@ -207,12 +207,13 @@ ATELIER_ANNEE = dict(
             "« Le premier conseil d'établissement est reporté : vous pouvez donc décaler les élections et la formation des délégués. »",
         ],
         attendus="""
-<p><strong>Démocratie scolaire.</strong> Semaine de l'engagement en septembre, élections des délégués de classe au plus tard début octobre, puis CVL et CVC pendant la semaine de la démocratie scolaire, avant les vacances d'automne. Les élus doivent être en place et formés avant le premier conseil d'établissement du 12 novembre : les élections « en novembre » de Mme Martel le rendaient impossible. Formation des délégués en trois temps : octobre, janvier-février, bilan en mai. Le regroupement inter-CVL de mars se prépare dès janvier (choix des deux élus, projet à présenter).</p>
+<p><strong>Démocratie scolaire.</strong> Semaine de l'engagement en septembre, élections des délégués de classe fin septembre (le repère français de la « septième semaine » tombe ici vers le 16 octobre : c'est une limite, pas un objectif), puis CVL et CVC pendant la semaine de la démocratie scolaire, avant les vacances d'automne. Les élus doivent être en place et formés avant le premier conseil d'établissement du 12 novembre : les élections « en novembre » de Mme Martel le rendaient impossible. Formation des délégués en trois temps : octobre, janvier-février, bilan en mai. Le regroupement inter-CVL de mars se prépare dès janvier (choix des deux élus, projet à présenter).</p>
 <p><strong>Équipe AED.</strong> Anticipation des besoins et recrutement en mai-juin pour une prise de poste à la pré-rentrée ; derniers ajustements en septembre. Fiche de poste remise à la prise de fonction et revue chaque année : elle protège l'AED autant que le service. Accueil et formation à la pré-rentrée ; point de mi-période d'essai fin septembre et terme ou prolongation en octobre ; formation en octobre-novembre ; entretien intermédiaire en janvier-février ; entretien de fin d'année en juin, avec des critères explicites, la décision appartenant à la direction. Réunion d'équipe à jour fixe (hebdomadaire ou bimensuelle).</p>
 <p><strong>Suivi des élèves.</strong> Commission de suivi dès octobre pour repérer ; préparation des conseils avec les professeurs principaux et la psychologue la semaine précédente ; entretiens et dispositifs après chaque conseil. Orientation : information des familles dès janvier, conseils du deuxième trimestre avec intentions, vœux et affectation au troisième. Liaison avec le primaire en mai.</p>
 <p><strong>Prévention et pilotage.</strong> Chaque journée retenue porte une action préparée avec les élus ou l'équipe pHARe, pas une affiche. Exercices de sécurité dès septembre. Bilan de la vie scolaire à chaque fin de trimestre, rapport d'activité en juin pour le dernier conseil d'établissement.</p>
-<p><strong>Périodes de vigilance attendues.</strong> La première quinzaine de septembre (accueil, recrutements, plannings) ; la fin novembre et le début décembre (conseil d'établissement, formation des délégués, conseils du premier trimestre) ; la fin mars (inter-CVL et conseils du deuxième trimestre la même semaine ou presque) ; juin (conseils, examens, entretiens AED, rapport d'activité).</p>
-<p><strong>Rebondissement.</strong> On ne décale pas les élections : elles sont faites, et la formation des délégués peut se tenir avant le 23 novembre. Les remplacements d'AED imposent un planning dégradé jusqu'à fin novembre, à présenter à la direction. Pour l'inspection : le bilan du premier trimestre (données d'assiduité et d'incidents, actions menées) et le projet de vie scolaire, à finaliser en janvier.</p>""",
+<p><strong>Périodes de vigilance attendues (trois au moins parmi celles-ci).</strong> La première quinzaine de septembre (accueil, recrutements, plannings) ; la fin novembre et le début décembre (conseil d'établissement, formation des délégués, conseils du premier trimestre) ; la fin mars (inter-CVL et conseils du deuxième trimestre la même semaine ou presque) ; juin (conseils, examens, entretiens AED, rapport d'activité).</p>
+<p><strong>Rebondissement.</strong> On ne décale pas les élections : elles sont faites, et la formation des délégués peut se tenir avant le 23 novembre. Les remplacements d'AED imposent un planning dégradé jusqu'à fin novembre, à présenter à la direction. Pour l'inspecteur : le bilan du premier trimestre (données d'assiduité et d'incidents, actions menées) et le projet de vie scolaire, à finaliser en janvier.</p>
+<p><strong>La course aux cartes.</strong> Périodes attendues : rentrée et accueil, organisation des AED (septembre) ; élections (septembre–octobre) ; semaine de la démocratie scolaire et première formation des délégués (octobre) ; prévention et pHARe (novembre, puis toute l'année) ; exercices de sécurité (dès septembre) ; santé et conduites à risque (novembre–mars) ; conseils de classe (fin de chaque trimestre) ; orientation (janvier–avril) ; portes ouvertes, inscriptions, examens (avril–juin) ; bilans de la vie scolaire (chaque trimestre).</p>""",
         vigilance=[
             "Les dates nationales sont des repères : dans le réseau AEFE, le calendrier de l'établissement, les jours fériés du pays et les règles des instances AEFE priment. Faire vérifier chaque date localement.",
             "Ne pas laisser l'atelier devenir un exercice de remplissage de tableau : exiger pour chaque moment le responsable, les partenaires et la date limite.",
@@ -222,12 +223,12 @@ ATELIER_ANNEE = dict(
     slides=[
         dict(t="titre", titre="Anticiper l'année plutôt que la subir", sous=""),
         dict(t="points", titre="Ce que vous avez dû trancher", points=["Des élections « en novembre » incompatibles avec la première instance", "Des AED recrutés trop tard et sans fiche de poste", "Des semaines où tout se télescope", "Un calendrier bousculé par le pays d'accueil et une inspection"]),
-        dict(t="etapes", titre="L'année du CPE en quatre temps", etapes=[("Septembre–octobre", "Installer : accueil, équipe, règles, élections, premiers repérages"), ("Novembre–décembre", "Faire vivre : instances, formation des délégués, prévention, premiers conseils"), ("Janvier–avril", "Accompagner les parcours : orientation, persévérance, bilans intermédiaires"), ("Mai–juillet", "Faire le bilan et anticiper : conseils, entretiens AED, rapport, rentrée suivante")], source="D'après « Une année de CPE » et le calendrier annuel du CPE"),
+        dict(t="etapes", titre="L'année du CPE en quatre temps", etapes=[("Septembre–octobre", "Installer : accueil, équipe, règles, élections, premiers repérages"), ("Novembre–décembre", "Faire vivre : instances, formation des délégués, prévention, premiers conseils"), ("Janvier–avril", "Accompagner les parcours : orientation, prévention du décrochage, bilans intermédiaires"), ("Mai–juillet", "Faire le bilan et anticiper : conseils, entretiens AED, rapport, rentrée suivante")], source="D'après « Une année de CPE » et le calendrier annuel du CPE"),
         dict(t="etapes", titre="Le cycle de la démocratie scolaire", etapes=[("Septembre", "Semaine de l'engagement : susciter les candidatures"), ("Septembre–octobre", "Élections des délégués de classe, puis CVL et CVC"), ("Octobre", "Première formation des délégués ; semaine de la démocratie scolaire"), ("Novembre", "Premières réunions ; élus présents au conseil d'établissement"), ("Janvier–mars", "Deuxième formation ; projets ; regroupement inter-CVL"), ("Mai", "Bilan des instances et de la formation des délégués")], source="Éduscol, guide de la démocratie scolaire ; à adapter au calendrier AEFE"),
         dict(t="etapes", titre="Le cycle de vie d'un AED", etapes=[("Mai–juin (N-1)", "Anticiper les besoins, recruter"), ("Pré-rentrée", "Accueillir, remettre la fiche de poste, former"), ("Septembre–octobre", "Point de mi-période d'essai, puis terme ou prolongation"), ("Octobre–novembre", "Formation : posture, protocoles, harcèlement"), ("Janvier–février", "Entretien intermédiaire"), ("Juin", "Entretien de fin d'année, avis sur le renouvellement")], source="D'après « Une année de CPE » ; contrats de droit local : calendrier RH fixé par la direction"),
-        dict(t="def", titre="La fiche de poste de l'AED", terme="Un outil qui protège autant qu'il cadre", definition="Rédigée par le CPE et validée par la direction, elle précise les missions, les lieux, les horaires, le référent, les règles de transmission et les formations prévues. Remise à la prise de fonction et revue chaque année, elle sert de base aux entretiens et évite les malentendus.", source="Circulaire du 17 septembre 2025 (AED de droit français) ; à transposer aux contrats locaux"),
+        dict(t="def", titre="La fiche de poste de l'AED", terme="Un outil qui protège autant qu'il cadre", definition="Rédigée par le CPE et validée par la direction, elle précise les missions, les lieux, les horaires, le référent, les règles de transmission et les formations prévues. Remise à la prise de fonction et revue chaque année, elle sert de base aux entretiens et évite les malentendus.", source="La circulaire du 17 septembre 2025 vise les AED recrutés en France ; pour un contrat de droit local, elle n'est qu'une référence"),
         dict(t="deux", titre="Le suivi des élèves au rythme des conseils", a=("Avant le conseil", ["Croiser assiduité, incidents, observations", "Préparer avec le professeur principal et la psychologue", "Repérer les élèves à évoquer"]), b=("Après le conseil", ["Entretiens avec les élèves et les familles", "Mise en place des dispositifs décidés", "Date de suivi fixée"])),
-        dict(t="points", titre="Les journées nationales : des leviers, pas des décors", points=["Début novembre : « Non au harcèlement », préparée avec l'équipe pHARe et les élus", "9 décembre : laïcité, avec un projet porté par les élèves", "Mars : persévérance scolaire, racisme et antisémitisme", "Une journée retenue = une action, un responsable, une trace"]),
+        dict(t="points", titre="Les journées nationales : des leviers, pas des décors", points=["Début novembre : « Non au harcèlement », préparée avec l'équipe pHARe et les élus", "9 décembre : laïcité, avec un projet porté par les élèves", "Mars : semaine d'éducation contre le racisme et l'antisémitisme", "Une journée retenue = une action, un responsable, une trace"]),
         dict(t="def", titre="Planifier à rebours", terme="Le rétroplanning", definition="On part de la date qui ne bouge pas (le premier conseil d'établissement, les conseils de classe) et l'on remonte : ce qui doit être prêt la veille, la semaine d'avant, le mois d'avant. Les jalons rendent visibles les collisions et permettent d'arbitrer à temps.", source=""),
         dict(t="points", titre="Le calendrier dans un établissement AEFE", points=["Le calendrier et les jours fériés du pays d'accueil", "Les règles des instances fixées par l'AEFE et le statut de l'établissement", "Le calendrier RH des personnels recrutés localement", "Les temps forts de la zone : regroupements, inter-CVL, formations"]),
         dict(t="cle", texte="Un CPE qui subit l'année court après les urgences. Un CPE qui l'anticipe garde du temps pour les élèves."),

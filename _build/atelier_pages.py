@@ -12,6 +12,58 @@ TYPE_CLASS = {
 }
 
 
+import re as _re
+
+
+def duree(C, a):
+    """Temps indicatif d'un atelier : somme des étapes + bilan."""
+    return sum(p["duree"] for p in a["phases"]) + C.BILAN_MIN
+
+
+def lexify(C, html_txt):
+    """Signale la première occurrence de chaque terme du lexique par une infobulle."""
+    termes = []
+    for t, (d, _n, alts) in C.LEXIQUE.items():
+        for v in [t] + list(alts):
+            flags = _re.I if v[:1].islower() else 0
+            termes.append((t, d, _re.compile(r"(?<![\w-])" + _re.escape(v) + r"(?![\w-])", flags)))
+    termes.sort(key=lambda x: -len(x[2].pattern))
+    SKIP = {"a", "button", "textarea", "summary", "script", "style", "label", "legend", "h1", "h2", "h3", "h4",
+            "abbr", "dfn", "option", "title", "dialog"}
+    vus = set()
+    out = []
+    pile = []
+    for part in _re.split(r"(<[^>]+>)", html_txt):
+        if part.startswith("<"):
+            m = _re.match(r"<(/?)([a-zA-Z0-9]+)", part)
+            if m and m.group(2).lower() in SKIP and not part.endswith("/>"):
+                if m.group(1):
+                    if pile:
+                        pile.pop()
+                else:
+                    pile.append(m.group(2).lower())
+            out.append(part)
+            continue
+        if pile or not part.strip():
+            out.append(part)
+            continue
+        morceaux = [H.unescape(part)]
+        for t, d, rx in termes:
+            if t in vus:
+                continue
+            for k, mo in enumerate(morceaux):
+                if not isinstance(mo, str):
+                    continue
+                hit = rx.search(mo)
+                if hit:
+                    vus.add(t)
+                    dfn = (f'<dfn class="lex" tabindex="0" data-def="{esc(d)}">{hit.group(0)}</dfn>',)
+                    morceaux[k:k + 1] = [mo[:hit.start()], dfn, mo[hit.end():]]
+                    break
+        out.append("".join(esc(x, quote=False) if isinstance(x, str) else x[0] for x in morceaux))
+    return "".join(out)
+
+
 def fmt_min(m):
     h, mn = divmod(m, 60)
     return f"{h} h {mn:02d}" if h and mn else (f"{h} h" if h else f"{mn} min")
@@ -38,6 +90,10 @@ def inline_ids(a):
     for p in a["phases"]:
         s.update(p.get("docs", []))
     return s
+
+
+def secret_ids(a):
+    return {k for k, d in enumerate(a["docs"], 1) if d.get("secret")}
 
 
 def slides_dialogue(a):
@@ -91,7 +147,25 @@ def slides_html(a):
     return "".join(out)
 
 
-MOT_DE_PASSE = "ZESE2027"  # saisi « ZESE2027 » ou « ZESE 2027 » (les espaces sont ignorés)
+def _mot_de_passe():
+    """Mot de passe de la formation, jamais écrit dans le dépôt.
+
+    Il est lu dans la variable d'environnement CPE_MDP, sinon dans le fichier
+    _build/.mot_de_passe (exclu du dépôt par .gitignore). Les espaces sont
+    ignorés et la casse aussi, comme dans le navigateur.
+    """
+    import os
+    v = os.environ.get("CPE_MDP")
+    if not v:
+        f = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".mot_de_passe")
+        if os.path.exists(f):
+            v = open(f, encoding="utf-8").read()
+    if not v or not v.strip():
+        raise SystemExit("Mot de passe absent : créez _build/.mot_de_passe ou définissez CPE_MDP.")
+    return "".join(v.split()).upper()
+
+
+MOT_DE_PASSE = _mot_de_passe()
 
 
 def chiffrer(texte, mot_de_passe=MOT_DE_PASSE):
@@ -167,7 +241,7 @@ def kit_box(a, prefix=""):
     src = f"{prefix}ressources/kits/atelier-{n}-dossier.pdf"
     items = []
     for k, d in enumerate(a["docs"], 1):
-        if d.get("type") == "Rebondissement":
+        if d.get("type") == "Rebondissement" or d.get("secret"):
             continue
         pg = pages.get(str(k), 1)
         items.append(f'<li><a href="{src}#page={pg}" data-kit-page="{pg}" target="_blank" rel="noopener"><span class="kit-no">{k}</span>{esc(d["titre"])}</a></li>')
@@ -190,7 +264,8 @@ def atelier_page(C, a, MALLETTE_BY_ATELIER):
     NB = len(C.ATELIERS)
     docs = a["docs"]
     inl = inline_ids(a)
-    lib_ids = [k for k in range(1, len(docs) + 1) if k not in inl]
+    sec = secret_ids(a)
+    lib_ids = [k for k in range(1, len(docs) + 1) if k not in inl and k not in sec]
     for k in lib_ids:
         assert docs[k - 1].get("groupe"), f"Atelier {n} : document {k} ni affiché ni dans le dossier"
     steps = "".join(f'<li><a href="#a{n}-t{i}" data-step="{i}">{i} · {esc(p["titre"])}</a></li>' for i, p in enumerate(a["phases"], 1))
@@ -206,15 +281,17 @@ def atelier_page(C, a, MALLETTE_BY_ATELIER):
             parts.append(f'<div class="sequence" data-sequence><ol class="events">{items}</ol><button class="btn" type="button" data-next-event>Révéler l\'événement suivant</button><p class="small muted" data-seq-done hidden>Tous les événements sont révélés.</p></div>')
         if p.get("mission"):
             cards = []
+            lab = p.get("mission_label", "Groupe")
             for gi, g in enumerate(a["groupes"], 1):
                 links = "".join(f'<a class="chip-link" href="#a{n}-doc-{k}" data-open-doc>Doc. {k}</a>' for k in g["docs"])
                 qs = "".join(f"<li>{esc(q)}</li>" for q in g["questions"])
-                cards.append(f'<article class="mission"><header><span class="mission-no">Groupe {gi}</span><h4>{esc(g["nom"])}</h4><p class="mission-angle">{esc(g["angle"])}</p></header><ol>{qs}</ol><div class="mission-docs"><span class="label">Pistes dans le dossier</span>{links}</div></article>')
+                cards.append(f'<article class="mission"><header><span class="mission-no">{lab} {gi}</span><h4>{esc(g["nom"])}</h4><p class="mission-angle">{esc(g["angle"])}</p></header><ol>{qs}</ol><div class="mission-docs"><span class="label">Pistes dans le dossier</span>{links}</div></article>')
             mt = esc(p.get("mission_titre", "Les missions des groupes experts"))
             parts.append(f'<div class="missions"><h3 class="label">{mt}</h3><div class="mission-grid">{"".join(cards)}</div><p class="small muted">Les pistes ne suffisent pas : tout le dossier est à votre disposition, et certains documents doivent être lus avec méfiance.</p></div>')
         if p.get("dossier"):
+            labf = next((q.get("mission_label") for q in a["phases"] if q.get("mission")), None) or "Groupe"
             filt = '<button type="button" class="filter is-on" data-filter="">Tout le dossier</button>' + "".join(
-                f'<button type="button" class="filter" data-filter="{gi}">Groupe {gi} · {esc(g["nom"])}</button>' for gi, g in enumerate(a["groupes"], 1))
+                f'<button type="button" class="filter" data-filter="{gi}">{labf} {gi} · {esc(g["nom"])}</button>' for gi, g in enumerate(a["groupes"], 1))
             lib = "".join(doc_card(a, k, docs[k - 1], collapsible=True) for k in lib_ids)
             parts.append(f"""<div class="dossier" data-dossier>
   <div class="dossier-head"><h3>Le dossier documentaire</h3><p class="small muted">{len(lib_ids)} documents · ouvrez ceux dont vous avez besoin</p></div>
@@ -251,7 +328,8 @@ def atelier_page(C, a, MALLETTE_BY_ATELIER):
             parts.append(f'<div class="positions">{pos}</div>')
         if p.get("production"):
             crit = "".join(f'<li><label><input type="checkbox" data-check="a{n}:crit:{j}"> {esc(c)}</label></li>' for j, c in enumerate(a["criteres"], 1))
-            parts.append(f'<div class="production-box"><p class="label">Production attendue</p><p class="production">{esc(a["production"])}</p><p class="label">Critères de réussite · cochez quand c\'est vérifié</p><ul class="criteria">{crit}</ul></div>')
+            prol = f'<p class="prolongement"><strong>Pour aller plus loin.</strong> {esc(a["prolongement"])}</p>' if a.get("prolongement") else ""
+            parts.append(f'<div class="production-box"><p class="label">Production attendue</p><p class="production">{esc(a["production"])}</p><p class="label">Critères de réussite · cochez quand c\'est vérifié</p><ul class="criteria">{crit}</ul>{prol}</div>')
         if p.get("rappel"):
             parts.append(f'<div class="recall"><p class="label">Ce que vous aviez écrit au début</p><blockquote data-recall="a{n}:t1"><span class="muted">Vous n\'aviez rien noté au temps 1 sur cet appareil.</span></blockquote></div>')
         last = i == len(a["phases"])
@@ -259,7 +337,7 @@ def atelier_page(C, a, MALLETTE_BY_ATELIER):
                else f'<button class="btn" type="button" data-next="{i + 1}">J\'ai terminé : passer à l\'étape {i + 1}</button>')
         sections.append(f"""<section class="temps" id="a{n}-t{i}" data-temps="{i}"{" hidden" if i > 1 else ""}>
   <header class="temps-head"><span class="temps-no">Étape {i}</span><h2>{esc(p['titre'])}</h2><span class="mod">{esc(p['modalite'])}</span></header>
-  {f'<p class="fmt"><span>{esc(p["format"])}</span></p>' if p.get("format") else ""}
+  {f'<p class="fmt"><span>{esc(p["format"])}</span>{(" " + esc(C.FORMATS[p["format"]])) if p["format"] in C.FORMATS else ""}</p>' if p.get("format") else ""}
   <div class="consigne"><p>{esc(p['consigne'])}</p></div>
   {"".join(parts)}
   <div class="note-zone"><label for="note-a{n}-t{i}">Mes notes · étape {i}</label>
@@ -275,33 +353,33 @@ def atelier_page(C, a, MALLETTE_BY_ATELIER):
     pager = "".join(f'<a href="atelier-{k}.html"{ARIA if k == n else ""}>{k}</a>' for k in range(1, NB + 1))
     crit_plain = "".join(f"<li>{esc(c)}</li>" for c in a["criteres"])
 
-    return f"""
+    page_html = f"""
 <div class="atelier" data-atelier="{n}" data-steps="{len(a['phases'])}">
 <section class="hero hero-atelier">
   <div class="wrap">
     <nav class="pager" aria-label="Ateliers">{pager}</nav>
-    <p class="eyebrow">Atelier {n} sur {NB} · {esc(a['titre'])}</p>
+    <p class="eyebrow">Atelier {n} sur {NB} · {esc(a['titre'])} · temps indicatif {fmt_min(duree(C, a))}</p>
     <h1 class="problem">{esc(a['problematique'])}</h1>
     <ul class="moteur" aria-label="Le déroulé de l'atelier">{"".join(f"<li>{esc(m)}</li>" for m in a.get("moteur", []))}</ul>
   </div>
 </section>
 <div class="wrap">
-  {kit_box(a)}
   <section class="situation" aria-labelledby="sit-{n}">
     <p class="label" id="sit-{n}">La situation</p>
     <div class="situation-txt">{a['situation'].strip()}</div>
   </section>
+  {kit_box(a)}
 
   <section class="brief">
     <div class="brief-col"><h2 class="label">Ce que l'atelier vous fait travailler</h2><ul class="checks">{"".join(f"<li>{esc(o)}</li>" for o in a['objectifs'])}</ul></div>
     <div class="brief-col"><h2 class="label">Compétences du CPE</h2>{competences_list(C, a)}
       <p class="small muted">Référentiel de formation 2026 : {esc(a['blocs_detail'])}.</p>
-      <h2 class="label">Vous devrez produire</h2><p class="production">{esc(a['production'])}</p>
+      <h2 class="label">Vous devrez produire</h2><p class="production">{esc(a['production'])}</p>{f'<p class="small muted">Pour aller plus loin : {esc(a["prolongement"])}</p>' if a.get("prolongement") else ""}
       <details class="crit-preview"><summary>Voir les critères de réussite</summary><ul>{crit_plain}</ul></details></div>
   </section>
 
   <section class="howto">
-    <p><strong>Comment avancer ?</strong> Cet atelier a son propre déroulé : {esc(", ".join(a.get("moteur", [])).lower())}. Chaque étape ne s'ouvre que lorsque la précédente est terminée. Dans le dossier, tout n'est pas fiable, et une information nouvelle viendra bousculer vos conclusions.</p>
+    <p><strong>Comment avancer ?</strong> Cet atelier a son propre déroulé : {esc(", ".join(a.get("moteur", [])).lower())}. Chaque étape ne s'ouvre que lorsque la précédente est terminée. Dans le dossier, tout n'est pas fiable, et une information nouvelle viendra bousculer vos conclusions. Les mots soulignés en pointillé sont expliqués au survol ou au toucher, et dans le <a href="lexique.html">lexique</a>.</p>
     <div class="howto-actions"><button class="btn ghost small" type="button" data-reset>Recommencer l'atelier</button><button class="btn ghost small" type="button" data-print-revealed>Imprimer les documents ouverts</button><button class="btn ghost small" type="button" data-open-bilan>Bilan formateur 🔒</button><button class="btn ghost small" type="button" data-open-pistes>Propositions de réponse 🔒</button></div>
   </section>
 
@@ -309,7 +387,7 @@ def atelier_page(C, a, MALLETTE_BY_ATELIER):
   {"".join(sections)}
 
   <section class="temps cloture" id="a{n}-fin" data-temps="fin" hidden>
-    <header class="temps-head"><span class="temps-no">Bilan</span><h2>Mise en commun et apports</h2><span class="mod">Collectif · 15 min</span></header>
+    <header class="temps-head"><span class="temps-no">Bilan</span><h2>Mise en commun et apports</h2><span class="mod">Collectif · {C.BILAN_MIN} min</span></header>
     <div class="bilan-launch">
       <div><p class="label">Diaporama du formateur · protégé</p><p>Bilan dialogué : les groupes répondent d'abord, puis le formateur fait les apports, avec trois questions à la salle.</p></div>
       <button class="btn big" type="button" data-open-bilan>Ouvrir le bilan ▸</button>
@@ -325,29 +403,31 @@ def atelier_page(C, a, MALLETTE_BY_ATELIER):
   <nav class="next-prev" aria-label="Atelier précédent et suivant">{prev_l}{next_l}</nav>
 </div>
 </div>
-{bilan_dialog(a)}
-{pistes_block(a)}
+@@DIALOGS@@
 <noscript><style>.temps[hidden],.event[hidden]{{display:block!important}}</style></noscript>
 """
+    return lexify(C, page_html).replace("@@DIALOGS@@", bilan_dialog(a) + "\n" + pistes_block(a))
 
 
 def formateur_page(C, a):
     n = a["n"]
     NB = len(C.ATELIERS)
     f = a["formateur"]
-    total = sum(p["duree"] for p in a["phases"]) + 15
+    total = duree(C, a)
     rows = "".join(
         f"<tr><td><strong>{i}. {esc(p['titre'])}</strong><br><span class=\"small muted\">{esc(p.get('format', ''))}</span></td><td>{p['duree']} min</td><td>{esc(p['modalite'])}</td><td>{esc(f['deroule'][i - 1])}</td></tr>"
         for i, p in enumerate(a["phases"], 1))
-    rows += "<tr><td><strong>Bilan</strong></td><td>15 min</td><td>Collectif</td><td>Bilan dialogué : 5 minutes de retour des groupes sur la diapositive « À vous d'abord », puis 10 minutes d'apports ponctuées de trois questions à la salle.</td></tr>"
+    rows += f"<tr><td><strong>Bilan</strong></td><td>{C.BILAN_MIN} min</td><td>Collectif</td><td>Bilan dialogué : 5 minutes de retour des groupes sur la diapositive « À vous d'abord », puis {C.BILAN_MIN - 5} minutes d'apports ponctuées de trois questions à la salle.</td></tr>"
     pieges = []
     for k, d in enumerate(a["docs"], 1):
         if d.get("type") == "Rebondissement":
             pieges.append(f"<li>Document {k} · {esc(d['titre'])} : rebondissement, à révéler au temps prévu.</li>")
+        elif d.get("secret"):
+            pieges.append(f"<li>Document {k} · {esc(d['titre'])} : cartes à découper et à remettre aux seuls joueurs concernés. Ce document n'apparaît pas sur la page stagiaire.</li>")
     groupes = "".join(
-        f'<tr><td>Groupe {gi} · {esc(g["nom"])}</td><td>{esc(g["angle"])}</td><td>{", ".join(str(x) for x in g["docs"])}</td></tr>'
+        f'<tr><td>{gi} · {esc(g["nom"])}</td><td>{esc(g["angle"])}</td><td>{", ".join(str(x) for x in g["docs"])}</td></tr>'
         for gi, g in enumerate(a["groupes"], 1))
-    groupes = f'<section class="block"><h2>Missions des groupes</h2><div class="tablewrap"><table><thead><tr><th>Groupe</th><th>Question</th><th>Documents pistes</th></tr></thead><tbody>{groupes}</tbody></table></div></section>' if groupes else ""
+    groupes = f'<section class="block"><h2>Missions des groupes</h2><div class="tablewrap"><table><thead><tr><th>Groupe ou série</th><th>Question</th><th>Documents pistes</th></tr></thead><tbody>{groupes}</tbody></table></div></section>' if groupes else ""
     seq = ""
     for p in a["phases"]:
         if p.get("sequence"):
@@ -355,11 +435,31 @@ def formateur_page(C, a):
     docs = "".join(doc_card(a, k, d) for k, d in enumerate(a["docs"], 1))
     pager = "".join(f'<a href="atelier-{k}.html"{ARIA if k == n else ""}>{k}</a>' for k in range(1, NB + 1))
     outline = "".join(f"<li>{esc(s.get('titre') or s.get('texte', ''))}</li>" for s in a["slides"])
+    prol = f'<p class="small muted">Pour aller plus loin : {esc(a["prolongement"])}</p>' if a.get("prolongement") else ""
+    protege = f"""
+  <section class="brief">
+    <div class="brief-col"><h2 class="label">Objectifs</h2><ul class="checks">{"".join(f"<li>{esc(o)}</li>" for o in a['objectifs'])}</ul>
+      <h2 class="label">Production</h2><p class="production">{esc(a['production'])}</p>{prol}</div>
+    <div class="brief-col"><h2 class="label">Compétences (arrêté 2013)</h2>{competences_list(C, a)}
+      <p class="small muted">Référentiel de formation 2026 : {esc(a['blocs_detail'])}.</p>
+      <h2 class="label">Matériel</h2><ul>{"".join(f"<li>{esc(m)}</li>" for m in f['materiel'])}</ul></div>
+  </section>
+  <section class="block"><h2>Déroulé</h2><div class="tablewrap"><table class="deroule"><thead><tr><th>Étape</th><th>Durée</th><th>Modalité</th><th>Conduite du formateur</th></tr></thead><tbody>{rows}</tbody><tfoot><tr><td>Total indicatif</td><td>{fmt_min(total)}</td><td colspan="2"></td></tr></tfoot></table></div>
+  <ul class="small muted">{"".join(pieges)}</ul></section>
+  {groupes}
+  <section class="block relances"><h2>Questions pour mettre en difficulté</h2><p class="muted">À poser en circulant, sans donner la réponse. Le but est que le stagiaire argumente avec le dossier.</p><ul>{"".join(f"<li>{esc(r)}</li>" for r in f['relances'])}</ul></section>
+  <section class="block corrige"><h2>Ce que l'on attend</h2>{f['attendus']}{seq}</section>
+  <section class="block vigilance"><h2>Points de vigilance</h2><ul>{"".join(f"<li>{esc(v)}</li>" for v in f['vigilance'])}</ul></section>
+  <section class="block"><h2>Le diaporama de bilan</h2><p class="muted">{len(a['slides'])} diapositives. Il s'ouvre avec le bouton « Projeter le bilan », en haut de cette page, ou depuis la fin de la page stagiaire.</p><ol>{outline}</ol></section>
+  <section class="block"><h2>Le dossier complet (version imprimable)</h2>
+  <p><a class="btn" href="../ressources/kits/atelier-{n}-complet.pdf" target="_blank" rel="noopener">PDF à imprimer pour la salle, rebondissements et cartes compris</a> <a class="btn ghost" href="../ressources/kits/atelier-{n}-dossier.pdf" target="_blank" rel="noopener">PDF vu par les stagiaires</a></p>
+  <p class="small muted">Le PDF complet est protégé par le mot de passe de la formation. Un document par page, pour l'imprimer en cartes-documents à poser sur les tables. Sur la page stagiaire, les documents de départ et les rebondissements n'apparaissent qu'à l'étape prévue, et les cartes secrètes n'apparaissent pas.</p><div class="docs all">{docs}</div></section>"""
+    data = chiffrer(protege)
     return f"""
 <section class="hero hero-formateur">
   <div class="wrap">
     <nav class="pager" aria-label="Fiches formateur">{pager}</nav>
-    <p class="eyebrow">Fiche formateur · Atelier {n} · {fmt_min(total)}</p>
+    <p class="eyebrow">Fiche formateur · Atelier {n} · temps indicatif {fmt_min(total)}</p>
     <h1>{esc(a['titre'])}</h1>
     <p class="lead">{esc(a['problematique'])}</p>
     <ul class="moteur">{"".join(f"<li>{esc(m)}</li>" for m in a.get("moteur", []))}</ul>
@@ -367,22 +467,17 @@ def formateur_page(C, a):
   </div>
 </section>
 <div class="wrap">
-  <section class="brief">
-    <div class="brief-col"><h2 class="label">Objectifs</h2><ul class="checks">{"".join(f"<li>{esc(o)}</li>" for o in a['objectifs'])}</ul></div>
-    <div class="brief-col"><h2 class="label">Compétences (arrêté 2013)</h2>{competences_list(C, a)}
-      <p class="small muted">Référentiel de formation 2026 : {esc(a['blocs_detail'])}.</p>
-      <h2 class="label">Matériel</h2><ul>{"".join(f"<li>{esc(m)}</li>" for m in f['materiel'])}</ul></div>
-  </section>
-  <section class="block"><h2>Déroulé</h2><div class="tablewrap"><table class="deroule"><thead><tr><th>Étape</th><th>Durée</th><th>Modalité</th><th>Conduite du formateur</th></tr></thead><tbody>{rows}</tbody><tfoot><tr><td>Total</td><td>{fmt_min(total)}</td><td colspan="2"></td></tr></tfoot></table></div>
-  <ul class="small muted">{"".join(pieges)}</ul></section>
-  {groupes}
-  <section class="block relances"><h2>Questions pour mettre en difficulté</h2><p class="muted">À poser en circulant, sans donner la réponse. Le but est que le stagiaire argumente avec le dossier.</p><ul>{"".join(f"<li>{esc(r)}</li>" for r in f['relances'])}</ul></section>
-  <section class="block corrige"><h2>Ce que l'on attend</h2>{f['attendus']}{seq}</section>
-  <section class="block vigilance"><h2>Points de vigilance</h2><ul>{"".join(f"<li>{esc(v)}</li>" for v in f['vigilance'])}</ul></section>
-  <section class="block"><h2>Le diaporama de bilan</h2><p class="muted">{len(a['slides'])} diapositives. Il s'ouvre aussi depuis la fin de la page stagiaire.</p><ol>{outline}</ol><button class="btn" type="button" data-open-bilan>Projeter le bilan</button></section>
-  <section class="block"><h2>Le dossier complet (version imprimable)</h2>
-  <p><a class="btn" href="../ressources/kits/atelier-{n}-complet.pdf" target="_blank" rel="noopener">PDF à imprimer pour la salle, rebondissements compris</a> <a class="btn ghost" href="../ressources/kits/atelier-{n}-dossier.pdf" target="_blank" rel="noopener">PDF vu par les stagiaires</a></p>
-  <p class="small muted">Un document par page, pour l'imprimer en cartes-documents à poser sur les tables. Sur la page stagiaire, les documents de départ et les rebondissements n'apparaissent qu'à l'étape prévue.</p><div class="docs all">{docs}</div></section>
+<section class="pistes pistes-inline" data-pistes>
+  <div class="pistes-head"><div><p class="label">Fiche formateur · protégée</p><h2>Déroulé, corrigés et dossier complet</h2><p class="muted small">Saisissez le mot de passe de la formation. Il reste mémorisé sur cet appareil jusqu'à ce que vous cliquiez sur « Verrouiller ».</p></div>
+  <div class="pistes-btns"><button class="btn ghost small" type="button" data-pistes-lock hidden>Verrouiller</button></div></div>
+  <form class="pistes-lock" data-pistes-form action="#" onsubmit="return false">
+    <label for="fpwd-{n}" class="sr">Mot de passe</label>
+    <div class="lock-row"><input id="fpwd-{n}" type="password" autocomplete="current-password" placeholder="Mot de passe de la formation" required><button class="btn" type="submit">Afficher la fiche</button></div>
+    <p class="lock-err" role="alert" hidden>Mot de passe incorrect.</p>
+  </form>
+  <div class="pistes-body" hidden></div>
+  <script type="application/json" class="pistes-data">{data}</script>
+</section>
 </div>
 {bilan_dialog(a)}
 """
