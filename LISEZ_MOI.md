@@ -17,10 +17,10 @@ Site statique publié avec GitHub Pages : https://xseorkly.github.io/Cpe/
 | `formateur/` | Formateur | Programme minuté, fiches par atelier : déroulé, questions pour mettre en difficulté, attendus, vigilance, dossier imprimable, diaporama |
 | `quiz.html` | Tous | Quiz de réactivation, à chaque reprise après une pause |
 | `lexique.html` | Stagiaires | Lexique du CPE débutant (définitions aussi en infobulle dans les ateliers) et fonctionnement des formats |
-| `ressources/` | Tous | Guide formateur, carnet, banque de prompts IA, mallette réflexe (PDF) |
+| `ressources/` | Tous | Guide formateur, carnet, banque de prompts IA, mallette réflexe (PDF) ; cahier du formateur (`05_Cahier_du_formateur.pdf`, protégé) : préparation, impressions, plan de distribution, déroulé point par point, bilan, corrigé et tous les documents à photocopier, atelier par atelier |
 | `ressources/kits/` | Tous | Dossier de chaque atelier, un document par page : `atelier-N-dossier.pdf` (stagiaires, intégré à la page de l'atelier) et `atelier-N-complet.pdf` (formateur, rebondissements compris) |
 
-Les fiches formateur, les bilans, les propositions de réponse, le guide PDF et les dossiers complets (rebondissements et cartes secrètes des jeux de rôle) sont chiffrés avec le mot de passe de la formation. Le dossier `_build/` n'est plus publié sur GitHub Pages (voir `.github/workflows/static.yml`) ; il reste lisible dans le dépôt GitHub tant que celui-ci est public.
+Les fiches formateur, les bilans, les propositions de réponse, le guide et le cahier du formateur (PDF) et les dossiers complets (rebondissements et cartes secrètes des jeux de rôle) sont chiffrés avec le mot de passe de la formation. Le dossier `_build/` n'est plus publié sur GitHub Pages (voir `.github/workflows/static.yml`) ; il reste lisible dans le dépôt GitHub tant que celui-ci est public.
 
 ## Mot de passe de la formation
 
@@ -32,6 +32,7 @@ Les neuf ateliers sont dans **`_build/ateliers.py`** (l’atelier 2, « Construi
 
 ```bash
 python3 _build/pdfs.py    # régénère le guide, le carnet et les dossiers d'atelier (nécessite reportlab)
+python3 _build/cahier.py  # régénère le cahier du formateur (PDF protégé)
 python3 _build/build.py   # régénère toutes les pages HTML (après pdfs.py : les liens vers les pages des PDF en dépendent)
 ```
 

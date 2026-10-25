@@ -467,7 +467,7 @@ def formateur_index():
     cards = "".join(f'<li class="card-atelier"><a href="atelier-{a["n"]}.html"><span class="card-no">{a["n"]:02d}</span><span class="card-txt"><strong>{esc(a["titre"])}</strong><span>{fmt_min(AP.duree(C, a))} · {len(a["temps"])} étapes</span></span></a></li>' for a in C.ATELIERS)
     body = f"""
 <section class="hero hero-formateur"><div class="wrap"><p class="eyebrow">Espace formateur · {esc(C.DUREE_TOTALE)}</p><h1>Conduire la formation</h1><p class="lead">Déroulés, éléments de correction, points de vigilance et bilans à projeter. Les fiches de chaque atelier et le guide PDF s'ouvrent avec le mot de passe de la formation.</p>
-<div class="hero-actions"><a class="btn light" href="../ressources/01_Guide_Formateur_Pedagogie_Active.pdf">Guide formateur (PDF protégé)</a></div></div></section>
+<div class="hero-actions"><a class="btn light" href="../ressources/01_Guide_Formateur_Pedagogie_Active.pdf">Guide formateur (PDF protégé)</a> <a class="btn light" href="../ressources/05_Cahier_du_formateur.pdf" download>Cahier du formateur, point par point (PDF protégé)</a></div></div></section>
 <div class="wrap">
   <section class="block"><h2>Le parcours et ses temps indicatifs</h2><p class="muted">Aucun découpage en journées : enchaînez les ateliers dans l'ordre, au rythme du groupe. Un atelier commencé peut se terminer à la session suivante, en présence ou à distance. À chaque reprise, ouvrez par le quiz de réactivation. Total indicatif : {fmt_min(total_parcours())}.</p><div class="days">{"".join(prog)}</div></section>
   <section class="block"><h2>La scénarisation des neuf ateliers</h2>
